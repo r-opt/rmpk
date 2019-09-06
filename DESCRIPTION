@@ -14,7 +14,8 @@ RoxygenNote: 6.1.1
 Suggests: 
     testthat (>= 2.1.0),
     ROI,
-    ROI.plugin.glpk
+    ROI.plugin.glpk,
+    covr
 Imports: 
     fastmap,
     R6,

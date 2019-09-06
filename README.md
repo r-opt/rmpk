@@ -7,6 +7,10 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build
+status](https://travis-ci.org/dirkschumacher/rmpk.svg?branch=master)](https://travis-ci.org/dirkschumacher/rmpk)
+[![Codecov test
+coverage](https://codecov.io/gh/dirkschumacher/rmpk/branch/master/graph/badge.svg)](https://codecov.io/gh/dirkschumacher/rmpk?branch=master)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs.
