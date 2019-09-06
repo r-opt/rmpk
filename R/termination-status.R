@@ -1,6 +1,8 @@
 # it follows the codes from JuMP
 # http://www.juliaopt.org/JuMP.jl/v0.20.0/solutions/#Obtaining-solutions-1
 
+#' Solver termination status codes
+#'
 #' @export
 TERMINATION_STATUS <- new.env(parent = emptyenv())
 

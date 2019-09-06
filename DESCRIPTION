@@ -19,7 +19,8 @@ Suggests:
 Imports: 
     fastmap,
     R6,
-    slam
+    slam,
+    methods
 Collate: 
     'roi-solver.R'
     'mip-model.R'

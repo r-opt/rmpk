@@ -7,6 +7,15 @@ MIPModel <- function(solver) {
   RlpMipModel$new(solver)
 }
 
+#' Add a variable to the model
+#'
+#' @param model the model
+#' @param expr an expression
+#' @param type a character, either continuous, integer or binary
+#' @param lb the lower bound
+#' @param ub the upper bound
+#' @param ... any quantifiers
+#'
 #' @export
 add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
   # TODO: capture the environment, probably using rlang
@@ -14,12 +23,24 @@ add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, 
   model
 }
 
+#' Set the objective of the model
+#'
+#' @param model the model
+#' @param expr an expression
+#' @param sense either max or min
+#'
 #' @export
 set_objective <- function(model, expr, sense = "min") {
   eval(bquote(model$set_objective(.(substitute(expr)), sense)))
   model
 }
 
+#' Add a constraint to the model
+#'
+#' @param model the model
+#' @param expr an expression
+#' @param ... any quantifiers
+#'
 #' @export
 add_constraint <- function(model, expr, ...) {
   eval(bquote(model$add_constraint(.(substitute(expr)), ...)))

@@ -1,1 +1,2 @@
+#' @importFrom methods new
 NULL
