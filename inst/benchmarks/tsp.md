@@ -17,7 +17,7 @@ library(ROI)
 library(ROI.plugin.glpk)
 set.seed(42)
 
-n <- 10
+n <- 50
 max_x <- 500
 max_y <- 500
 cities <- data.frame(id = 1:n, x = runif(n, max = max_x), y = runif(n, max = max_y))
@@ -54,11 +54,12 @@ rmpk <- function() {
   
 }
 
-microbenchmark::microbenchmark(
-  rmpk()
-)
+system.time(rmpk())
 ```
 
-    ## Unit: milliseconds
-    ##    expr      min       lq     mean   median     uq      max neval
-    ##  rmpk() 213.3347 230.2023 383.9231 239.6344 290.25 3368.662   100
+    ##    user  system elapsed 
+    ##   5.619   0.381   6.189
+
+``` r
+profvis::profvis(rmpk())
+```

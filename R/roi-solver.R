@@ -30,11 +30,21 @@ ROIMipSolver <- R6::R6Class(
     add_variable = function(type, lower_bound = -Inf, upper_bound = Inf) {
       new_idx <- ncol(private$A_mat) + 1L
       private$col_type[[length(private$col_type) + 1L]] <- type
-      private$obj_vec <- cbind(private$obj_vec, 0)
-      private$A_mat <- cbind(
-        private$A_mat,
-        slam::simple_triplet_zero_matrix(nrow(private$A_mat), 1L)
+      private$obj_vec <- slam::simple_triplet_matrix(
+        i = private$obj_vec$i,
+        j = private$obj_vec$j,
+        v = private$obj_vec$v,
+        nrow = 1L,
+        ncol = ncol(private$obj_vec) + 1L,
+        dimnames = NULL
       )
+      private$A_mat <- slam::simple_triplet_matrix(
+        i = private$A_mat$i,
+        j = private$A_mat$j,
+        v = private$A_mat$v,
+        nrow = nrow(private$A_mat),
+        ncol = ncol(private$A_mat) + 1L,
+        dimnames = NULL)
       private$col_lb[[new_idx]] <- lower_bound
       private$col_ub[[new_idx]] <- upper_bound
       new_idx
@@ -49,7 +59,7 @@ ROIMipSolver <- R6::R6Class(
       nrow(private$A_mat)
     },
     set_objective_coefficient = function(variable_index, value) {
-      private$obj_vec[variable_index] <- value
+      private$obj_vec[variable_index] <- value #very slow
     },
     set_objective_sense = function(sense) {
       private$obj_sense <- sense

@@ -14,7 +14,7 @@ library(ROI)
 library(ROI.plugin.glpk)
 set.seed(42)
 
-n <- 10
+n <- 50
 max_x <- 500
 max_y <- 500
 cities <- data.frame(id = 1:n, x = runif(n, max = max_x), y = runif(n, max = max_y))
@@ -51,8 +51,10 @@ rmpk <- function() {
   
 }
 
-microbenchmark::microbenchmark(
-  rmpk()
-)
+system.time(rmpk())
+```
+
+```{r, eval=FALSE}
+profvis::profvis(rmpk())
 ```
 
