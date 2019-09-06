@@ -46,7 +46,7 @@ ROIMipSolver <- R6::R6Class(
       private$A_mat <- slam::simple_triplet_matrix(
         i = c(private$A_mat$i, values$i + nrow(private$A_mat)), # O(N)
         j = c(private$A_mat$j, values$j),
-        v = c(private$A_mat$v, values$j),
+        v = c(private$A_mat$v, values$v),
         nrow = nrow(private$A_mat) + 1L,
         ncol = ncol(private$A_mat),
         dimnames = NULL)
