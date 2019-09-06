@@ -15,7 +15,7 @@ ROIMipSolver <- R6::R6Class(
   "ROIMipSolver",
   public = list(
     initialize = function(solver, control = list()) {
-      private$obj_vec <- slam::simple_triplet_zero_matrix(1L, 0L)
+      private$obj_vec <- numeric()
       private$A_mat <- slam::simple_triplet_zero_matrix(0L, 0L)
       private$col_type <- character()
       private$col_lb <- numeric()
@@ -30,14 +30,7 @@ ROIMipSolver <- R6::R6Class(
     add_variable = function(type, lower_bound = -Inf, upper_bound = Inf) {
       new_idx <- ncol(private$A_mat) + 1L
       private$col_type[[length(private$col_type) + 1L]] <- type
-      private$obj_vec <- slam::simple_triplet_matrix(
-        i = private$obj_vec$i,
-        j = private$obj_vec$j,
-        v = private$obj_vec$v,
-        nrow = 1L,
-        ncol = ncol(private$obj_vec) + 1L,
-        dimnames = NULL
-      )
+      private$obj_vec[[length(private$obj_vec) + 1L]] <- 0
       private$A_mat <- slam::simple_triplet_matrix(
         i = private$A_mat$i,
         j = private$A_mat$j,
@@ -62,16 +55,16 @@ ROIMipSolver <- R6::R6Class(
       nrow(private$A_mat)
     },
     set_objective_coefficient = function(variable_index, value) {
-      private$obj_vec[1L, variable_index] <- value
+      private$obj_vec[[variable_index]] <- value
     },
     set_objective_sense = function(sense) {
       private$obj_sense <- sense
     },
     set_variable_lb = function(variable_index, value) {
-
+      private$col_lb[[variable_index]] <- value
     },
     set_variable_ub = function(variable_index, value) {
-
+      private$col_ub[[variable_index]] <- value
     },
     optimize = function() {
       obj <- ROI::L_objective(self$objective_coefficients())
@@ -80,10 +73,17 @@ ROIMipSolver <- R6::R6Class(
         self$constraint_matrix(), self$constraint_direction(), self$rhs_vector()
       )
       var_types <- toupper(substr(private$col_type, 1, 1))
-      var_indexes <- seq_len(length(private$col_lb))
-      # TODO: only set that which is finite
+      n_vars <- length(private$col_lb)
+      var_indexes <- seq_len(n_vars)
+
+      finite_lb <- is.finite(private$col_lb)
+      finite_ub <- is.finite(private$col_ub)
       var_bounds <- ROI::V_bound(
-        var_indexes, var_indexes, private$col_lb, private$col_ub,
+        var_indexes[finite_lb],
+        var_indexes[finite_ub],
+        private$col_lb[finite_lb],
+        private$col_ub[finite_ub],
+        nobj = n_vars,
         ld = -Inf, ud = Inf
       )
       op <- ROI::OP(

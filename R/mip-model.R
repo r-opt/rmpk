@@ -112,6 +112,18 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
         }
       }
     },
+    set_bounds = function(expr, lb = NULL, ub = NULL, ...) {
+      var_names <- generate_variable_names(substitute(expr), ...)
+      for (var_name in var_names$var_names) {
+        var <- private$variables$get(var_name)
+        if (!is.null(lb)) {
+          private$solver$set_variable_lb(var@index, lb)
+        }
+        if (!is.null(ub)) {
+          private$solver$set_variable_ub(var@index, ub)
+        }
+      }
+    },
     optimize = function() {
       private$solver$optimize()
       invisible()
@@ -139,6 +151,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
         rownames(return_val) <- NULL
         return_val[["value"]] <- values
         colnames(return_val) <- c("name", indexes, "value")
+        # TODO: track which indexes are characters and which integers
         return(return_val)
       } else if (is.symbol(variable_expr)) {
         var <- private$variables$get(as.character(variable_expr))
