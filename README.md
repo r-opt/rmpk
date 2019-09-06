@@ -9,10 +9,10 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
 status](https://travis-ci.org/dirkschumacher/rmpk.svg?branch=master)](https://travis-ci.org/dirkschumacher/rmpk)
-[![Codecov test
-coverage](https://codecov.io/gh/dirkschumacher/rmpk/branch/master/graph/badge.svg)](https://codecov.io/gh/dirkschumacher/rmpk?branch=master)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/dirkschumacher/rmpk?branch=master&svg=true)](https://ci.appveyor.com/project/dirkschumacher/rmpk)
+[![Codecov test
+coverage](https://codecov.io/gh/dirkschumacher/rmpk/branch/master/graph/badge.svg)](https://codecov.io/gh/dirkschumacher/rmpk?branch=master)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs.
@@ -115,3 +115,7 @@ well.
 Please note that the ‘rmpk’ project is released with a [Contributor Code
 of Conduct](CODE_OF_CONDUCT.md). By contributing to this project, you
 agree to abide by its terms.
+
+## License
+
+MIT

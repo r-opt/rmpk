@@ -93,3 +93,7 @@ The best way at the moment to contribute is to test the package, write documenta
 Please note that the 'rmpk' project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
+
+## License
+
+MIT
