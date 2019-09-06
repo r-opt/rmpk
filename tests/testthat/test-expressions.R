@@ -7,6 +7,20 @@ test_that("multiplication works", {
   expect_equal(result@variables[[2L]]@coefficient, 36)
 })
 
+test_that("complex test case #1", {
+  u1 <- new("RLPVariable", coefficient = 1, index = 1L)
+  u2 <- new("RLPVariable", coefficient = 1, index = 2L)
+  x <- new("RLPVariable", coefficient = 1, index = 3L)
+  n <- 10
+  expect_silent(
+    result <- u1 - u2 + 1 - ((n - 1) * (1 - x))
+  )
+  expect_equal(result@constant, 2 - n)
+  expect_equal(result@variables[[1L]]@coefficient, 1)
+  expect_equal(result@variables[[2L]]@coefficient, -1)
+  expect_equal(result@variables[[3L]]@coefficient, n - 1)
+})
+
 test_that("equations can be splitted", {
   expr <- quote(a + b <= 10)
   res <- split_equation(expr)

@@ -40,6 +40,10 @@ setMethod("-", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
   (-1 * e2) - (-1 * e1)
 })
 
+setMethod("-", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
+  e1 + -1 * e2
+})
+
 setMethod("-", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
   (-1) * e1
 })
@@ -78,6 +82,10 @@ setMethod("+", signature(e1 = "RLPVariableSum", e2 = "RLPVariableSum"), function
   e1
 })
 
+setMethod("-", signature(e1 = "RLPVariableSum", e2 = "RLPVariableSum"), function(e1, e2) {
+  e1 + -1 * e2
+})
+
 setMethod("-", signature(e1 = "RLPVariableSum", e2 = "numeric"), function(e1, e2) {
   e1 + -1 * e2
 })
@@ -93,6 +101,10 @@ setMethod("*", signature(e1 = "RLPVariableSum", e2 = "numeric"), function(e1, e2
     var
   })
   e1
+})
+
+setMethod("*", signature(e1 = "numeric", e2 = "RLPVariableSum"), function(e1, e2) {
+  e2 * e1
 })
 
 # --- RLPVariableList
