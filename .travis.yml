@@ -3,5 +3,10 @@
 language: R
 cache: packages
 
+addons:
+  apt:
+    packages:
+    - libglpk-dev
+
 after_success:
   - Rscript -e 'covr::codecov()'
