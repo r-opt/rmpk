@@ -1,0 +1,41 @@
+---
+title: "Knapsack"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+You cannot really beat the benchmark here, but I still include it as a baseline for simple examples.
+
+```{r}
+library(rmpk)
+library(ROI)
+library(ROI.plugin.glpk)
+set.seed(42)
+v <- rnorm(10)
+w <- rnorm(10)
+
+roi <- function() {
+  obj <- L_objective(w)
+  constr <- L_constraint(v, "<=", 10)
+  op <- OP(objective = obj, constraints = constr, types = rep.int("B", 10), maximum = FALSE)
+  ROI::ROI_solve(op, "glpk")
+}
+
+rmpk <- function() {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x[i], type = "binary", i = 1:10)
+  model$set_objective(sum_expr(v[i] * x[i], i = 1:10))
+  model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
+  model$optimize()
+}
+
+microbenchmark::microbenchmark(
+  roi(),
+  rmpk()
+)
+```
+
