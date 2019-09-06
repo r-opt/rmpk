@@ -58,7 +58,7 @@ system.time(rmpk())
 ```
 
     ##    user  system elapsed 
-    ##   5.619   0.381   6.189
+    ##   5.520   0.361   6.087
 
 ``` r
 profvis::profvis(rmpk())
