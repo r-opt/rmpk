@@ -91,11 +91,8 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
       rhs <- lhs@constant * -1 # should always be a linear expression
-      indexes <- vapply(lhs@variables, function(x) x@variable_index, integer(1L))
-      coefficients <- vapply(lhs@variables, function(x) x@coefficient, numeric(1L))
-      values <- slam::simple_triplet_matrix(rep.int(1L, length(indexes)), indexes, coefficients, nrow = 1, ncol = private$solver$ncol())
-      row_idx <- private$solver$add_constraint(
-        values,
+      row_idx <- private$solver$add_linear_constraint(
+        lhs,
         type = eq$operator,
         rhs = rhs
       )

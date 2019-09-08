@@ -44,11 +44,13 @@ ROIMipSolver <- R6::R6Class(
       private$col_ub[[new_idx]] <- upper_bound
       new_idx
     },
-    add_constraint = function(values, type, rhs) {
+    add_linear_constraint = function(linear_expr, type, rhs) {
+      indexes <- vapply(linear_expr@variables, function(x) x@variable_index, integer(1L))
+      coefficients <- vapply(linear_expr@variables, function(x) x@coefficient, numeric(1L))
       private$A_mat <- slam::simple_triplet_matrix(
-        i = c(private$A_mat$i, values$i + nrow(private$A_mat)), # O(N)
-        j = c(private$A_mat$j, values$j),
-        v = c(private$A_mat$v, values$v),
+        i = c(private$A_mat$i, rep.int(nrow(private$A_mat) + 1, length(indexes))), # O(N)
+        j = c(private$A_mat$j, indexes),
+        v = c(private$A_mat$v, coefficients),
         nrow = nrow(private$A_mat) + 1L,
         ncol = ncol(private$A_mat),
         dimnames = NULL)
@@ -56,10 +58,10 @@ ROIMipSolver <- R6::R6Class(
       private$row_dir[[length(private$row_dir) + 1L]] <- type
       nrow(private$A_mat)
     },
-    set_objective_coefficient = function(variable_index, value) {
-      private$obj_vec[[variable_index]] <- value
-    },
-    set_objective_sense = function(sense) {
+    set_linear_objective = function(linear_expr, sense) {
+      for (var in linear_expr@variables) {
+        private$obj_vec[[var@variable_index]] <- var@coefficient
+      }
       private$obj_sense <- sense
     },
     set_variable_lb = function(variable_index, value) {
@@ -68,8 +70,11 @@ ROIMipSolver <- R6::R6Class(
     set_variable_ub = function(variable_index, value) {
       private$col_ub[[variable_index]] <- value
     },
-    ncol = function() {
+    nvars = function() {
       ncol(private$A_mat)
+    },
+    nconstraints = function() {
+      nrow(private$A_mat)
     },
     optimize = function() {
       obj <- ROI::L_objective(self$objective_coefficients())
@@ -103,10 +108,16 @@ ROIMipSolver <- R6::R6Class(
         control = private$roi_control_list
       )
     },
-    get_value = function(var_index) {
+    get_variable_value = function(var_index) {
       private$roi_result$solution[[var_index]]
     },
-    termination_status = function() {
+    set_variable_value = function(var_index, value) {
+      not_implemented()
+    },
+    get_objective_value = function() {
+      not_implemented()
+    },
+    get_termination_status = function() {
       if (is.null(private$roi_result)) {
         return(TERMINATION_STATUS$OPTIMIZE_NOT_CALLED)
       }
@@ -118,6 +129,7 @@ ROIMipSolver <- R6::R6Class(
       }
       stop("Unknown ROI status code", call. = FALSE)
     },
+
     objective_coefficients = function() {
       private$obj_vec
     },

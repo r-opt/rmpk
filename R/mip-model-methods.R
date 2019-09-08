@@ -19,8 +19,6 @@ mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub
 
 mip_model_impl_set_objective = function(expr, sense = "min") {
   sense <- match.arg(sense, c("max", "min"))
-  private$solver$set_objective_sense(sense)
-
   expr <- substitute(expr)
 
   # TODO: not cool
@@ -28,15 +26,8 @@ mip_model_impl_set_objective = function(expr, sense = "min") {
   envir <- new.env(parent = private$rlp_variable_envir)
   sum_expr <- make_sum_expr(envir)
   envir[["sum_expr"]] <- sum_expr
-  obj_variables <- eval(expr, envir = envir)
-  if (is_linear_expression(obj_variables)) {
-    for (var in obj_variables@variables) {
-      private$solver$set_objective_coefficient(var@variable_index, var@coefficient)
-    }
-  } else {
-    var <- obj_variables
-    private$solver$set_objective_coefficient(var@variable_index, var@coefficient)
-  }
+  obj_variables <- eval(expr, envir = envir) + 0 #ensure it is an expression
+  private$solver$set_linear_objective(obj_variables, sense)
 }
 
 mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {
@@ -78,7 +69,7 @@ mip_model_impl_optimize <- function() {
 }
 
 mip_model_impl_termination_status <- function() {
-  private$solver$termination_status()
+  private$solver$get_termination_status()
 }
 
 mip_model_impl_get_value <- function(variable_expr) {
@@ -93,7 +84,7 @@ mip_model_impl_get_value <- function(variable_expr) {
     relevant_keys <- keys[grepl(paste0("^", var_name), keys)]
     values <- vapply(relevant_keys, function(x) {
       index <- private$variables$get(x)@variable_index
-      private$solver$get_value(index)
+      private$solver$get_variable_value(index)
     }, numeric(1L))
     splitted_keys <- strsplit(relevant_keys, "/", fixed = TRUE)
     return_val <- t(as.data.frame(splitted_keys, stringsAsFactors = FALSE))
