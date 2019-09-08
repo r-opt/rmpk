@@ -1,6 +1,6 @@
 test_that("multiplication works", {
-  x <- new("RLPVariable", coefficient = 1, index = 1L)
-  y <- new("RLPVariable", coefficient = 1, index = 2L)
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
   result <- (-x + y * 2 - 2) * 18
   expect_equal(result@constant, -2 * 18)
   expect_equal(result@variables[[1L]]@coefficient, -18)
@@ -8,9 +8,9 @@ test_that("multiplication works", {
 })
 
 test_that("complex test case #1", {
-  u1 <- new("RLPVariable", coefficient = 1, index = 1L)
-  u2 <- new("RLPVariable", coefficient = 1, index = 2L)
-  x <- new("RLPVariable", coefficient = 1, index = 3L)
+  u1 <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  u2 <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RLPVariable", coefficient = 1, variable_index = 3L)
   n <- 10
   expect_silent(
     result <- u1 - u2 + 1 - ((n - 1) * (1 - x))

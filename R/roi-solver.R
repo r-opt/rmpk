@@ -11,8 +11,10 @@ ROI_solver <- function(solver, control = list()) {
   ROIMipSolver$new(solver, control)
 }
 
+#' @include solver-interface.R
 ROIMipSolver <- R6::R6Class(
   "ROIMipSolver",
+  inherit = RMPSolverInterface,
   public = list(
     initialize = function(solver, control = list()) {
       private$obj_vec <- numeric()

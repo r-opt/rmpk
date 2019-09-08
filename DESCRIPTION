@@ -22,9 +22,14 @@ Imports:
     slam,
     methods
 Collate: 
+    'linear-expression-class.R'
+    'variable-class.R'
+    'variable-methods.R'
+    'linear-expression-methods.R'
+    'mip-model-methods.R'
+    'solver-interface.R'
     'roi-solver.R'
     'mip-model.R'
     'rmpk-package.R'
     'sum-expr.R'
     'termination-status.R'
-    'variables.R'
