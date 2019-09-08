@@ -56,14 +56,14 @@ system.time(rmpk())
 ```
 
     ##    user  system elapsed 
-    ##   7.497   0.796   8.542
+    ##   7.760   0.811   9.001
 
 ``` r
 system.time(rmpk(solver = rmpk.glpk::GLPK()))
 ```
 
     ##    user  system elapsed 
-    ##   5.831   0.131   7.049
+    ##   4.257   0.050   4.395
 
 ``` r
 profvis::profvis(rmpk())

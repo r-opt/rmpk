@@ -6,7 +6,8 @@ setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(e1, e2) {
-  e2 + e1
+  e2@constant <- e2@constant + e1
+  e2
 })
 
 setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RLPVariable"), function(e1, e2) {
@@ -26,11 +27,13 @@ setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression
 })
 
 setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  # TODO: room for optimization here
   e1 + -1 * e2
 })
 
 setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
-  e1 + -1 * e2
+  e1@constant <- e1@constant - e2
+  e1
 })
 
 setMethod("-", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(e1, e2) {
@@ -39,13 +42,10 @@ setMethod("-", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(
 
 setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
   e1@constant <- e1@constant * e2
-  variables <- e1@variables
-  for (key in variables$keys()) {
-    var <- variables$get(key)
+  for (var in e1@variables$as_list()) {
     var@coefficient <- var@coefficient * e2
-    variables$set(key, var)
+    e1@variables$set(as.character(var@variable_index), var)
   }
-  e1@variables <- variables #not really necessariy
   e1
 })
 
