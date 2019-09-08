@@ -194,8 +194,8 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
       }
       indexes <- vapply(lhs@variables, function(x) x@index, integer(1L))
       coefficients <- vapply(lhs@variables, function(x) x@coefficient, numeric(1L))
-      values <- slam::simple_triplet_matrix(rep.int(1L, length(indexes)), indexes, coefficients, nrow = 1, ncol = ncol(private$solver$constraint_matrix()))
-      row_idx <- private$solver$add_row(
+      values <- slam::simple_triplet_matrix(rep.int(1L, length(indexes)), indexes, coefficients, nrow = 1, ncol = private$solver$ncol())
+      row_idx <- private$solver$add_constraint(
         values,
         type = eq$operator,
         rhs = rhs

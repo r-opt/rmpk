@@ -42,7 +42,7 @@ ROIMipSolver <- R6::R6Class(
       private$col_ub[[new_idx]] <- upper_bound
       new_idx
     },
-    add_row = function(values, type, rhs) {
+    add_constraint = function(values, type, rhs) {
       private$A_mat <- slam::simple_triplet_matrix(
         i = c(private$A_mat$i, values$i + nrow(private$A_mat)), # O(N)
         j = c(private$A_mat$j, values$j),
@@ -65,6 +65,9 @@ ROIMipSolver <- R6::R6Class(
     },
     set_variable_ub = function(variable_index, value) {
       private$col_ub[[variable_index]] <- value
+    },
+    ncol = function() {
+      ncol(private$A_mat)
     },
     optimize = function() {
       obj <- ROI::L_objective(self$objective_coefficients())
