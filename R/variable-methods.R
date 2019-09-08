@@ -1,7 +1,8 @@
 #' @include variable-class.R
 #' @include linear-expression-class.R
+#' @include helper.R
 setMethod("+", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
-  new("RMPKLinearExpression", variables = list(e1), constant = e2)
+  new("RMPKLinearExpression", variables = var_to_map(e1), constant = e2)
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
@@ -13,7 +14,7 @@ setMethod("+", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
 })
 
 setMethod("+", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
-  new("RMPKLinearExpression", variables = list(e1, e2), constant = 0)
+  new("RMPKLinearExpression", variables = merge_variables(var_to_map(e1), var_to_map(e2)), constant = 0)
 })
 
 setMethod("-", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {

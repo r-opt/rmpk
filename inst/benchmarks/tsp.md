@@ -23,9 +23,7 @@ max_y <- 500
 cities <- data.frame(id = 1:n, x = runif(n, max = max_x), y = runif(n, max = max_y))
 distance <- as.matrix(dist(dplyr::select(cities, x, y), diag = TRUE, upper = TRUE))
 
-rmpk <- function() {
-  solver <- ROI_solver("glpk")
-  
+rmpk <- function(solver = ROI_solver("glpk")) {
   model <- MIPModel(solver)
   
   # we create a variable that is 1 iff we travel from city i to j
@@ -58,7 +56,14 @@ system.time(rmpk())
 ```
 
     ##    user  system elapsed 
-    ##   5.520   0.361   6.087
+    ##   7.497   0.796   8.542
+
+``` r
+system.time(rmpk(solver = rmpk.glpk::GLPK()))
+```
+
+    ##    user  system elapsed 
+    ##   5.831   0.131   7.049
 
 ``` r
 profvis::profvis(rmpk())

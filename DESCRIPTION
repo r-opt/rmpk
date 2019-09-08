@@ -22,6 +22,7 @@ Imports:
     slam,
     methods
 Collate: 
+    'helper.R'
     'linear-expression-class.R'
     'variable-class.R'
     'variable-methods.R'

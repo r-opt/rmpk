@@ -45,8 +45,9 @@ ROIMipSolver <- R6::R6Class(
       new_idx
     },
     add_linear_constraint = function(linear_expr, type, rhs) {
-      indexes <- vapply(linear_expr@variables, function(x) x@variable_index, integer(1L))
-      coefficients <- vapply(linear_expr@variables, function(x) x@coefficient, numeric(1L))
+      variables <- linear_expr@variables$as_list()
+      indexes <- vapply(variables, function(x) x@variable_index, integer(1L))
+      coefficients <- vapply(variables, function(x) x@coefficient, numeric(1L))
       private$A_mat <- slam::simple_triplet_matrix(
         i = c(private$A_mat$i, rep.int(nrow(private$A_mat) + 1, length(indexes))), # O(N)
         j = c(private$A_mat$j, indexes),
@@ -59,7 +60,7 @@ ROIMipSolver <- R6::R6Class(
       nrow(private$A_mat)
     },
     set_linear_objective = function(linear_expr, sense) {
-      for (var in linear_expr@variables) {
+      for (var in linear_expr@variables$as_list()) {
         private$obj_vec[[var@variable_index]] <- var@coefficient
       }
       private$obj_sense <- sense
