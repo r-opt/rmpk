@@ -3,6 +3,8 @@ mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub
   type <- match.arg(type, c("continuous", "integer", "binary"))
   expr <- substitute(expr)
   var_names <- generate_variable_names(expr, ...)
+  # we store the variable information for later use
+  private$variable_meta_info$set(var_names$base_name, var_names)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     private$register_variable(var_name, type, lb, ub)
   })
@@ -45,7 +47,7 @@ mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {
 
 mip_model_impl_add_constraint <- function(expr, ...) {
   eq <- split_equation(substitute(expr))
-  quantifiers <- expand.grid(...)
+  quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
   quantifier_var_names <- names(quantifiers)
   no_quantifiers <- nrow(quantifiers) == 0L
   if (no_quantifiers) {
@@ -80,8 +82,13 @@ mip_model_impl_get_value <- function(variable_expr) {
     indexes <- vapply(variable_expr[3:length(variable_expr)], function(x) {
       as.character(x)
     }, character(1L))
-    keys <- private$variables$keys()
-    relevant_keys <- keys[grepl(paste0("^", var_name), keys)]
+    var_info <- private$variable_meta_info$get(var_name)
+    if (length(indexes) != var_info$arity) {
+      stop(var_name, " is a variable with ", var_info$arity, " indexes. ",
+           "But you used the variable with ", length(indexes), " indexes.",
+           call. = FALSE)
+    }
+    relevant_keys <- var_info$var_names
     values <- vapply(relevant_keys, function(x) {
       index <- private$variables$get(x)@variable_index
       private$solver$get_variable_value(index)
@@ -92,7 +99,16 @@ mip_model_impl_get_value <- function(variable_expr) {
     rownames(return_val) <- NULL
     return_val[["value"]] <- values
     colnames(return_val) <- c("name", indexes, "value")
-    # TODO: track which indexes are characters and which integers
+    # set the right types for the index columns
+    for (i in seq_along(indexes)) {
+      type <- var_info$index_types[[i]]
+      if (type == "character") {
+        return_val[[1 + i]] <- as.character(return_val[[1 + i]])
+      }
+      if (type == "integer") {
+        return_val[[1 + i]] <- as.integer(return_val[[1 + i]])
+      }
+    }
     return(return_val)
   } else if (is.symbol(variable_expr)) {
     var <- private$variables$get(as.character(variable_expr))
@@ -120,6 +136,18 @@ generate_variable_names <- function(expr, ...) {
     envir[[var_name]] <- var_builder
     mod_envir <- build_modifier_envir(envir, ...)
     index_list <- eval(expr, mod_envir)
+    index_list_data_type <- vapply(index_list, function(x) {
+      if (is.character(x)) {
+        "character"
+      } else if (is.integer(x)) {
+        "integer"
+      } else {
+        stop("Only integer and character quantifiers are supported. ",
+             "One of your quantifiers has the classes: ",
+             paste0(class(x), collapse = ","),
+             call. = FALSE)
+      }
+    }, character(1L))
     index_combinations <- as.data.frame(index_list)
     names <- as.character(apply(index_combinations, 1L, function(row) {
       # TODO: check if any value in row has "/"
@@ -129,6 +157,7 @@ generate_variable_names <- function(expr, ...) {
       base_name = var_name,
       var_names = names,
       arity = ncol(index_combinations),
+      index_types = index_list_data_type,
       is_indexed_var = TRUE
     ))
   }
@@ -148,7 +177,7 @@ split_equation <- function(expr) {
 
 build_modifier_envir <- function(parent_envir, ...) {
   envir <- new.env(parent = parent_envir)
-  quantifiers <- expand.grid(...)
+  quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
   quantifier_names <- names(quantifiers)
   for (mod_name in quantifier_names) {
     envir[[mod_name]] <- quantifiers[[mod_name]]

@@ -1,7 +1,7 @@
 make_sum_expr <- function(enclosing_envir) {
   function(expr, ...) {
     expr <- substitute(expr)
-    quantifiers <- expand.grid(...)
+    quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
     quantifier_names <- names(quantifiers)
     quantifiers_len <- ncol(quantifiers)
     row_indexes <- seq_len(nrow(quantifiers))

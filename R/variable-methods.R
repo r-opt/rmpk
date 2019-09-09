@@ -71,5 +71,12 @@ setMethod("[", signature("RLPVariableListBuilder", i = "ANY", j = "ANY", drop = 
   for (arg in list(...)) {
     indexes[[length(indexes) + 1L]] <- arg
   }
-  indexes
+  # TODO: document or warn about it?
+  lapply(indexes, function(x) {
+    if (is.numeric(x) && !is.integer(x)) {
+      as.integer(x)
+    } else {
+      x
+    }
+  })
 })

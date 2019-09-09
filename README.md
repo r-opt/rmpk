@@ -79,18 +79,18 @@ model$add_variable(x[i], type = "binary", i = 1:10)
 model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
 model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
 model$optimize()
-model$get_value(x[i])
+model$get_variable_value(x[i])
 #>    name  i value
-#> 1     x  9     1
-#> 2     x  3     1
-#> 3     x  2     0
-#> 4     x  8     0
-#> 5     x 10     0
+#> 1     x  1     1
+#> 2     x  2     0
+#> 3     x  3     1
+#> 4     x  4     1
+#> 5     x  5     1
 #> 6     x  6     0
-#> 7     x  5     1
-#> 8     x  1     1
-#> 9     x  4     1
-#> 10    x  7     1
+#> 7     x  7     1
+#> 8     x  8     0
+#> 9     x  9     1
+#> 10    x 10     0
 ```
 
 ## There will be an API that supports pipes

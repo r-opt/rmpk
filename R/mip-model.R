@@ -68,6 +68,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
       private$solver <- solver
       private$variables <- fastmap::fastmap()
       private$rlp_variable_envir <- new.env(parent = globalenv())
+      private$variable_meta_info <- fastmap::fastmap()
     },
     # build it
     add_variable = mip_model_impl_add_variable,
@@ -84,6 +85,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     solver = NULL,
     variables = NULL,
     rlp_variable_envir = NULL,
+    variable_meta_info = NULL,
 
     register_variable = function(name, type, lower_bound, upper_bound) {
       var_idx <- private$solver$add_variable(type, lower_bound, upper_bound)

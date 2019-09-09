@@ -25,3 +25,30 @@ test_that("building a simple model", {
   mat <- solver$constraint_matrix()
   expect_equal(nrow(mat), 10)
 })
+
+test_that("correct index types are used in get_variable_value", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x[i, j, k], i = 1:10, j = as.character(1:10), k = c("a", "b"))
+  model$optimize()
+  ret <- model$get_variable_value(x[i, j, k])
+  expect_true(is.character(ret$name))
+  expect_true(is.character(ret$j))
+  expect_true(is.character(ret$k))
+  expect_true(is.integer(ret$i))
+})
+
+test_that("you can only use characters and integers as indexes", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  expect_error(
+    model$add_variable(x[i], i = as.factor(1:10)), regexp = "integer|character"
+  )
+})
+
+test_that("using not the right number of indeses errors in get_var_value", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x[i, j, k], i = 1:10, j = as.character(1:10), k = c("a", "b"))
+  expect_error(model$get_variable_value(x[i, j]), "indexes")
+})
