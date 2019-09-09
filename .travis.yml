@@ -11,6 +11,7 @@ r_packages:
   - ggplot2
   - viridis
   - tidyr
+  - ggrepel
 
 addons:
   apt:
