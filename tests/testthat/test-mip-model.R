@@ -52,3 +52,18 @@ test_that("using not the right number of indeses errors in get_var_value", {
   model$add_variable(x[i, j, k], i = 1:10, j = as.character(1:10), k = c("a", "b"))
   expect_error(model$get_variable_value(x[i, j]), "indexes")
 })
+
+test_that("A constant objective function is possible", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x)
+  expect_silent(model$set_objective(5))
+})
+
+test_that("MIPModel prints some information", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x)
+  model$add_constraint(x <= 1)
+  expect_output(model$print(), "1")
+})

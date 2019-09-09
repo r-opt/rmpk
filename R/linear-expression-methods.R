@@ -52,3 +52,16 @@ setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(
 setMethod("*", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(e1, e2) {
   e2 * e1
 })
+
+ensure_linear_expression <- function(expr) {
+  if (is_linear_expression(expr)) {
+    return(expr)
+  }
+  if ("RLPVariable" %in% class(expr)) {
+    return(expr + 0)
+  }
+  if (is.numeric(expr)) {
+    return(new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = 0))
+  }
+  stop("expr is not well-formed", call. = FALSE)
+}

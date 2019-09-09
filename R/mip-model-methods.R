@@ -28,7 +28,8 @@ mip_model_impl_set_objective = function(expr, sense = "min") {
   envir <- new.env(parent = private$rlp_variable_envir)
   sum_expr <- make_sum_expr(envir)
   envir[["sum_expr"]] <- sum_expr
-  obj_variables <- eval(expr, envir = envir) + 0 #ensure it is an expression
+  obj_variables <- eval(expr, envir = envir)
+  obj_variables <- ensure_linear_expression(obj_variables)
   private$solver$set_linear_objective(obj_variables, sense)
 }
 
