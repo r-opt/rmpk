@@ -23,7 +23,7 @@ test_that("solve a bounded knapsack problem", {
   model$set_bounds(x[i], ub = 0, i = 1:8)
   model$set_bounds(x[9], ub = 0)
   model$optimize()
-  res <- model$get_value(x[i])
+  res <- model$get_variable_value(x[i])
   ones <- res[res$value == 1, ]
   zeros <- res[res$value == 0, ]
   expect_equal(nrow(ones), 1)

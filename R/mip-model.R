@@ -47,6 +47,20 @@ add_constraint <- function(model, expr, ...) {
   model
 }
 
+#' Set bounds of individual variables
+#'
+#' @param model the model
+#' @param expr an expression
+#' @param lb the lower bounds
+#' @param ub the upper bounds
+#' @param ... any quantifiers
+#'
+#' @export
+set_bounds <- function(model, expr, lb = NULL, ub = NULL, ...) {
+  eval(bquote(model$set_bounds(.(substitute(expr)), ...)))
+  model
+}
+
 #' @include mip-model-methods.R
 RlpMipModel <- R6::R6Class("RlpMipModel",
   public = list(
@@ -64,7 +78,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     # optimize
     optimize = mip_model_impl_optimize,
     termination_status = mip_model_impl_termination_status,
-    get_value = mip_model_impl_get_value
+    get_variable_value = mip_model_impl_get_value
   ),
   private = list(
     solver = NULL,

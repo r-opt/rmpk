@@ -17,6 +17,7 @@ library(ROI)
 
 ``` r
 library(ROI.plugin.glpk)
+library(magrittr)
 set.seed(42)
 v <- rnorm(10)
 w <- rnorm(10)
@@ -37,13 +38,24 @@ rmpk <- function() {
   model$optimize()
 }
 
+rmpk_pipe <- function() {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver) %>% 
+    add_variable(x[i], type = "binary", i = 1:10) %>%
+    set_objective(sum_expr(v[i] * x[i], i = 1:10)) %>%
+    add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
+  model$optimize()
+}
+
 microbenchmark::microbenchmark(
   roi(),
-  rmpk()
+  rmpk(),
+  rmpk_pipe()
 )
 ```
 
     ## Unit: milliseconds
-    ##    expr       min        lq     mean    median       uq       max neval
-    ##   roi()  5.610874  6.415033 11.06927  7.811034 14.87915  41.70504   100
-    ##  rmpk() 16.307007 18.624825 31.59259 26.221017 36.89769 116.45479   100
+    ##         expr       min        lq     mean   median       uq      max neval
+    ##        roi()  5.594965  6.350374 10.88386  7.20174 10.23632 150.4404   100
+    ##       rmpk() 11.664490 14.051158 20.83366 15.96785 21.00672 201.3955   100
+    ##  rmpk_pipe() 11.785360 13.431408 20.46575 16.74110 24.69841 142.0868   100
