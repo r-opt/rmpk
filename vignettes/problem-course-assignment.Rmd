@@ -129,7 +129,7 @@ We will use `glpk` to solve the above model.
 model$optimize()
 ```
 
-We solved the problem with an objective value of `r objective_value(model)`.
+We solved the problem with an objective value of `r model$objective_value()`.
 
 ```{r}
 matching <- model$get_variable_value(x[i, j]) %>%
