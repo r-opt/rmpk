@@ -45,18 +45,18 @@ mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {
 
 mip_model_impl_add_constraint <- function(expr, ...) {
   eq <- split_equation(substitute(expr))
-  modifiers <- expand.grid(...)
-  modifier_var_names <- names(modifiers)
-  no_modifiers <- nrow(modifiers) == 0L
-  if (no_modifiers) {
+  quantifiers <- expand.grid(...)
+  quantifier_var_names <- names(quantifiers)
+  no_quantifiers <- nrow(quantifiers) == 0L
+  if (no_quantifiers) {
     local_envir <- private$base_execution_envir(parent.frame())
     private$add_row(local_envir, eq)
   } else {
-    for (i in seq_len(nrow(modifiers))) {
+    for (i in seq_len(nrow(quantifiers))) {
       local_envir <- private$base_execution_envir(parent.frame())
-      vars <- modifiers[i, , drop = TRUE]
-      for (j in seq_len(ncol(modifiers))) {
-        local_envir[[modifier_var_names[j]]] <- vars[[j]]
+      vars <- quantifiers[i, , drop = TRUE]
+      for (j in seq_len(ncol(quantifiers))) {
+        local_envir[[quantifier_var_names[j]]] <- vars[[j]]
       }
       private$add_row(local_envir, eq)
     }
@@ -148,10 +148,10 @@ split_equation <- function(expr) {
 
 build_modifier_envir <- function(parent_envir, ...) {
   envir <- new.env(parent = parent_envir)
-  modifiers <- expand.grid(...)
-  modifier_names <- names(modifiers)
-  for (mod_name in modifier_names) {
-    envir[[mod_name]] <- modifiers[[mod_name]]
+  quantifiers <- expand.grid(...)
+  quantifier_names <- names(quantifiers)
+  for (mod_name in quantifier_names) {
+    envir[[mod_name]] <- quantifiers[[mod_name]]
   }
   envir
 }

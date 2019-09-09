@@ -1,18 +1,18 @@
 make_sum_expr <- function(enclosing_envir) {
   function(expr, ...) {
     expr <- substitute(expr)
-    modifiers <- expand.grid(...)
-    modifier_names <- names(modifiers)
-    modifiers_len <- ncol(modifiers)
-    row_indexes <- seq_len(nrow(modifiers))
+    quantifiers <- expand.grid(...)
+    quantifier_names <- names(quantifiers)
+    quantifiers_len <- ncol(quantifiers)
+    row_indexes <- seq_len(nrow(quantifiers))
     evaluated_expressions <- lapply(row_indexes, function(i) {
-      row <- numeric(modifiers_len)
-      for (j in 1:modifiers_len) {
-        row[[j]] <- modifiers[[j]][[i]]
+      row <- numeric(quantifiers_len)
+      for (j in 1:quantifiers_len) {
+        row[[j]] <- quantifiers[[j]][[i]]
       }
       envir <- new.env(parent = enclosing_envir)
-      for (j in 1:modifiers_len) {
-        envir[[modifier_names[[j]]]] <- row[[j]]
+      for (j in 1:quantifiers_len) {
+        envir[[quantifier_names[[j]]]] <- row[[j]]
       }
       eval(expr, envir = envir)
     })
