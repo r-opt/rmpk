@@ -118,6 +118,10 @@ mip_model_impl_get_value <- function(variable_expr) {
   stop("Wrong expression", call. = FALSE)
 }
 
+mip_model_impl_objective_value <- function() {
+  private$solver$get_objective_value()
+}
+
 generate_variable_names <- function(expr, ...) {
   if (is.name(expr)) {
     expr_chr <- as.character(expr)

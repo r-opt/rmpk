@@ -116,7 +116,8 @@ ROIMipSolver <- R6::R6Class(
       not_implemented()
     },
     get_objective_value = function() {
-      not_implemented()
+      # TODO: keep track of the constant
+      private$roi_result$objval
     },
     get_termination_status = function() {
       if (is.null(private$roi_result)) {

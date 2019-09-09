@@ -126,7 +126,7 @@ We will use `glpk` to solve the above model.
 model$optimize()
 ```
 
-We solved the problem with an objective value of `r #sprintf("%d", objective_value(result))`.
+We solved the problem with an objective value of `r sprintf("%d", model$objective_value())`.
 
 ```{r}
 suppressPackageStartupMessages(library(dplyr))

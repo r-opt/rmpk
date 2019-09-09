@@ -137,7 +137,7 @@ And plot it:
 ggplot(cities, aes(x, y)) + 
   geom_point() + 
   geom_line(data = paths, aes(group = trip_id)) + 
-  ggtitle(paste0("Optimal route with cost: ", round(objective_value(model), 2)))
+  ggtitle(paste0("Optimal route with cost: ", round(model$objective_value(), 2)))
 ```
 
 ## Feedback
