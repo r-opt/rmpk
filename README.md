@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# High Performance Algebraic Mixed Integer Programming Modelling
+# MIP Modelling in R
 
 <!-- badges: start -->
 
