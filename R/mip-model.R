@@ -79,7 +79,16 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     # optimize
     optimize = mip_model_impl_optimize,
     termination_status = mip_model_impl_termination_status,
-    get_variable_value = mip_model_impl_get_value
+    get_variable_value = mip_model_impl_get_value,
+    objective_value = mip_model_impl_objective_value,
+
+    # other stuff
+    print = function(...) {
+      cat("MIP Model: \n")
+      cat("  Variables: ", private$solver$nvars(), "\n", sep = "")
+      cat("  Constraints: ", private$solver$nconstraints(), "\n", sep = "")
+      invisible(self)
+    }
   ),
   private = list(
     solver = NULL,
