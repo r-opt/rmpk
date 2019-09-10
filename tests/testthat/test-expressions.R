@@ -50,3 +50,47 @@ test_that("linear expressions hold only variables once", {
   expect_equal(vars[["1"]]@coefficient, 2)
   expect_equal(vars[["2"]]@coefficient, 1)
 })
+
+test_that("quadratic expressions are supported", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- (-x + y * 2 * y - 2) * 18
+  expect_equal(result@linear_part@constant, -2 * 18)
+  expect_equal(result@linear_part@variables$get("1")@coefficient, -18)
+  quad_vars <- result@quadratic_variables$as_list()
+  expect_equal(quad_vars[[1L]]@coefficient, 36)
+  expect_equal(quad_vars[[1L]]@variable1@variable_index, 2L)
+  expect_equal(quad_vars[[1L]]@variable2@variable_index, 2L)
+})
+
+test_that("pow 2", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- (x^2 + y^2) * 18
+  quad_vars <- result@quadratic_variables$as_list()
+  expect_equal(quad_vars[[1L]]@coefficient, 18)
+  expect_equal(quad_vars[[2L]]@coefficient, 18)
+  expect_equal(quad_vars[["1_1"]]@variable1@variable_index, 1L)
+  expect_equal(quad_vars[["1_1"]]@variable2@variable_index, 1L)
+  expect_equal(quad_vars[["2_2"]]@variable1@variable_index, 2L)
+  expect_equal(quad_vars[["2_2"]]@variable2@variable_index, 2L)
+})
+
+test_that("quadprog complex", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  z <- new("RLPVariable", coefficient = 1, variable_index = 3L)
+  result <- -5 * y + x^2 + y^2 + z^2
+  quad_vars <- result@quadratic_variables$as_list()
+  expect_equal(quad_vars[[1L]]@coefficient, 1)
+  expect_equal(quad_vars[[2L]]@coefficient, 1)
+  expect_equal(quad_vars[[3L]]@coefficient, 1)
+  expect_equal(result@linear_part@variables$as_list()[[1L]]@coefficient, -5)
+})
+
+test_that("adding the same quad tuples increaes coef", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- x*y + x*y
+  expect_equal(result@coefficient, 2)
+})

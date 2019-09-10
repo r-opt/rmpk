@@ -29,8 +29,14 @@ mip_model_impl_set_objective = function(expr, sense = "min") {
   sum_expr <- make_sum_expr(envir)
   envir[["sum_expr"]] <- sum_expr
   obj_variables <- eval(expr, envir = envir)
-  obj_variables <- ensure_linear_expression(obj_variables)
-  private$solver$set_linear_objective(obj_variables, sense)
+  is_quadratic <- is_quadratic_expression(obj_variables)
+  if (is_quadratic) {
+    obj_variables <- ensure_quadratic_expression(obj_variables)
+    private$solver$set_quadratic_objective(obj_variables, sense)
+  } else {
+    obj_variables <- ensure_linear_expression(obj_variables)
+    private$solver$set_linear_objective(obj_variables, sense)
+  }
 }
 
 mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {

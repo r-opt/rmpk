@@ -16,6 +16,12 @@ RMPSolverInterface <- R6::R6Class(
     set_linear_objective = function(linear_expr, sense) {
       not_implemented()
     },
+    add_quadratic_constraint = function(quadratic_expr, type, rhs) {
+      not_implemented()
+    },
+    set_quadratic_objective = function(quadratic_expr, sense) {
+      not_implemented()
+    },
     set_variable_lb = function(variable_index, value) {
       not_implemented()
     },
