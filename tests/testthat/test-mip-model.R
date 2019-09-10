@@ -42,7 +42,8 @@ test_that("you can only use characters and integers as indexes", {
   solver <- ROI_solver("glpk")
   model <- MIPModel(solver)
   expect_error(
-    model$add_variable(x[i], i = as.factor(1:10)), regexp = "integer|character"
+    model$add_variable(x[i], i = as.factor(1:10)),
+    regexp = "integer|character"
   )
 })
 

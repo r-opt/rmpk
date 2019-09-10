@@ -91,6 +91,6 @@ test_that("quadprog complex", {
 test_that("adding the same quad tuples increaes coef", {
   x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
   y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
-  result <- x*y + x*y
+  result <- x * y + x * y
   expect_equal(result@coefficient, 2)
 })

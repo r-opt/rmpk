@@ -11,15 +11,15 @@ mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub
   private$rlp_variable_envir[[var_names$base_name]] <-
     if (var_names$is_indexed_var) {
       new("RLPVariableList",
-          base_name = var_names$base_name,
-          variables_map = private$variables
+        base_name = var_names$base_name,
+        variables_map = private$variables
       )
     } else {
       rlp_vars[[1L]]
     }
 }
 
-mip_model_impl_set_objective = function(expr, sense = "min") {
+mip_model_impl_set_objective <- function(expr, sense = "min") {
   sense <- match.arg(sense, c("max", "min"))
   expr <- substitute(expr)
 
@@ -92,8 +92,9 @@ mip_model_impl_get_value <- function(variable_expr) {
     var_info <- private$variable_meta_info$get(var_name)
     if (length(indexes) != var_info$arity) {
       stop(var_name, " is a variable with ", var_info$arity, " indexes. ",
-           "But you used the variable with ", length(indexes), " indexes.",
-           call. = FALSE)
+        "But you used the variable with ", length(indexes), " indexes.",
+        call. = FALSE
+      )
     }
     relevant_keys <- var_info$var_names
     values <- vapply(relevant_keys, function(x) {
@@ -154,9 +155,10 @@ generate_variable_names <- function(expr, ...) {
         "integer"
       } else {
         stop("Only integer and character quantifiers are supported. ",
-             "One of your quantifiers has the classes: ",
-             paste0(class(x), collapse = ","),
-             call. = FALSE)
+          "One of your quantifiers has the classes: ",
+          paste0(class(x), collapse = ","),
+          call. = FALSE
+        )
       }
     }, character(1L))
     index_combinations <- as.data.frame(index_list)

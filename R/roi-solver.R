@@ -42,7 +42,8 @@ ROIMipSolver <- R6::R6Class(
         v = private$A_mat$v,
         nrow = nrow(private$A_mat),
         ncol = ncol(private$A_mat) + 1L,
-        dimnames = NULL)
+        dimnames = NULL
+      )
       private$obj_Q_mat <- slam::simple_triplet_zero_matrix(new_idx, new_idx)
       private$col_lb[[new_idx]] <- lower_bound
       private$col_ub[[new_idx]] <- upper_bound
@@ -58,7 +59,8 @@ ROIMipSolver <- R6::R6Class(
         v = c(private$A_mat$v, coefficients),
         nrow = nrow(private$A_mat) + 1L,
         ncol = ncol(private$A_mat),
-        dimnames = NULL)
+        dimnames = NULL
+      )
       private$b_vec[[length(private$b_vec) + 1L]] <- rhs
       private$row_dir[[length(private$row_dir) + 1L]] <- type
       nrow(private$A_mat)

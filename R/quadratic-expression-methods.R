@@ -42,8 +42,9 @@ setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "numeric"), fun
   key <- paste0(sort(indexes), collapse = "_")
   quad_vars$set(key, e1)
   new("RMPKQuadraticExpression",
-      quadratic_variables = quad_vars,
-      linear_part = new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = e2))
+    quadratic_variables = quad_vars,
+    linear_part = new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = e2)
+  )
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
@@ -69,8 +70,9 @@ setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKQuadraticV
   quad_vars$set(key1, e1)
   quad_vars$set(key2, e2)
   new("RMPKQuadraticExpression",
-      quadratic_variables = quad_vars,
-      linear_part = new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = 0))
+    quadratic_variables = quad_vars,
+    linear_part = new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = 0)
+  )
 })
 
 setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RLPVariable"), function(e1, e2) {
@@ -80,8 +82,9 @@ setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RLPVariable"),
   linear_part <- new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = 0)
 
   new("RMPKQuadraticExpression",
-      quadratic_variables = quad_vars,
-      linear_part = linear_part + e2)
+    quadratic_variables = quad_vars,
+    linear_part = linear_part + e2
+  )
 })
 
 setMethod("+", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
@@ -168,4 +171,3 @@ ensure_quadratic_expression <- function(expr) {
   }
   stop("expr is not well-formed", call. = FALSE)
 }
-
