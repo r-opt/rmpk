@@ -115,13 +115,24 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
-      lhs <- ensure_linear_expression(lhs)
-      rhs <- lhs@constant * -1
-      row_idx <- private$solver$add_linear_constraint(
-        lhs,
-        type = eq$operator,
-        rhs = rhs
-      )
+      if (is_quadratic_expression(lhs)) {
+        lhs <- ensure_quadratic_expression(lhs)
+        rhs <- lhs@linear_part@constant * -1
+        private$solver$add_quadratic_constraint(
+          lhs,
+          type = eq$operator,
+          rhs = rhs
+        )
+      } else {
+        lhs <- ensure_linear_expression(lhs)
+        rhs <- lhs@constant * -1
+        private$solver$add_linear_constraint(
+          lhs,
+          type = eq$operator,
+          rhs = rhs
+        )
+      }
+      invisible()
     }
   )
 )
