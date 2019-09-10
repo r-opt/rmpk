@@ -34,7 +34,8 @@ with [ompr](https://github.com/dirkschumacher/ompr) but it could also
 become the successor of [ompr](https://github.com/dirkschumacher/ompr) …
 not sure yet.
 
-Happy to receive feedback\!
+Happy to receive feedback\! Also your opinion on merging it with `ompr`
+and thus breaking old code or creating a new package.
 
 *Still under development. Anything can change*
 
@@ -47,22 +48,27 @@ You can install the released version of rlp from
 remotes::install_github("rmpk")
 ```
 
-## Design Goals and TODOS
+## Supported types
 
-  - Almost as fast as matrix code
-  - Could be used in packages as well as in interactive analyses
-  - Fun to use
-  - Optimized for readability
-  - Support all features of `ompr`
-  - Fix all issues with `ompr`
-  - Be able to directly pass values to the solver
-  - Lazy constraints / column generation should be possible
-  - Better set of solution statuses similiar to JuMP
-  - Get row and column duals of LPs
-  - initial solutions (not supported by ROI directly AFAIK)
-  - It optionally ships a ROI solver binding without any additional
-    packages. So you can start right away.
-  - Maybe: quadratic programming
+  - Linear Programming (LP)
+  - Mixed Integer Linear Programming (MILP)
+  - Mixed Integer Quadratic Programming (MIQP)
+  - Mixed Integer Quadratically Constrained Programming (MIQCP)
+
+## (Planned) Features
+
+  - ✅Algebraic modelling of mixed integer porgramming problems
+  - ✅Integer, binary and continious variables
+  - ✅Linear and quadratic constraints/objective
+  - ✅Bindings to most popular solvers through
+    [ROI](https://CRAN.R-project.org/package=ROI)
+  - ✅ API that supports `magrittr` pipes
+  - ✅ Support for character variable indexes
+  - 🚧 Variable and constraint names
+  - 🚧 Layconstraints through solver callbacks
+  - 🚧 Supply initial feasible solutions
+  - 🚧 Almost as fast as matrix code
+  - 🚧 Access row/column duals of Linear Programs
   - …
 
 ## Low Level ROI Example
@@ -119,3 +125,11 @@ agree to abide by its terms.
 ## License
 
 MIT
+
+## References and Inspiration
+
+  - Dunning, Iain, Joey Huchette, and Miles Lubin. “JuMP: A modeling
+    language for mathematical optimization.” SIAM Review 59.2 (2017):
+    295-320.
+  - [ompr](https://github.com/dirkschumacher/ompr)
+  - [pulp](https://github.com/coin-or/pulp)
