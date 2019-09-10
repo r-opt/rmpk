@@ -58,17 +58,29 @@ remotes::install_github("rmpk")
 ## (Planned) Features
 
   - ✅ Algebraic modelling of mixed integer programming problems
+
   - ✅ Integer, binary and continious variables
+
   - ✅ Linear and quadratic constraints/objective
+
   - ✅ Bindings to most popular solvers through
     [ROI](https://CRAN.R-project.org/package=ROI)
+
   - ✅ API that supports `magrittr` pipes
+
   - ✅ Support for character variable indexes
+
   - 🚧 Variable and constraint names
-  - 🚧 LaRow generation through solver callbacks (e.g. for models with
-    exponential many constraints) 🚧 Supply initial feasible solutions
+
+  - 🚧 Row generation through solver callbacks (e.g. for models with
+    exponential many constraints)
+
+  - 🚧 Initial feasible solutions
+
   - 🚧 Almost as fast as matrix code
+
   - 🚧 Access row/column duals of Linear Programs
+
   - …
 
 ## Low Level ROI Example
