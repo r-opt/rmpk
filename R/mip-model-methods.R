@@ -81,8 +81,23 @@ mip_model_impl_termination_status <- function() {
   private$solver$get_termination_status()
 }
 
-mip_model_impl_get_value <- function(variable_expr) {
-  variable_expr <- substitute(variable_expr)
+mip_model_impl_get_value <- function(variable_selector) {
+  extract_solver_variable_value(
+    private,
+    substitute(variable_selector),
+    private$solver$get_variable_value
+  )
+}
+
+mip_model_impl_get_variable_dual <- function(variable_selector) {
+  extract_solver_variable_value(
+    private,
+    substitute(variable_selector),
+    private$solver$get_variable_dual
+  )
+}
+
+extract_solver_variable_value <- function(private, variable_expr, get_value_fun) {
   is_index_call <- is.call(variable_expr) && variable_expr[[1L]] == "["
   if (is_index_call) {
     var_name <- as.character(variable_expr[[2L]])
@@ -92,14 +107,14 @@ mip_model_impl_get_value <- function(variable_expr) {
     var_info <- private$variable_meta_info$get(var_name)
     if (length(indexes) != var_info$arity) {
       stop(var_name, " is a variable with ", var_info$arity, " indexes. ",
-        "But you used the variable with ", length(indexes), " indexes.",
-        call. = FALSE
+           "But you used the variable with ", length(indexes), " indexes.",
+           call. = FALSE
       )
     }
     relevant_keys <- var_info$var_names
     values <- vapply(relevant_keys, function(x) {
       index <- private$variables$get(x)@variable_index
-      private$solver$get_variable_value(index)
+      get_value_fun(index)
     }, numeric(1L))
     splitted_keys <- strsplit(relevant_keys, "/", fixed = TRUE)
     return_val <- t(as.data.frame(splitted_keys, stringsAsFactors = FALSE))
@@ -120,9 +135,20 @@ mip_model_impl_get_value <- function(variable_expr) {
     return(return_val)
   } else if (is.symbol(variable_expr)) {
     var <- private$variables$get(as.character(variable_expr))
-    return(private$solver$get_value(var@variable_index))
+    return(get_value_fun(var@variable_index))
   }
   stop("Wrong expression", call. = FALSE)
+}
+
+mip_model_impl_get_row_duals <- function() {
+  rows <- private$row_indexes
+  values <- vapply(rows, function(i) {
+    private$solver$get_row_dual(i)
+  }, numeric(1L))
+  data.frame(
+    row_index = rows,
+    value = values
+  )
 }
 
 mip_model_impl_objective_value <- function() {

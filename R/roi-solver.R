@@ -154,6 +154,14 @@ ROIMipSolver <- R6::R6Class(
     get_variable_value = function(var_index) {
       private$roi_result$solution[[var_index]]
     },
+    get_variable_dual = function(var_index) {
+      # TODO: fail if not an LP or not solved yet
+      ROI::solution(private$roi_result, "dual")[[var_index]]
+    },
+    get_row_dual = function(row_index) {
+      # TODO: fail if not an LP or not solved yet
+      ROI::solution(private$roi_result, "aux")$dual[[row_index]]
+    },
     set_variable_value = function(var_index, value) {
       not_implemented()
     },

@@ -27,6 +27,23 @@ test_that("solve a bounded knapsack problem", {
   ones <- res[res$value == 1, ]
   zeros <- res[res$value == 0, ]
   expect_equal(nrow(ones), 1)
-  expect_equal(as.integer(ones$i), 10) # TODO: this will be an integer
+  expect_equal(ones$i, 10L)
   expect_equal(nrow(zeros), 9)
+})
+
+test_that("it supports column/row duals", {
+  model <- MIPModel(ROI_solver("glpk"))
+  model$add_variable(x[i], i = 1:10)
+  model$set_objective(sum_expr(x[i], i = 1:10), sense = "min")
+  model$add_constraint(x[i] >= i, i = 1:10)
+  model$optimize()
+
+  column_duals <- model$get_variable_dual(x[i])
+  row_duals <- model$get_row_duals()
+
+  expected_col_duals <- rep.int(0, 10)
+  expected_row_duals <- rep.int(1, 10)
+
+  expect_equal(column_duals$value, expected_col_duals)
+  expect_equal(row_duals$value, expected_row_duals)
 })

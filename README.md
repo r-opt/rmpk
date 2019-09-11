@@ -70,6 +70,8 @@ remotes::install_github("rmpk")
 
   - ✅ Support for character variable indexes
 
+  - ✅ Access row/column duals of Linear Programs
+
   - 🚧 Variable and constraint names
 
   - 🚧 Row generation through solver callbacks (e.g. for models with
@@ -78,8 +80,6 @@ remotes::install_github("rmpk")
   - 🚧 Initial feasible solutions
 
   - 🚧 Almost as fast as matrix code
-
-  - 🚧 Access row/column duals of Linear Programs
 
   - …
 

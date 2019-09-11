@@ -54,13 +54,12 @@ remotes::install_github("rmpk")
 * ✅ Bindings to most popular solvers through [ROI](https://CRAN.R-project.org/package=ROI)
 * ✅ API that supports `magrittr` pipes
 * ✅ Support for character variable indexes
+* ✅ Access row/column duals of Linear Programs
 * 🚧 Variable and constraint names
 * 🚧 Row generation through solver callbacks (e.g. for models with exponential many constraints)
 
-*
-🚧 Initial feasible solutions
+* 🚧 Initial feasible solutions
 * 🚧 Almost as fast as matrix code
-* 🚧 Access row/column duals of Linear Programs
 * ...
 
 ## Low Level ROI Example

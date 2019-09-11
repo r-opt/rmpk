@@ -67,6 +67,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     initialize = function(solver) {
       private$solver <- solver
       private$variables <- fastmap::fastmap()
+      private$row_indexes <- integer(0L)
       private$rlp_variable_envir <- new.env(parent = globalenv())
       private$variable_meta_info <- fastmap::fastmap()
     },
@@ -80,6 +81,8 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     optimize = mip_model_impl_optimize,
     termination_status = mip_model_impl_termination_status,
     get_variable_value = mip_model_impl_get_value,
+    get_variable_dual = mip_model_impl_get_variable_dual,
+    get_row_duals = mip_model_impl_get_row_duals,
     objective_value = mip_model_impl_objective_value,
 
     # other stuff
@@ -93,6 +96,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
   private = list(
     solver = NULL,
     variables = NULL,
+    row_indexes = NULL,
     rlp_variable_envir = NULL,
     variable_meta_info = NULL,
 
@@ -115,7 +119,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
-      if (is_quadratic_expression(lhs)) {
+      row_idx <- if (is_quadratic_expression(lhs)) {
         lhs <- ensure_quadratic_expression(lhs)
         rhs <- lhs@linear_part@constant * -1
         private$solver$add_quadratic_constraint(
@@ -132,6 +136,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
           rhs = rhs
         )
       }
+      private$row_indexes[[length(private$row_indexes) + 1L]] <- row_idx
       invisible()
     }
   )

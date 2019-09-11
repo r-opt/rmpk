@@ -40,6 +40,12 @@ RMPSolverInterface <- R6::R6Class(
     get_variable_value = function(var_index) {
       not_implemented()
     },
+    get_variable_dual = function(var_index) {
+      not_implemented()
+    },
+    get_row_dual = function(row_index) {
+      not_implemented()
+    },
     set_variable_value = function(var_index, value) {
       not_implemented()
     },
