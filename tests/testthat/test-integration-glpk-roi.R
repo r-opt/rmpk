@@ -47,3 +47,12 @@ test_that("it supports column/row duals", {
   expect_equal(column_duals$value, expected_col_duals)
   expect_equal(row_duals$value, expected_row_duals)
 })
+
+test_that("it handles constant in objective function", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x, type = "binary")
+  model$set_objective(x + 1, sense = "max")
+  model$optimize()
+  expect_equal(model$objective_value(), 2)
+})

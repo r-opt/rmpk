@@ -78,6 +78,7 @@ ROIMipSolver <- R6::R6Class(
       }
       private$objective_is_linear <- TRUE
       private$obj_sense <- sense
+      private$obj_constant <- linear_expr@constant
     },
     set_quadratic_objective = function(quadratic_expr, sense) {
       self$set_linear_objective(quadratic_expr@linear_part, sense)
@@ -166,8 +167,7 @@ ROIMipSolver <- R6::R6Class(
       not_implemented()
     },
     get_objective_value = function() {
-      # TODO: keep track of the constant
-      private$roi_result$objval
+      private$roi_result$objval + private$obj_constant
     },
     get_termination_status = function() {
       if (is.null(private$roi_result)) {
@@ -199,6 +199,7 @@ ROIMipSolver <- R6::R6Class(
     linear_obj_vec = NULL,
     objective_is_linear = TRUE,
     obj_Q_mat = NULL,
+    obj_constant = 0,
     Q_constraints = NULL,
     A_mat = NULL,
     col_type = NULL,
