@@ -94,3 +94,27 @@ test_that("adding the same quad tuples increaes coef", {
   result <- x * y + x * y
   expect_equal(result@coefficient, 2)
 })
+
+test_that("more examples work", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  result <- 1 - (5 + (x + (2 - x)))
+  expect_equal(result@constant, -6)
+  expect_equal(result@variables$as_list()[[1L]]@coefficient, 0)
+})
+
+test_that("even more examples work", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  result <- 2 * (x * x + 2 + (1 + x * x) + (x^2 - 2) + (5 - x^2))
+  expect_equal(result@linear_part@constant, 12)
+  expect_equal(result@quadratic_variables$as_list()[[1]]@coefficient, 4)
+})
+
+test_that("quadratic expression merge", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- (x^2 + 1) + x + x^2 + (y^2 + 1)
+  expect_equal(result@linear_part@constant, 2)
+  quad_vars <- result@quadratic_variables$as_list()
+  expect_equal(quad_vars[["1_1"]]@coefficient, 2)
+  expect_equal(quad_vars[["2_2"]]@coefficient, 1)
+})

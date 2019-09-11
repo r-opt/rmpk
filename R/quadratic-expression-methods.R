@@ -125,6 +125,21 @@ setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKQuadraticVari
   e1
 })
 
+setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
+  for (key in e2@quadratic_variables$keys()) {
+    var2 <- e2@quadratic_variables$get(key)
+    if (e1@quadratic_variables$has(key)) {
+      var1 <- e1@quadratic_variables$get(key)
+      var1@coefficient <- var1@coefficient + var2@coefficient
+      e1@quadratic_variables$set(key, var1)
+    } else {
+      e1@quadratic_variables$set(key, var2)
+    }
+  }
+  e1@linear_part <- e1@linear_part + e2@linear_part
+  e1
+})
+
 setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
   e2 + e1
 })
