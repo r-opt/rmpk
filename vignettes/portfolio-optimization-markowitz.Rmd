@@ -54,6 +54,7 @@ min_mu <- 0.02
 
 ```{r setup}
 library(rmpk)
+library(magrittr)
 ```
 
 ```{r}
