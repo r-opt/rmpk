@@ -118,3 +118,12 @@ test_that("quadratic expression merge", {
   expect_equal(quad_vars[["1_1"]]@coefficient, 2)
   expect_equal(quad_vars[["2_2"]]@coefficient, 1)
 })
+
+test_that("quadratic expression and linear expression", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- (x + 1) + (4 * y * x)
+  expect_equal(result@linear_part@constant, 1)
+  quad_vars <- result@quadratic_variables$as_list()
+  expect_equal(quad_vars[["1_2"]]@coefficient, 4)
+})

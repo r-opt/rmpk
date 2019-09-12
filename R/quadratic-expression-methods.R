@@ -172,6 +172,40 @@ setMethod("-", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticExpression"), fu
   (-1 * e2) - (-1 * e1)
 })
 
+setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  e1@linear_part <- e1@linear_part + e2
+  e1
+})
+
+setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
+  e2 + e1
+})
+
+setMethod("-", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  e1 + (-1 * e2)
+})
+
+setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
+  (-1 * e2) - (-1 * e1)
+})
+
+setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
+  (e2 + 0) + e1
+})
+
+setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  e2 + e1
+})
+
+setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
+  e1 + (-1 * e2)
+})
+
+setMethod("-", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  (-1 * e2) - (-1 * e1)
+})
+
+
 quad_variable_tuple_key <- function(var) {
   indexes <- c(var@variable1@variable_index, var@variable2@variable_index)
   paste0(sort(indexes), collapse = "_")
