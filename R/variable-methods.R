@@ -2,7 +2,12 @@
 #' @include linear-expression-class.R
 #' @include helper.R
 setMethod("+", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
-  new("RMPKLinearExpression", variables = var_to_map(e1), constant = e2)
+  val <- new("RMPKLinearExpression")
+  slot(val, "variables", check = FALSE) <- var_to_map(e1)
+  if (e2 != 0) {
+    slot(val, "constant", check = FALSE) <- e2
+  }
+  val
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
@@ -14,7 +19,9 @@ setMethod("+", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
 })
 
 setMethod("+", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
-  new("RMPKLinearExpression", variables = merge_variables(var_to_map(e1), var_to_map(e2)), constant = 0)
+  val <- new("RMPKLinearExpression")
+  slot(val, "variables", check = FALSE) <- merge_with_single_variable(var_to_map(e1), e2)
+  val
 })
 
 setMethod("-", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
@@ -54,7 +61,8 @@ setMethod("[", signature("RLPVariableList", i = "ANY", j = "ANY", drop = "missin
   for (arg in list(...)) {
     indexes[[length(indexes) + 1L]] <- arg
   }
-  stopifnot(all(vapply(indexes, length, integer(1L)) == 1L))
+  # stopifnot(all(vapply(indexes, length, integer(1L)) == 1L))
+  # TODO: implement this without the linear overhead
   var_name <- paste0(x@base_name, "/", paste0(indexes, collapse = "/"), collapse = "/")
   x@variables_map$get(var_name)
 })

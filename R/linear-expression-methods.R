@@ -1,17 +1,17 @@
 #' @include variable-methods.R
 #' @include linear-expression-class.R
 setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
-  e1@constant <- e1@constant + e2
+  slot(e1, "constant", check = FALSE) <- e1@constant + e2
   e1
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(e1, e2) {
-  e2@constant <- e2@constant + e1
+  slot(e2, "constant", check = FALSE) <- e2@constant + e1
   e2
 })
 
 setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RLPVariable"), function(e1, e2) {
-  e1@variables <- merge_variables(e1@variables, var_to_map(e2)) # O(n)
+  slot(e1, "variables", check = FALSE) <- merge_with_single_variable(e1@variables, e2)
   e1
 })
 
@@ -21,8 +21,8 @@ setMethod("+", signature(e1 = "RLPVariable", e2 = "RMPKLinearExpression"), funct
 
 #' @include helper.R
 setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression"), function(e1, e2) {
-  e1@variables <- merge_variables(e1@variables, e2@variables) # O(n)
-  e1@constant <- e1@constant + e2@constant
+  slot(e1, "variables", check = FALSE) <- merge_variables(e1@variables, e2@variables) # O(n)
+  slot(e1, "constant", check = FALSE) <- e1@constant + e2@constant
   e1
 })
 
@@ -32,7 +32,7 @@ setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression
 })
 
 setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
-  e1@constant <- e1@constant - e2
+  slot(e1, "constant", check = FALSE) <- e1@constant - e2
   e1
 })
 
@@ -41,9 +41,9 @@ setMethod("-", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(
 })
 
 setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
-  e1@constant <- e1@constant * e2
+  slot(e1, "constant", check = FALSE) <- e1@constant * e2
   for (var in e1@variables$as_list()) {
-    var@coefficient <- var@coefficient * e2
+    slot(var, "coefficient", check = FALSE) <- var@coefficient * e2
     e1@variables$set(as.character(var@variable_index), var)
   }
   e1
@@ -61,7 +61,7 @@ ensure_linear_expression <- function(expr) {
     return(expr + 0)
   }
   if (is.numeric(expr)) {
-    return(new("RMPKLinearExpression", variables = fastmap::fastmap(), constant = 0))
+    return(new("RMPKLinearExpression"))
   }
   stop("expr is not well-formed", call. = FALSE)
 }

@@ -13,7 +13,7 @@ setMethod("^", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
 })
 
 setMethod("*", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "numeric"), function(e1, e2) {
-  e1@coefficient <- e1@coefficient * e2
+  slot(e1, "coefficient", check = FALSE) <- e1@coefficient * e2
   e1
 })
 
@@ -28,7 +28,7 @@ setMethod("*", signature(e1 = "RMPKQuadraticExpression", e2 = "numeric"), functi
     new_var <- var * e2
     e1@quadratic_variables$set(key, new_var)
   }
-  e1@linear_part <- e1@linear_part * e2
+  slot(e1, "linear_part", check = FALSE) <- e1@linear_part * e2
   e1
 })
 
@@ -109,7 +109,7 @@ setMethod("+", signature(e1 = "numeric", e2 = "RMPKQuadraticExpression"), functi
 })
 
 setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RLPVariable"), function(e1, e2) {
-  e1@linear_part <- e1@linear_part + e2
+  slot(e1, "linear_part", check = FALSE) <- e1@linear_part + e2
   e1
 })
 
@@ -117,7 +117,7 @@ setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKQuadraticVari
   key2 <- quad_variable_tuple_key(e2)
   if (e1@quadratic_variables$has(key2)) {
     var <- e1@quadratic_variables$get(key2)
-    var@coefficient <- var@coefficient + e2@coefficient
+    slot(var, "coefficient", check = FALSE) <- var@coefficient + e2@coefficient
     e1@quadratic_variables$set(key2, var)
   } else {
     e1@quadratic_variables$set(key2, e2)
@@ -130,7 +130,7 @@ setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKQuadraticExpr
     var2 <- e2@quadratic_variables$get(key)
     if (e1@quadratic_variables$has(key)) {
       var1 <- e1@quadratic_variables$get(key)
-      var1@coefficient <- var1@coefficient + var2@coefficient
+      slot(var1, "coefficient", check = FALSE) <- var1@coefficient + var2@coefficient
       e1@quadratic_variables$set(key, var1)
     } else {
       e1@quadratic_variables$set(key, var2)

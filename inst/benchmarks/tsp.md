@@ -52,11 +52,12 @@ rmpk <- function(solver = ROI_solver("glpk")) {
   
 }
 
-system.time(rmpk())
+microbenchmark::microbenchmark(rmpk(), times = 5)
 ```
 
-    ##    user  system elapsed 
-    ##   8.276   0.957  10.001
+    ## Unit: seconds
+    ##    expr      min       lq    mean   median       uq    max neval
+    ##  rmpk() 6.498905 7.130036 7.26131 7.443253 7.591756 7.6426     5
 
 ``` r
 #system.time(rmpk(solver = rmpk.glpk::GLPK()))
@@ -109,11 +110,14 @@ NoOPSolver <- R6::R6Class(
 ```
 
 ``` r
-system.time(rmpk(solver = NoOPSolver$new()))
+microbenchmark::microbenchmark(rmpk(solver = NoOPSolver$new()), times = 5)
 ```
 
-    ##    user  system elapsed 
-    ##   4.312   0.075   4.739
+    ## Unit: seconds
+    ##                             expr      min       lq     mean   median
+    ##  rmpk(solver = NoOPSolver$new()) 2.177901 2.264769 2.390808 2.376592
+    ##        uq      max neval
+    ##  2.554125 2.580653     5
 
 ``` r
 profvis::profvis(rmpk(solver = NoOPSolver$new()))

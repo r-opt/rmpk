@@ -49,7 +49,7 @@ rmpk <- function(solver = ROI_solver("glpk")) {
   
 }
 
-system.time(rmpk())
+microbenchmark::microbenchmark(rmpk(), times = 5)
 ```
 
 ```{r}
@@ -103,7 +103,7 @@ NoOPSolver <- R6::R6Class(
 ```
 
 ```{r}
-system.time(rmpk(solver = NoOPSolver$new()))
+microbenchmark::microbenchmark(rmpk(solver = NoOPSolver$new()), times = 5)
 ```
 
 
