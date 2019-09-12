@@ -17,7 +17,9 @@ Suggests:
     ROI.plugin.glpk,
     ROI.plugin.quadprog,
     ROI.plugin.alabama,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 Imports: 
     fastmap,
     R6,
@@ -38,3 +40,4 @@ Collate:
     'rmpk-package.R'
     'sum-expr.R'
     'termination-status.R'
+VignetteBuilder: knitr

@@ -1,0 +1,93 @@
+---
+title: "Simple Markowitz Portfolio Optimzation Problem"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simple Markowitz Portfolio Optimzation Problem}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here we solve a simple Markowitz Portfolio Optimization Problem. I really have no idea about security selection, but it is a good example of a continuous quadratic program.
+
+## The model
+
+This example follows the formulation from [here](https://www.mathworks.com/help/optim/ug/quadratic-programming-portfolio-optimization.html). 
+
+We have a number of $n$ stocks. Each has an expected value of $e_i$ and a covariance matrix $C_{i,j}$. The question is now: can we construct a portfolio of stocks that gives us at least a return of $\mu$ but with minimal variance? In order to do this we seek weights for our stocks that minimize the risk while giving us a lower bound on the expected return.
+
+$$
+\begin{equation*}
+\begin{array}{ll@{}ll}
+\text{max}  & \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{n}C_{i,j} \cdot x_{i} \cdot x_{j} & &\\
+\text{subject to}& \displaystyle\sum\limits_{i=1}^{n}   e_i \cdot x_{i} \geq \mu& &\\
+                 & \displaystyle\sum\limits_{i=1}^{n}   x_{i} = 1& & \\
+                 &                                                0 \leq x_{i} \leq 1 &\forall i=1, \ldots, n & 
+\end{array}
+\end{equation*}
+$$
+
+## In R
+
+First we generate some data
+
+```{r}
+set.seed(42)
+n <- 10
+returns <- matrix(
+  rnorm(n * 20, 
+        mean = runif(n, 0.01, 0.03), 
+        sd = runif(n, 0.1, 0.4)), 
+  ncol = n) # 20 time periods
+# each col is a stock time series
+e <- colMeans(returns)
+C <- cov(returns)
+min_mu <- 0.02
+```
+
+
+```{r setup}
+library(rmpk)
+```
+
+```{r}
+solver <- ROI_solver("quadprog")
+model <- MIPModel(solver) %>% 
+  add_variable(x[i], i = 1:n, lb = 0, ub = 1) %>% 
+  set_objective(sum_expr(2 * C[i, j] * x[i] * x[j], i = 1:n, j = 1:n)) %>% 
+  add_constraint(sum_expr(e[i] * x[i], i = 1:n) >= min_mu) %>% 
+  add_constraint(sum_expr(x[i], i = 1:n) == 1)
+```
+
+```{r}
+model$optimize()
+```
+
+```{r}
+(results <- model$get_variable_value(x[i]))
+```
+
+```{r}
+library(ggplot2)
+ggplot(results) + 
+  aes(x = factor(i), y = value) + 
+  geom_bar(stat = "identity", aes(fill = "Allocation")) + 
+  geom_point(data = data.frame(i = factor(1:n), value = e), aes(color = "Expected return")) +
+  xlab("Stocks") + 
+  ylab("") +
+  scale_fill_discrete() +
+  scale_color_viridis_d() + 
+  ggtitle("Optimal Portfolio")
+```
+
+Bars are stock allocation and dots are the expected returns. It is a bit strange that the model allocates 20% of our portfolio to a stock with negative expected return - but maybe it reduces the volatility... or it is a bug :)
+
+## Feedback
+
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
