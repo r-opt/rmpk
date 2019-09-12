@@ -53,12 +53,61 @@ system.time(rmpk())
 ```
 
 ```{r}
-system.time(rmpk(solver = rmpk.glpk::GLPK()))
+#system.time(rmpk(solver = rmpk.glpk::GLPK()))
+```
+
+```{r}
+# the fastest solver
+NoOPSolver <- R6::R6Class(
+  "NoOPSolver",
+  portable = TRUE,
+  public = list(
+    add_variable = function(type, lower_bound = -Inf, upper_bound = Inf) {
+      0L
+    },
+    add_linear_constraint = function(linear_expr, type, rhs) {
+      0L
+    },
+    set_linear_objective = function(linear_expr, sense) {
+    },
+    add_quadratic_constraint = function(quadratic_expr, type, rhs) {
+    },
+    set_quadratic_objective = function(quadratic_expr, sense) {
+    },
+    set_variable_lb = function(variable_index, value) {
+    },
+    set_variable_ub = function(variable_index, value) {
+    },
+    nvars = function() {
+      0
+    },
+    nconstraints = function() {
+      0
+    },
+    optimize = function() {
+    },
+    get_variable_value = function(var_index) {
+    },
+    get_variable_dual = function(var_index) {
+    },
+    get_row_dual = function(row_index) {
+    },
+    set_variable_value = function(var_index, value) {
+    },
+    get_objective_value = function() {
+    },
+    get_termination_status = function() {
+    }
+  )
+)
+```
+
+```{r}
+system.time(rmpk(solver = NoOPSolver$new()))
 ```
 
 
-
 ```{r, eval=FALSE}
-profvis::profvis(rmpk())
+profvis::profvis(rmpk(solver = NoOPSolver$new()))
 ```
 

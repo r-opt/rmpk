@@ -11,7 +11,7 @@ library(ROI)
 
     ## ROI: R Optimization Infrastructure
 
-    ## Registered solver plugins: nlminb, cbc, glpk.
+    ## Registered solver plugins: nlminb, alabama, cbc, glpk, quadprog.
 
     ## Default solver: auto.
 
@@ -55,7 +55,11 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: milliseconds
-    ##         expr       min        lq     mean   median       uq      max neval
-    ##        roi()  5.594965  6.350374 10.88386  7.20174 10.23632 150.4404   100
-    ##       rmpk() 11.664490 14.051158 20.83366 15.96785 21.00672 201.3955   100
-    ##  rmpk_pipe() 11.785360 13.431408 20.46575 16.74110 24.69841 142.0868   100
+    ##         expr       min        lq      mean    median       uq       max
+    ##        roi()  6.365677  6.953112  9.002122  7.435448 10.11517  21.68163
+    ##       rmpk() 12.642395 13.750954 18.942623 16.038571 21.58338 106.77154
+    ##  rmpk_pipe() 12.969410 13.984766 17.912392 15.345006 22.12276  36.49844
+    ##  neval
+    ##    100
+    ##    100
+    ##    100
