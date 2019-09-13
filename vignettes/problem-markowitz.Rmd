@@ -25,7 +25,7 @@ We have a number of $n$ stocks. Each has an expected value of $e_i$ and a covari
 $$
 \begin{equation*}
 \begin{array}{ll@{}ll}
-\text{max}  & \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{n}C_{i,j} \cdot x_{i} \cdot x_{j} & &\\
+\text{min}  & \displaystyle\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{n}C_{i,j} \cdot x_{i} \cdot x_{j} & &\\
 \text{subject to}& \displaystyle\sum\limits_{i=1}^{n}   e_i \cdot x_{i} \geq \mu& &\\
                  & \displaystyle\sum\limits_{i=1}^{n}   x_{i} = 1& & \\
                  &                                                0 \leq x_{i} \leq 1 &\forall i=1, \ldots, n & 
