@@ -12,6 +12,7 @@ test_that("solve quad problem wit quadratic obj", {
   model$add_constraint(-2 * x[2] + x[3] >= 0)
   model$optimize()
   res <- model$get_variable_value(x[i])
+  res <- res[order(res$i), ]
   expect_equal(res$value, c(0.4761905, 1.0476190, 2.0952381), tolerance = 0.002)
 })
 
@@ -26,6 +27,7 @@ test_that("solve quad problem wit quadratic obj and constraint", {
   model$add_constraint(-2 * x[2] + x[3] >= 0)
   model$optimize()
   res <- model$get_variable_value(x[i])
+  res <- res[order(res$i), ]
   # TODO: find a better example
   expect_equal(res$value, c(0.9486833, 1.0999999, 2.1999998), tolerance = 0.002)
 })

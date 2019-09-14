@@ -18,8 +18,9 @@ MIPModel <- function(solver) {
 #'
 #' @export
 add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
-  # TODO: capture the environment, probably using rlang
-  eval(bquote(model$add_variable(.(substitute(expr)), type, lb, ub, ...)))
+  rlang::eval_tidy(
+    rlang::quo(model$add_variable(!!rlang::enquo(expr), !!type, !!lb, !!ub, ...))
+  )
   model
 }
 
@@ -31,7 +32,9 @@ add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, 
 #'
 #' @export
 set_objective <- function(model, expr, sense = "min") {
-  eval(bquote(model$set_objective(.(substitute(expr)), sense)))
+  rlang::eval_tidy(
+    rlang::quo(model$set_objective(!!rlang::enquo(expr), !!sense))
+  )
   model
 }
 
@@ -43,7 +46,9 @@ set_objective <- function(model, expr, sense = "min") {
 #'
 #' @export
 add_constraint <- function(model, expr, ...) {
-  eval(bquote(model$add_constraint(.(substitute(expr)), ...)))
+  rlang::eval_tidy(
+    rlang::quo(model$add_constraint(!!rlang::enquo(expr), ...))
+  )
   model
 }
 
@@ -57,7 +62,9 @@ add_constraint <- function(model, expr, ...) {
 #'
 #' @export
 set_bounds <- function(model, expr, lb = NULL, ub = NULL, ...) {
-  eval(bquote(model$set_bounds(.(substitute(expr)), ...)))
+  rlang::eval_tidy(
+    rlang::quo(model$set_bounds(!!rlang::enquo(expr), !!lb, !!ub, ...))
+  )
   model
 }
 
@@ -66,10 +73,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver
-      private$variables <- fastmap::fastmap()
       private$row_indexes <- integer(0L)
-      private$rlp_variable_envir <- new.env(parent = globalenv())
-      private$variable_meta_info <- fastmap::fastmap()
     },
     # build it
     add_variable = mip_model_impl_add_variable,
@@ -95,10 +99,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
   ),
   private = list(
     solver = NULL,
-    variables = NULL,
     row_indexes = NULL,
-    rlp_variable_envir = NULL,
-    variable_meta_info = NULL,
 
     register_variable = function(name, type, lower_bound, upper_bound) {
       var_idx <- private$solver$add_variable(type, lower_bound, upper_bound)
@@ -106,16 +107,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
         coefficient = 1,
         variable_index = var_idx
       )
-      private$variables$set(name, rlp_var)
       rlp_var
-    },
-    base_execution_envir = function(parent_env) {
-      # TODO: not cool
-      `parent.env<-`(private$rlp_variable_envir, parent_env)
-      local_envir <- new.env(parent = private$rlp_variable_envir)
-      sum_expr <- make_sum_expr(local_envir)
-      local_envir[["sum_expr"]] <- sum_expr
-      local_envir
     },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)

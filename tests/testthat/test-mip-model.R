@@ -68,3 +68,18 @@ test_that("MIPModel prints some information", {
   model$add_constraint(x <= 1)
   expect_output(model$print(), "1")
 })
+
+test_that("add_variables exposes the variable classes to the env", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x[i], i = 1:3)
+  expect_true(x[2]@variable_index == 2)
+})
+
+test_that("sum_expr works outside of the model context", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  model$add_variable(x[i], i = 1:3)
+  res <- sum_expr(x[i], i = 1:3) + 10
+  expect_true(res@constant == 10)
+})

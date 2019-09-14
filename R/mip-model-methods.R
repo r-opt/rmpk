@@ -1,34 +1,34 @@
 mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
   stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L)
   type <- match.arg(type, c("continuous", "integer", "binary"))
-  expr <- substitute(expr)
-  var_names <- generate_variable_names(expr, ...)
-  # we store the variable information for later use
-  private$variable_meta_info$set(var_names$base_name, var_names)
+  expr <- rlang::enquo(expr)
+  var_names <- generate_variable_names(rlang::get_expr(expr), ...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     private$register_variable(var_name, type, lb, ub)
   })
-  private$rlp_variable_envir[[var_names$base_name]] <-
-    if (var_names$is_indexed_var) {
-      new("RLPVariableList",
-        base_name = var_names$base_name,
-        variables_map = private$variables
-      )
-    } else {
-      rlp_vars[[1L]]
-    }
+  names(rlp_vars) <- var_names$var_names
+  variable_map <- fastmap::fastmap()
+  variable_map$mset(.list = rlp_vars)
+  variable <- if (var_names$is_indexed_var) {
+    new("RLPVariableList",
+      base_name = var_names$base_name,
+      variables_map = variable_map,
+      arity = var_names$arity,
+      index_types = var_names$index_types
+    )
+  } else {
+    rlp_vars[[1L]]
+  }
+  assign(
+    var_names$base_name,
+    value = variable,
+    envir = rlang::get_env(expr)
+  )
+  invisible(variable)
 }
 
-mip_model_impl_set_objective <- function(expr, sense = "min") {
+mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
   sense <- match.arg(sense, c("max", "min"))
-  expr <- substitute(expr)
-
-  # TODO: not cool
-  parent.env(private$rlp_variable_envir) <- parent.frame()
-  envir <- new.env(parent = private$rlp_variable_envir)
-  sum_expr <- make_sum_expr(envir)
-  envir[["sum_expr"]] <- sum_expr
-  obj_variables <- eval(expr, envir = envir)
   is_quadratic <- is_quadratic_expression(obj_variables)
   if (is_quadratic) {
     obj_variables <- ensure_quadratic_expression(obj_variables)
@@ -37,37 +37,51 @@ mip_model_impl_set_objective <- function(expr, sense = "min") {
     obj_variables <- ensure_linear_expression(obj_variables)
     private$solver$set_linear_objective(obj_variables, sense)
   }
+  invisible()
 }
 
 mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {
-  var_names <- generate_variable_names(substitute(expr), ...)
-  for (var_name in var_names$var_names) {
-    var <- private$variables$get(var_name)
+  expr <- rlang::enquo(expr)
+
+  eval_per_quantifier(function(local_envir) {
+    var <- rlang::eval_bare(rlang::get_expr(expr), env = local_envir)
     if (!is.null(lb)) {
       private$solver$set_variable_lb(var@variable_index, lb)
     }
     if (!is.null(ub)) {
       private$solver$set_variable_ub(var@variable_index, ub)
     }
-  }
+  }, base_envir = rlang::get_env(expr), ...)
+
+  invisible()
 }
 
 mip_model_impl_add_constraint <- function(expr, ...) {
-  eq <- split_equation(substitute(expr))
+  expr <- rlang::enquo(expr)
+  eq <- split_equation(rlang::get_expr(expr))
+
+  eval_per_quantifier(function(local_envir) {
+    private$add_row(local_envir, eq)
+  }, base_envir = rlang::get_env(expr), ...)
+
+  invisible()
+}
+
+eval_per_quantifier <- function(eval_fun, base_envir, ...) {
   quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
   quantifier_var_names <- names(quantifiers)
   no_quantifiers <- nrow(quantifiers) == 0L
   if (no_quantifiers) {
-    local_envir <- private$base_execution_envir(parent.frame())
-    private$add_row(local_envir, eq)
+    local_envir <- new.env(parent = base_envir)
+    eval_fun(local_envir)
   } else {
     for (i in seq_len(nrow(quantifiers))) {
-      local_envir <- private$base_execution_envir(parent.frame())
+      local_envir <- new.env(parent = base_envir)
       vars <- quantifiers[i, , drop = TRUE]
       for (j in seq_len(ncol(quantifiers))) {
         local_envir[[quantifier_var_names[j]]] <- vars[[j]]
       }
-      private$add_row(local_envir, eq)
+      eval_fun(local_envir)
     }
   }
 }
@@ -84,7 +98,7 @@ mip_model_impl_termination_status <- function() {
 mip_model_impl_get_value <- function(variable_selector) {
   extract_solver_variable_value(
     private,
-    substitute(variable_selector),
+    rlang::enquo(variable_selector),
     private$solver$get_variable_value
   )
 }
@@ -92,28 +106,33 @@ mip_model_impl_get_value <- function(variable_selector) {
 mip_model_impl_get_variable_dual <- function(variable_selector) {
   extract_solver_variable_value(
     private,
-    substitute(variable_selector),
+    rlang::enquo(variable_selector),
     private$solver$get_variable_dual
   )
 }
 
-extract_solver_variable_value <- function(private, variable_expr, get_value_fun) {
+extract_solver_variable_value <- function(private, variable_expr,
+                                          get_value_fun) {
+  variable_expr_rl <- variable_expr
+  variable_expr <- rlang::get_expr(variable_expr)
+  envir <- rlang::get_env(variable_expr_rl)
   is_index_call <- is.call(variable_expr) && variable_expr[[1L]] == "["
   if (is_index_call) {
     var_name <- as.character(variable_expr[[2L]])
     indexes <- vapply(variable_expr[3:length(variable_expr)], function(x) {
       as.character(x)
     }, character(1L))
-    var_info <- private$variable_meta_info$get(var_name)
-    if (length(indexes) != var_info$arity) {
-      stop(var_name, " is a variable with ", var_info$arity, " indexes. ",
-           "But you used the variable with ", length(indexes), " indexes.",
-           call. = FALSE
+    variable_container <- envir[[var_name]]
+    if (length(indexes) != variable_container@arity) {
+      stop(var_name, " is a variable with ", variable_container@arity, " indexes. ",
+        "But you used the variable with ", length(indexes), " indexes.",
+        call. = FALSE
       )
     }
-    relevant_keys <- var_info$var_names
-    values <- vapply(relevant_keys, function(x) {
-      index <- private$variables$get(x)@variable_index
+    variables_list <- variable_container@variables_map$as_list()
+    relevant_keys <- names(variables_list)
+    values <- vapply(variables_list, function(x) {
+      index <- x@variable_index
       get_value_fun(index)
     }, numeric(1L))
     splitted_keys <- strsplit(relevant_keys, "/", fixed = TRUE)
@@ -124,7 +143,7 @@ extract_solver_variable_value <- function(private, variable_expr, get_value_fun)
     colnames(return_val) <- c("name", indexes, "value")
     # set the right types for the index columns
     for (i in seq_along(indexes)) {
-      type <- var_info$index_types[[i]]
+      type <- variable_container@index_types[[i]]
       if (type == "character") {
         return_val[[1 + i]] <- as.character(return_val[[1 + i]])
       }
@@ -134,8 +153,8 @@ extract_solver_variable_value <- function(private, variable_expr, get_value_fun)
     }
     return(return_val)
   } else if (is.symbol(variable_expr)) {
-    var <- private$variables$get(as.character(variable_expr))
-    return(get_value_fun(var@variable_index))
+    variable <- rlang::eval_tidy(variable_expr_rl)
+    return(get_value_fun(variable@variable_index))
   }
   stop("Wrong expression", call. = FALSE)
 }

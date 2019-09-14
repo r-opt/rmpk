@@ -24,7 +24,8 @@ Imports:
     fastmap,
     R6,
     slam,
-    methods
+    methods,
+    rlang
 Collate: 
     'helper.R'
     'linear-expression-class.R'
