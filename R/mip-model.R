@@ -7,69 +7,73 @@ MIPModel <- function(solver) {
   RlpMipModel$new(solver)
 }
 
-#' Add a variable to the model
+#' #' Add a variable to the model
+#' #'
+#' #' @param model the model
+#' #' @param expr an expression
+#' #' @param type a character, either continuous, integer or binary
+#' #' @param lb the lower bound
+#' #' @param ub the upper bound
+#' #' @param ... any quantifiers
+#' #'
+#' #' @export
+#' add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
+#'   rlang::eval_tidy(
+#'     rlang::quo(model$add_variable(!!rlang::enquo(expr), !!type, !!lb, !!ub, ...))
+#'   )
+#'   model
+#' }
 #'
-#' @param model the model
-#' @param expr an expression
-#' @param type a character, either continuous, integer or binary
-#' @param lb the lower bound
-#' @param ub the upper bound
-#' @param ... any quantifiers
+#' #' Set the objective of the model
+#' #'
+#' #' @param model the model
+#' #' @param expr an expression
+#' #' @param sense either max or min
+#' #'
+#' #' @export
+#' set_objective <- function(model, expr, sense = "min") {
+#'   rlang::eval_tidy(
+#'     rlang::quo(model$set_objective(!!rlang::enquo(expr), !!sense))
+#'   )
+#'   model
+#' }
 #'
-#' @export
-add_variable <- function(model, expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
-  # TODO: capture the environment, probably using rlang
-  eval(bquote(model$add_variable(.(substitute(expr)), type, lb, ub, ...)))
-  model
-}
-
-#' Set the objective of the model
+#' #' Add a constraint to the model
+#' #'
+#' #' @param model the model
+#' #' @param expr an expression
+#' #' @param ... any quantifiers
+#' #'
+#' #' @export
+#' add_constraint <- function(model, expr, ...) {
+#'   rlang::eval_tidy(
+#'     rlang::quo(model$add_constraint(!!rlang::enquo(expr), ...))
+#'   )
+#'   model
+#' }
 #'
-#' @param model the model
-#' @param expr an expression
-#' @param sense either max or min
-#'
-#' @export
-set_objective <- function(model, expr, sense = "min") {
-  eval(bquote(model$set_objective(.(substitute(expr)), sense)))
-  model
-}
-
-#' Add a constraint to the model
-#'
-#' @param model the model
-#' @param expr an expression
-#' @param ... any quantifiers
-#'
-#' @export
-add_constraint <- function(model, expr, ...) {
-  eval(bquote(model$add_constraint(.(substitute(expr)), ...)))
-  model
-}
-
-#' Set bounds of individual variables
-#'
-#' @param model the model
-#' @param expr an expression
-#' @param lb the lower bounds
-#' @param ub the upper bounds
-#' @param ... any quantifiers
-#'
-#' @export
-set_bounds <- function(model, expr, lb = NULL, ub = NULL, ...) {
-  eval(bquote(model$set_bounds(.(substitute(expr)), ...)))
-  model
-}
+#' #' Set bounds of individual variables
+#' #'
+#' #' @param model the model
+#' #' @param expr an expression
+#' #' @param lb the lower bounds
+#' #' @param ub the upper bounds
+#' #' @param ... any quantifiers
+#' #'
+#' #' @export
+#' set_bounds <- function(model, expr, lb = NULL, ub = NULL, ...) {
+#'   rlang::eval_tidy(
+#'     rlang::quo(model$set_bounds(!!rlang::enquo(expr), !!lb, !!ub, ...))
+#'   )
+#'   model
+#' }
 
 #' @include mip-model-methods.R
 RlpMipModel <- R6::R6Class("RlpMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver
-      private$variables <- fastmap::fastmap()
       private$row_indexes <- integer(0L)
-      private$rlp_variable_envir <- new.env(parent = globalenv())
-      private$variable_meta_info <- fastmap::fastmap()
     },
     # build it
     add_variable = mip_model_impl_add_variable,
@@ -95,10 +99,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
   ),
   private = list(
     solver = NULL,
-    variables = NULL,
     row_indexes = NULL,
-    rlp_variable_envir = NULL,
-    variable_meta_info = NULL,
 
     register_variable = function(name, type, lower_bound, upper_bound) {
       var_idx <- private$solver$add_variable(type, lower_bound, upper_bound)
@@ -106,16 +107,7 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
         coefficient = 1,
         variable_index = var_idx
       )
-      private$variables$set(name, rlp_var)
       rlp_var
-    },
-    base_execution_envir = function(parent_env) {
-      # TODO: not cool
-      `parent.env<-`(private$rlp_variable_envir, parent_env)
-      local_envir <- new.env(parent = private$rlp_variable_envir)
-      sum_expr <- make_sum_expr(local_envir)
-      local_envir[["sum_expr"]] <- sum_expr
-      local_envir
     },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)

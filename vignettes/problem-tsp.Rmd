@@ -77,30 +77,30 @@ library(ROI.plugin.glpk)
 ```
 
 ```{r}
-model <- MIPModel(ROI_solver("glpk")) %>%
-  
-  # we create a variable that is 1 iff we travel from city i to j
-  add_variable(x[i, j], i = 1:n, j = 1:n, 
-               type = "integer", lb = 0, ub = 1) %>%
-  
-  # a helper variable for the MTZ formulation of the tsp
-  add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
-  
-  # minimize travel distance
-  set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min") %>%
-  
-  # you cannot go to the same city
-  set_bounds(x[i, i], ub = 0, i = 1:n) %>%
-  
-  # leave each city
-  add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n) %>%
-  
-  # visit each city
-  add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 1:n) %>%
-  
-  # ensure no subtours (arc constraints)
-  add_constraint(u[i] >= 2, i = 2:n) %>% 
-  add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
+model <- MIPModel(ROI_solver("glpk"))
+
+# we create a variable that is 1 iff we travel from city i to j
+model$add_variable(x[i, j], i = 1:n, j = 1:n, 
+             type = "integer", lb = 0, ub = 1)
+
+# a helper variable for the MTZ formulation of the tsp
+model$add_variable(u[i], i = 1:n, lb = 1, ub = n)
+
+# minimize travel distance
+model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min")
+
+# you cannot go to the same city
+model$set_bounds(x[i, i], ub = 0, i = 1:n)
+
+# leave each city
+model$add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n)
+
+# visit each city
+model$add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 1:n)
+
+# ensure no subtours (arc constraints)
+model$add_constraint(u[i] >= 2, i = 2:n)
+model$add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
 model
 ```
 

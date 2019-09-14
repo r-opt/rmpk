@@ -99,22 +99,22 @@ The model with `rmpk` then looks like this:
 library(rmpk)
 library(magrittr)
 library(ROI.plugin.glpk)
-model <- MIPModel(ROI_solver("glpk")) %>%
-  # 1 iff i gets assigned to warehouse j
-  add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary") %>%
+model <- MIPModel(ROI_solver("glpk"))
+
+# 1 iff i gets assigned to warehouse j
+model$add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary")
   
-  # 1 iff warehouse j is built
-  add_variable(y[j], j = 1:m, type = "binary") %>%
+# 1 iff warehouse j is built
+model$add_variable(y[j], j = 1:m, type = "binary")
   
-  # maximize the preferences
-  set_objective(sum_expr(transportcost(i, j) * x[i, j], i = 1:n, j = 1:m) + 
-                  sum_expr(fixedcost[j] * y[j], j = 1:m), "min") %>%
+# maximize the preferences
+model$set_objective(sum_expr(transportcost(i, j) * x[i, j], i = 1:n, j = 1:m) + 
+                  sum_expr(fixedcost[j] * y[j], j = 1:m), "min") 
+# every customer needs to be assigned to a warehouse
+model$add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n)
   
-  # every customer needs to be assigned to a warehouse
-  add_constraint(sum_expr(x[i, j], j = 1:m) == 1, i = 1:n) %>% 
-  
-  # if a customer is assigned to a warehouse, then this warehouse must be built
-  add_constraint(x[i,j] <= y[j], i = 1:n, j = 1:m)
+# if a customer is assigned to a warehouse, then this warehouse must be built
+model$add_constraint(x[i,j] <= y[j], i = 1:n, j = 1:m)
 model
 ```
 
