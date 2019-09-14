@@ -79,10 +79,10 @@ model$optimize()
 model$get_variable_value(x[i])
 ```
 
-## There willmightan API that supports pipes
+## There might be an API that supports pipes
 
-```{r}
-li, eval=FALSEbrary(magrittr)
+```{r, eval=FALSE}
+library(magrittr)
 library(rmpk)
 library(ROI.plugin.glpk)
 solver <- ROI_solver("glpk", control = list(verbose = TRUE))
