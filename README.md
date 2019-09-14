@@ -45,7 +45,7 @@ You can install the released version of rlp from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-remotes::install_github("rmpk")
+remotes::install_github("dirkschumacher/rmpk")
 ```
 
 ## Supported types
