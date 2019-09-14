@@ -72,10 +72,10 @@ remotes::install_github("dirkschumacher/rmpk")
 
   - ✅ Access row/column duals of Linear Programs
 
-  - 🚧 Variable and constraint names
-
-  - 🚧 Row generation through solver callbacks (e.g. for models with
+  - ✅ Row generation through solver callbacks (e.g. for models with
     exponential many constraints)
+
+  - 🚧 Variable and constraint names
 
   - 🚧 Initial feasible solutions
 

@@ -55,9 +55,9 @@ remotes::install_github("dirkschumacher/rmpk")
 * ✅ API that supports `magrittr` pipes
 * ✅ Support for character variable indexes
 * ✅ Access row/column duals of Linear Programs
-* 🚧 Variable and constraint names
-* 🚧 Row generation through solver callbacks (e.g. for models with exponential many constraints)
+* ✅ Row generation through solver callbacks (e.g. for models with exponential many constraints)
 
+* 🚧 Variable and constraint names
 * 🚧 Initial feasible solutions
 * 🚧 Almost as fast as matrix code
 * ...
