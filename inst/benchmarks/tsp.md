@@ -57,7 +57,7 @@ microbenchmark::microbenchmark(rmpk(), times = 5)
 
     ## Unit: seconds
     ##    expr      min       lq     mean   median       uq      max neval
-    ##  rmpk() 6.452477 6.728854 7.400242 7.164325 7.744117 8.911435     5
+    ##  rmpk() 6.946105 7.383062 8.764974 7.406077 9.461817 12.62781     5
 
 ``` r
 #system.time(rmpk(solver = rmpk.glpk::GLPK()))
@@ -114,10 +114,10 @@ microbenchmark::microbenchmark(rmpk(solver = NoOPSolver$new()), times = 5)
 ```
 
     ## Unit: seconds
-    ##                             expr   min       lq     mean   median       uq
-    ##  rmpk(solver = NoOPSolver$new()) 2.309 2.508882 2.832349 2.601511 2.857624
-    ##      max neval
-    ##  3.88473     5
+    ##                             expr      min       lq     mean   median
+    ##  rmpk(solver = NoOPSolver$new()) 2.035732 2.182463 2.324922 2.380111
+    ##        uq      max neval
+    ##  2.466109 2.560195     5
 
 ``` r
 profvis::profvis(rmpk(solver = NoOPSolver$new()))
