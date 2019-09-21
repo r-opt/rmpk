@@ -52,7 +52,6 @@ remotes::install_github("dirkschumacher/rmpk")
 * ✅ Integer, binary and continious variables
 * ✅ Linear and quadratic constraints/objective
 * ✅ Bindings to most popular solvers through [ROI](https://CRAN.R-project.org/package=ROI)
-* ✅ API that supports `magrittr` pipes
 * ✅ Support for character variable indexes
 * ✅ Access row/column duals of Linear Programs
 * ✅ Row generation through solver callbacks (e.g. for models with exponential many constraints)

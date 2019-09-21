@@ -11,8 +11,12 @@ sum_expr <- function(expr, ...) {
   quantifier_names <- names(quantifiers)
   row_indexes <- seq_len(nrow(quantifiers))
 
-  # we put all column vectors of quantifiers into an environment for fast acccess
-  quantifier_env <- as.environment(quantifiers)
+  # we put all column vectors of quantifiers into a faster random access
+  # data structure for fast acccess
+  quantifiers_container <- new.env(hash = FALSE, parent = emptyenv())
+  for (name in quantifier_names) {
+    quantifiers_container[[name]] <- quantifiers[[name]]
+  }
 
   # we usually have very few quantifiers, so there is probably too much overhead
   # when using a hashtable (according to some benchmarks)
@@ -22,7 +26,7 @@ sum_expr <- function(expr, ...) {
   result <- 0
   for (i in row_indexes) {
     for (name in quantifier_names) {
-      envir[[name]] <- quantifier_env[[name]][i]
+      envir[[name]] <- quantifiers_container[[name]][i]
     }
     result <- result + eval(bare_expr, envir = envir, baseenv())
   }

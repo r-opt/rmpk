@@ -101,14 +101,6 @@ RlpMipModel <- R6::R6Class("RlpMipModel",
     solver = NULL,
     row_indexes = NULL,
 
-    register_variable = function(name, type, lower_bound, upper_bound) {
-      var_idx <- private$solver$add_variable(type, lower_bound, upper_bound)
-      rlp_var <- new("RLPVariable",
-        coefficient = 1,
-        variable_index = var_idx
-      )
-      rlp_var
-    },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
       row_idx <- if (is_quadratic_expression(lhs)) {

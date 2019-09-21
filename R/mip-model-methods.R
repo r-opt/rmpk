@@ -4,7 +4,11 @@ mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub
   expr <- rlang::enquo(expr)
   var_names <- generate_variable_names(rlang::get_expr(expr), ...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
-    private$register_variable(var_name, type, lb, ub)
+    var_idx <- private$solver$add_variable(type, lb, ub)
+    new("RLPVariable",
+      coefficient = 1,
+      variable_index = var_idx
+    )
   })
   names(rlp_vars) <- var_names$var_names
   variable_map <- fastmap::fastmap()
