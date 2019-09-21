@@ -13,6 +13,9 @@ setMethod("^", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
 })
 
 setMethod("*", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "numeric"), function(e1, e2) {
+  if (e2 == 0) {
+    return(e2)
+  }
   slot(e1, "coefficient", check = FALSE) <- e1@coefficient * e2
   e1
 })
@@ -22,6 +25,9 @@ setMethod("*", signature(e1 = "numeric", e2 = "RMPKQuadraticVariableTuple"), fun
 })
 
 setMethod("*", signature(e1 = "RMPKQuadraticExpression", e2 = "numeric"), function(e1, e2) {
+  if (e2 == 0) {
+    return(e2)
+  }
   keys <- e1@quadratic_variables$keys()
   for (key in keys) {
     var <- e1@quadratic_variables$get(key)

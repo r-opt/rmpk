@@ -127,3 +127,10 @@ test_that("quadratic expression and linear expression", {
   quad_vars <- result@quadratic_variables$as_list()
   expect_equal(quad_vars[["1_2"]]@coefficient, 4)
 })
+
+test_that("multiplication by 0 yields numeric", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  expect_equal(((x + 1) + (4 * y * x)) * 0, 0)
+  expect_equal((x + 1) * 0, 0)
+})

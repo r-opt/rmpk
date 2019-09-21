@@ -41,6 +41,9 @@ setMethod("-", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
 })
 
 setMethod("*", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
+  if (e2 == 0) {
+    return(e2)
+  }
   e1@coefficient <- e1@coefficient * e2
   e1
 })

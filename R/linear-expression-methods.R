@@ -41,6 +41,9 @@ setMethod("-", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(
 })
 
 setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
+  if (e2 == 0) {
+    return(e2)
+  }
   slot(e1, "constant", check = FALSE) <- e1@constant * e2
   for (var in e1@variables$as_list()) {
     slot(var, "coefficient", check = FALSE) <- var@coefficient * e2
