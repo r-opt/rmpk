@@ -20,6 +20,7 @@ addons:
   apt:
     packages:
     - libglpk-dev
+    - g++-7
 
 after_success:
   - Rscript -e 'covr::codecov()'
