@@ -34,19 +34,9 @@ rmpk <- function() {
   model$optimize()
 }
 
-rmpk_pipe <- function() {
-  solver <- ROI_solver("glpk")
-  model <- MIPModel(solver) %>% 
-    add_variable(x[i], type = "binary", i = 1:10) %>%
-    set_objective(sum_expr(v[i] * x[i], i = 1:10)) %>%
-    add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
-  model$optimize()
-}
-
 microbenchmark::microbenchmark(
   roi(),
-  rmpk(),
-  rmpk_pipe()
+  rmpk()
 )
 ```
 

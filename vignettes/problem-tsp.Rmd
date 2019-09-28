@@ -142,5 +142,5 @@ ggplot(cities, aes(x, y)) +
 
 ## Feedback
 
-Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/ompr/issues).
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
 

@@ -4,7 +4,7 @@
 #' Solver termination status codes
 #'
 #' @export
-TERMINATION_STATUS <- new.env(parent = emptyenv())
+TERMINATION_STATUS <- new.env(parent = emptyenv(), hash = FALSE)
 
 # Nothing happend yet
 TERMINATION_STATUS$OPTIMIZE_NOT_CALLED <- 0L
@@ -20,3 +20,5 @@ TERMINATION_STATUS$OTHER_LIMIT <- 10L + 9L
 
 # Error
 TERMINATION_STATUS$OTHER_ERROR <- 100L + 9L
+
+lockEnvironment(TERMINATION_STATUS)
