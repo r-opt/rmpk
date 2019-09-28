@@ -24,13 +24,15 @@ addons:
     - libglpk-dev
     - g++-7
 
+before_install:
+  - export CC=gcc-7
+  - export CXX=g++-7
+
 after_success:
   - Rscript -e 'covr::codecov()'
 
 deploy:
   provider: script
   script:
-    - export CC=gcc-7
-    - export CXX=g++-7
     - Rscript -e 'pkgdown::deploy_site_github()'
   skip_cleanup: true
