@@ -13,7 +13,8 @@ r_packages:
   - tidyr
   - ggrepel
   - igraph
-  - rmpk.glpk
+
+r_github_packages: rmpk.glpk
 
 addons:
   apt:
