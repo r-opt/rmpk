@@ -12,6 +12,8 @@ r_packages:
   - viridis
   - tidyr
   - ggrepel
+  - igraph
+  - rmpk.glpk
 
 addons:
   apt:
