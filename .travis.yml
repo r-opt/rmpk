@@ -18,6 +18,8 @@ r_github_packages: dirkschumacher/rmpk.glpk
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
     - libglpk-dev
     - g++-7
