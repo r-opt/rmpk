@@ -14,7 +14,7 @@ r_packages:
   - ggrepel
   - igraph
 
-r_github_packages: rmpk.glpk
+r_github_packages: dirkschumacher/rmpk.glpk
 
 addons:
   apt:
