@@ -27,7 +27,6 @@ addons:
 before_install:
   - export CXX17=g++-7
 
-
 after_success:
   - Rscript -e 'covr::codecov()'
 
