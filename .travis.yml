@@ -7,12 +7,10 @@ cache: packages
 r_packages:
   - covr
   - pkgdown
-  - dplyr
   - ggplot2
   - viridis
   - tidyr
   - ggrepel
-  - igraph
 
 r_github_packages: dirkschumacher/rmpk.glpk
 
@@ -21,11 +19,12 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-    - libglpk-dev
-    - g++-7
-
-before_install:
-  - export CXX17=g++-7
+      - libglpk-dev
+      - g++-7
+      - r-cran-rcpp
+      - r-cran-dplyr
+      - r-cran-igraph
+      - r-cran-testthat
 
 after_success:
   - Rscript -e 'covr::codecov()'
