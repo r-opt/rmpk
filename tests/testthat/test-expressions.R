@@ -140,6 +140,6 @@ test_that("subtracting variables work", {
   y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
   result <- x + x - y
   vars <- result@variables$as_list()
-  expect_equal(vars[[1]]@coefficient, 2)
-  expect_equal(vars[[2]]@coefficient, -1)
+  expect_equal(vars[["1"]]@coefficient, 2)
+  expect_equal(vars[["2"]]@coefficient, -1)
 })

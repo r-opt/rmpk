@@ -181,7 +181,6 @@ ROIMipSolver <- R6::R6Class(
       }
       stop("Unknown ROI status code", call. = FALSE)
     },
-
     objective_coefficients = function() {
       private$linear_obj_vec
     },
