@@ -2,7 +2,7 @@
 % Please edit documentation in R/mip-model.R
 \name{MIPModel}
 \alias{MIPModel}
-\title{A new MILP Model}
+\title{A new mixed-integer programming Model}
 \usage{
 MIPModel(solver)
 }
@@ -10,5 +10,5 @@ MIPModel(solver)
 \item{solver}{a solver object}
 }
 \description{
-A new MILP Model
+A new mixed-integer programming Model
 }
