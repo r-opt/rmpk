@@ -134,3 +134,12 @@ test_that("multiplication by 0 yields numeric", {
   expect_equal(((x + 1) + (4 * y * x)) * 0, 0)
   expect_equal((x + 1) * 0, 0)
 })
+
+test_that("subtracting variables work", {
+  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  result <- x + x - y
+  vars <- result@variables$as_list()
+  expect_equal(vars[[1]]@coefficient, 2)
+  expect_equal(vars[[2]]@coefficient, -1)
+})
