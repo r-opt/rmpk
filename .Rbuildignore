@@ -7,3 +7,6 @@
 ^codecov\.yml$
 ^appveyor\.yml$
 ^vignettes
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

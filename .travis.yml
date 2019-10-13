@@ -7,10 +7,8 @@ cache: packages
 r_packages:
   - covr
   - pkgdown
-  - ggplot2
-  - viridis
-  - tidyr
-  - ggrepel
+  - rgeos
+  - maptools
 
 r_github_packages: dirkschumacher/rmpk.glpk
 
@@ -25,6 +23,12 @@ addons:
       - r-cran-dplyr
       - r-cran-igraph
       - r-cran-testthat
+      - r-cran-rgdal
+      - r-cran-ggplot2
+      - r-cran-viridis
+      - r-cran-ggrepel
+      - r-cran-spdep
+      - r-cran-tidyr
 
 after_success:
   - Rscript -e 'covr::codecov()'

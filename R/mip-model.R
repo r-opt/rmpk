@@ -1,4 +1,4 @@
-#' A new MILP Model
+#' A new mixed-integer programming Model
 #'
 #' @param solver a solver object
 #' @include roi-solver.R
