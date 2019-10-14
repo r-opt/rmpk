@@ -75,7 +75,7 @@ model$add_variable(y[k], type = "binary", k = 1:max_colors)
   
 # minimize colors
 # multiply by k for symmetrie breaking (signifcant diff. in solution time)
-model$set_objective(sum_expr(k * y[k], k = 1:max_colors), sense = "max")
+model$set_objective(sum_expr(k * y[k], k = 1:max_colors), sense = "min")
   
 # each node is colored
 model$add_constraint(sum_expr(x[i, k], k = 1:max_colors) == 1, i = 1:n)
