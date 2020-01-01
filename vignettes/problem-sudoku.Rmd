@@ -28,7 +28,7 @@ n <- 9
 model <- MIPModel(ROI_solver("glpk"))
   
   # The number k stored in position i,j
-model$add_variable(x[i, j, k], i = 1:n, j = 1:n, k = 1:9, type = "binary")
+x <- model$add_variable(x[i, j, k], i = 1:n, j = 1:n, k = 1:9, type = "binary")
   
   # no objective
 model$set_objective(0)
