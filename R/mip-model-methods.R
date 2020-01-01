@@ -23,12 +23,7 @@ mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub
   } else {
     rlp_vars[[1L]]
   }
-  assign(
-    var_names$base_name,
-    value = variable,
-    envir = rlang::get_env(expr)
-  )
-  invisible(variable)
+  variable
 }
 
 mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
