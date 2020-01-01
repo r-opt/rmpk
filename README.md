@@ -66,8 +66,6 @@ remotes::install_github("dirkschumacher/rmpk")
   - ✅ Bindings to most popular solvers through
     [ROI](https://CRAN.R-project.org/package=ROI)
 
-  - ✅ API that supports `magrittr` pipes
-
   - ✅ Support for character variable indexes
 
   - ✅ Access row/column duals of Linear Programs
@@ -93,7 +91,7 @@ solver <- ROI_solver("glpk")
 v <- rnorm(10)
 w <- rnorm(10)
 model <- MIPModel(solver)
-model$add_variable(x[i], type = "binary", i = 1:10)
+x <- model$add_variable(x[i], type = "binary", i = 1:10)
 model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
 model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
 model$optimize()
