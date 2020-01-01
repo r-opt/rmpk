@@ -68,10 +68,10 @@ max_colors <- 4 # 4 should be enough. But you increase this number.
 model <- MIPModel(ROI_solver("glpk", control = list(presolve = TRUE, verbose = TRUE)))
   
 # 1 iff node i has color k
-model$add_variable(x[i, k], type = "integer", i = 1:n, k = 1:max_colors, lb = 0, ub = 1)
+x <- model$add_variable(x[i, k], type = "integer", i = 1:n, k = 1:max_colors, lb = 0, ub = 1)
   
 # 1 iff color k is used
-model$add_variable(y[k], type = "binary", k = 1:max_colors)
+y <- model$add_variable(y[k], type = "binary", k = 1:max_colors)
   
 # minimize colors
 # multiply by k for symmetrie breaking (signifcant diff. in solution time)
@@ -111,7 +111,13 @@ model
 model$optimize()
 ```
 
-Yay. We found the minimal coloring with `r model$objective_value()` colors.
+```{r, echo=FALSE}
+res <- model$get_variable_value(x[i, k])
+num_colors_used <- filter(res, value > 0) %>% distinct(k) %>% nrow()
+```
+
+
+Yay. We found the minimal coloring with `r num_colors_used` colors.
 
 ## Plot the result
 

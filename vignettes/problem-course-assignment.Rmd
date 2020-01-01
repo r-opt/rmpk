@@ -108,7 +108,7 @@ library(ROI.plugin.glpk)
 model <- MIPModel(ROI_solver("glpk"))
   
   # 1 iff student i is assigned to course m
-model$add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary")
+x <- model$add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary")
   
   # maximize the preferences
 model$set_objective(sum_expr(weight(i, j) * x[i, j], i = 1:n, j = 1:m), sense = "max")
