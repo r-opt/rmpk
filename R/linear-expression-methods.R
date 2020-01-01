@@ -64,7 +64,7 @@ ensure_linear_expression <- function(expr) {
   if (is_linear_expression(expr)) {
     return(expr)
   }
-  if ("RLPVariable" %in% class(expr)) {
+  if (inherits(expr, "RLPVariable")) {
     return(expr + 0)
   }
   if (is.numeric(expr)) {

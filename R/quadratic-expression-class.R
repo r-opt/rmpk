@@ -6,5 +6,5 @@ setClass("RMPKQuadraticExpression", slots = c(quadratic_variables = "ANY", linea
 setClass("RMPKQuadraticVariableTuple", slots = c(variable1 = "RLPVariable", variable2 = "RLPVariable", coefficient = "numeric"))
 
 is_quadratic_expression <- function(x) {
-  any(c("RMPKQuadraticExpression", "RMPKQuadraticVariableTuple") %in% class(x))
+  inherits(x, c("RMPKQuadraticExpression", "RMPKQuadraticVariableTuple"))
 }

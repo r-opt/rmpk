@@ -12,9 +12,9 @@ setClass("RLPVariableList", slots = c(
   index_types = "character"
 ))
 is_variable <- function(x) {
-  "RLPVariable" %in% class(x)
+  inherits(x, "RLPVariable")
 }
 is_variable_container <- function(x) {
-  "RLPVariableList" %in% class(x)
+  inherits(x, "RLPVariableList")
 }
 setClass("RLPVariableListBuilder", slots = c(tmp = "logical"), prototype = list(tmp = FALSE))
