@@ -1,4 +1,4 @@
-mip_model_impl_add_variable <- function(expr, type = "continuous", lb = -Inf, ub = Inf, ...) {
+mip_model_impl_add_variable <- function(expr, ..., type = "continuous", lb = -Inf, ub = Inf) {
   stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L)
   type <- match.arg(type, c("continuous", "integer", "binary"))
   expr <- rlang::enquo(expr)
@@ -234,7 +234,7 @@ split_equation <- function(expr) {
 
 build_modifier_envir <- function(parent_envir, ...) {
   envir <- new.env(parent = parent_envir)
-  quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
+  quantifiers <- construct_quantifiers(...)
   quantifier_names <- names(quantifiers)
   for (mod_name in quantifier_names) {
     envir[[mod_name]] <- quantifiers[[mod_name]]

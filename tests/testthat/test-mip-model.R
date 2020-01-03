@@ -97,3 +97,17 @@ test_that("sum_expr supports guards", {
   expect_equal(var@coefficient, 1)
   expect_equal(var@variable_index, 2)
 })
+
+
+test_that("add_variable supports guards", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  mod <- 2
+  even <- function(x) x %% mod == 0
+  limit <- 3
+  x <- model$add_variable(x[i], i = 1:10, even(i), i < !!limit)
+  var <- x@variables_map$as_list()[[1]]
+  expect_equal(x@variables_map$size(), 1)
+  expect_equal(var@coefficient, 1)
+  expect_equal(var@variable_index, 1)
+})
