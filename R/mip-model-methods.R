@@ -67,7 +67,7 @@ mip_model_impl_add_constraint <- function(expr, ...) {
 }
 
 eval_per_quantifier <- function(eval_fun, base_envir, ...) {
-  quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
+  quantifiers <- construct_quantifiers(...)
   quantifier_var_names <- names(quantifiers)
   no_quantifiers <- nrow(quantifiers) == 0L
   if (no_quantifiers) {
