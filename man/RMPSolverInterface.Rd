@@ -4,7 +4,7 @@
 \name{RMPSolverInterface}
 \alias{RMPSolverInterface}
 \title{An interface R6 class for a solver}
-\format{An object of class \code{R6ClassGenerator} of length 24.}
+\format{An object of class \code{R6ClassGenerator} of length 25.}
 \usage{
 RMPSolverInterface
 }

@@ -83,3 +83,57 @@ test_that("sum_expr works outside of the model context", {
   res <- sum_expr(x[i], i = 1:3) + 10
   expect_true(res@constant == 10)
 })
+
+test_that("sum_expr supports guards", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  x <- model$add_variable(x[i], i = 1:10)
+  mod <- 2
+  even <- function(x) x %% mod == 0
+  limit <- 3
+  res <- sum_expr(x[i], i = 1:10, even(i), i < !!limit)
+  var <- res@variables$as_list()[[1]]
+  expect_equal(res@variables$size(), 1)
+  expect_equal(var@coefficient, 1)
+  expect_equal(var@variable_index, 2)
+})
+
+
+test_that("add_variable supports guards", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  mod <- 2
+  even <- function(x) x %% mod == 0
+  limit <- 3
+  x <- model$add_variable(x[i], i = 1:10, even(i), i < !!limit)
+  var <- x@variables_map$as_list()[[1]]
+  expect_equal(x@variables_map$size(), 1)
+  expect_equal(var@coefficient, 1)
+  expect_equal(var@variable_index, 1)
+})
+
+test_that("sum_expr supports guards", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  x <- model$add_variable(x[i], i = 1:10)
+  mod <- 2
+  even <- function(x) x %% mod == 0
+  limit <- 3
+  res <- sum_expr(x[i], i = 1:10, even(i), i < !!limit)
+  var <- res@variables$as_list()[[1]]
+  expect_equal(res@variables$size(), 1)
+  expect_equal(var@coefficient, 1)
+  expect_equal(var@variable_index, 2)
+})
+
+test_that("add_constraint supports guards", {
+  solver <- ROI_solver("glpk")
+  model <- MIPModel(solver)
+  mod <- 2
+  even <- function(x) x %% mod == 0
+  limit <- 5
+  x <- model$add_variable(x[i], i = 1:10)
+  model$add_constraint(x[i] <= 1, i = 1:10, even(i), i < !!limit)
+  var <- x@variables_map$as_list()[[1]]
+  expect_equal(solver$nconstraints(), 2)
+})

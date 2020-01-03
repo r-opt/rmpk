@@ -6,8 +6,8 @@
 #' @export
 sum_expr <- function(expr, ...) {
   expr <- rlang::enquo(expr)
+  quantifiers <- construct_quantifiers(...)
 
-  quantifiers <- expand.grid(..., stringsAsFactors = FALSE)
   quantifier_names <- names(quantifiers)
   row_indexes <- seq_len(nrow(quantifiers))
 
