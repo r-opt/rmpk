@@ -20,7 +20,8 @@ test_that("solve a bounded knapsack problem", {
   x <- model$add_variable(type = "integer", lb = 0, ub = 1, i = 1:10) # ROI has problems with binary and bounds
   model$set_objective(sum_expr(x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(x[i], i = 1:10) <= 10)
-  model$set_bounds(x[i], ub = 0, i = 1:8)
+  model$set_bounds(x[i], ub = 0, i = 1:10, i <= 8)
+  model$set_bounds(x[i], ub = 1, i = 1, i > 1)
   model$set_bounds(x[9], ub = 0)
   model$optimize()
   res <- model$get_variable_value(x[i])

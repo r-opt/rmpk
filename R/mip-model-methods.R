@@ -37,7 +37,7 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
   invisible()
 }
 
-mip_model_impl_set_bounds <- function(expr, lb = NULL, ub = NULL, ...) {
+mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
   expr <- rlang::enquo(expr)
 
   eval_per_quantifier(function(local_envir) {
@@ -67,7 +67,12 @@ mip_model_impl_add_constraint <- function(expr, ...) {
 eval_per_quantifier <- function(eval_fun, base_envir, ...) {
   quantifiers <- construct_quantifiers(...)
   quantifier_var_names <- names(quantifiers)
-  no_quantifiers <- nrow(quantifiers) == 0L
+  no_quantifiers <- nrow(quantifiers) == 0L || ncol(quantifiers) == 0L
+  all_quantifiers_filtered_out <- ncol(quantifiers) > 0L &&
+    nrow(quantifiers) == 0L
+  if (all_quantifiers_filtered_out) {
+    return()
+  }
   if (no_quantifiers) {
     local_envir <- new.env(parent = base_envir)
     eval_fun(local_envir)
