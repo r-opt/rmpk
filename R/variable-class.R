@@ -8,7 +8,6 @@ setClass("RLPVariable", slots = c(
 setClass("RLPVariableList", slots = c(
   variables_map = "ANY",
   arity = "integer",
-  base_name = "character",
   index_types = "character"
 ))
 is_variable <- function(x) {

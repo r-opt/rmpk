@@ -66,7 +66,7 @@ setMethod("[", signature("RLPVariableList", i = "ANY", j = "ANY", drop = "missin
   }
   # stopifnot(all(vapply(indexes, length, integer(1L)) == 1L))
   # TODO: implement this without the linear overhead
-  var_name <- paste0(x@base_name, "/", paste0(indexes, collapse = "/"), collapse = "/")
+  var_name <- paste0(indexes, collapse = "/")
   x@variables_map$get(var_name)
 })
 

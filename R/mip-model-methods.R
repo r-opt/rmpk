@@ -15,7 +15,6 @@ mip_model_impl_add_variable <- function(expr, ..., type = "continuous", lb = -In
   variable_map$mset(.list = rlp_vars)
   variable <- if (var_names$is_indexed_var) {
     new("RLPVariableList",
-      base_name = var_names$base_name,
       variables_map = variable_map,
       arity = var_names$arity,
       index_types = var_names$index_types
@@ -139,7 +138,9 @@ extract_solver_variable_value <- function(private, variable_expr,
     return_val <- as.data.frame(return_val, stringsAsFactors = FALSE)
     rownames(return_val) <- NULL
     return_val[["value"]] <- values
-    colnames(return_val) <- c("name", indexes, "value")
+    return_val[["name"]] <- var_name
+    colnames(return_val) <- c(indexes, "value", "name")
+    return_val <- return_val[, c("name", indexes, "value"), drop = FALSE]
     # set the right types for the index columns
     for (i in seq_along(indexes)) {
       type <- variable_container@index_types[[i]]
@@ -208,7 +209,7 @@ generate_variable_names <- function(expr, ...) {
     index_combinations <- as.data.frame(index_list)
     names <- as.character(apply(index_combinations, 1L, function(row) {
       # TODO: check if any value in row has "/"
-      paste0(var_name, "/", paste0(row, collapse = "/"), collapse = "/")
+      paste0(row, collapse = "/")
     }))
     return(list(
       base_name = var_name,
