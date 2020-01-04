@@ -3,11 +3,11 @@
 #' @include quadratic-expression-class.R
 NULL
 
-setMethod("*", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("*", signature(e1 = "RMPKVariable", e2 = "RMPKVariable"), function(e1, e2) {
   new("RMPKQuadraticVariableTuple", variable1 = e1, variable2 = e2, coefficient = e1@coefficient * e2@coefficient)
 })
 
-setMethod("^", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
+setMethod("^", signature(e1 = "RMPKVariable", e2 = "numeric"), function(e1, e2) {
   stopifnot(e2 == 2)
   new("RMPKQuadraticVariableTuple", variable1 = e1, variable2 = e1, coefficient = e1@coefficient^2)
 })
@@ -81,7 +81,7 @@ setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKQuadraticV
   )
 })
 
-setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKVariable"), function(e1, e2) {
   quad_vars <- fastmap::fastmap()
   key <- quad_variable_tuple_key(e1)
   quad_vars$set(key, e1)
@@ -93,15 +93,15 @@ setMethod("+", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RLPVariable"),
   )
 })
 
-setMethod("+", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
   e2 + e1
 })
 
-setMethod("-", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKQuadraticVariableTuple", e2 = "RMPKVariable"), function(e1, e2) {
   e1 + (-1 * e2)
 })
 
-setMethod("-", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "RMPKQuadraticVariableTuple"), function(e1, e2) {
   (-1 * e2) - (-1 * e1)
 })
 
@@ -114,7 +114,7 @@ setMethod("+", signature(e1 = "numeric", e2 = "RMPKQuadraticExpression"), functi
   e2 + e1
 })
 
-setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKVariable"), function(e1, e2) {
   slot(e1, "linear_part", check = FALSE) <- e1@linear_part + e2
   e1
 })
@@ -166,15 +166,15 @@ setMethod("-", signature(e1 = "numeric", e2 = "RMPKQuadraticExpression"), functi
   (-1 * e2) - (-1 * e1)
 })
 
-setMethod("+", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
   e2 + e1
 })
 
-setMethod("-", signature(e1 = "RMPKQuadraticExpression", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKQuadraticExpression", e2 = "RMPKVariable"), function(e1, e2) {
   e1 + (-1 * e2)
 })
 
-setMethod("-", signature(e1 = "RLPVariable", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "RMPKQuadraticExpression"), function(e1, e2) {
   (-1 * e2) - (-1 * e1)
 })
 

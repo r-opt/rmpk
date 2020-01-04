@@ -5,12 +5,12 @@ test_that("adding variables calls the solver", {
       registered_vars <<- registered_vars + 1L
     }
   )
-  instance <- RlpMipModel$new(mock_solver)
+  instance <- RMPKMipModel$new(mock_solver)
   instance$add_variable(i = 1:10, j = 1:10)
   expect_equal(registered_vars, 10 * 10)
 
   registered_vars <- 0L
-  instance <- RlpMipModel$new(mock_solver)
+  instance <- RMPKMipModel$new(mock_solver)
   instance$add_variable()
   expect_equal(registered_vars, 1)
 })

@@ -4,7 +4,7 @@ mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub 
   var_names <- generate_variable_names(...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     var_idx <- private$solver$add_variable(type, lb, ub)
-    new("RLPVariable",
+    new("RMPKVariable",
       coefficient = 1,
       variable_index = var_idx
     )
@@ -13,7 +13,7 @@ mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub 
   variable <- if (var_names$is_indexed_var) {
     variable_map <- fastmap::fastmap()
     variable_map$mset(.list = rlp_vars)
-    new("RLPVariableList",
+    new("RMPKVariableList",
       variables_map = variable_map,
       arity = var_names$arity,
       index_types = var_names$index_types

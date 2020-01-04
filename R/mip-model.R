@@ -4,12 +4,12 @@
 #' @include roi-solver.R
 #' @export
 MIPModel <- function(solver) {
-  RlpMipModel$new(solver)
+  RMPKMipModel$new(solver)
 }
 
 #' @include mip-model-methods.R
 #' @noRd
-RlpMipModel <- R6::R6Class("RlpMipModel",
+RMPKMipModel <- R6::R6Class("RlpMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver

@@ -41,7 +41,7 @@ and thus breaking old code or creating a new package.
 
 ## Installation
 
-You can install the released version of rlp from
+You can install the released version of RMPK from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r

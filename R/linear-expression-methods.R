@@ -10,12 +10,12 @@ setMethod("+", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(
   e2
 })
 
-setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKLinearExpression", e2 = "RMPKVariable"), function(e1, e2) {
   slot(e1, "variables", check = FALSE) <- merge_with_single_variable(e1@variables, e2)
   e1
 })
 
-setMethod("+", signature(e1 = "RLPVariable", e2 = "RMPKLinearExpression"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "RMPKLinearExpression"), function(e1, e2) {
   e2 + e1
 })
 
@@ -31,7 +31,7 @@ setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression
   e1 + -1 * e2
 })
 
-setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKVariable"), function(e1, e2) {
   e1 + -1 * e2
 })
 
@@ -64,7 +64,7 @@ ensure_linear_expression <- function(expr) {
   if (is_linear_expression(expr)) {
     return(expr)
   }
-  if (inherits(expr, "RLPVariable")) {
+  if (inherits(expr, "RMPKVariable")) {
     return(expr + 0)
   }
   if (is.numeric(expr)) {

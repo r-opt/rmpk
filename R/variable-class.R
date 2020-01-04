@@ -2,7 +2,7 @@
 #'
 #' @export
 #' @rdname variables
-setClass("RLPVariable", slots = c(
+setClass("RMPKVariable", slots = c(
   coefficient = "numeric",
   variable_index = "integer"
 ))
@@ -11,7 +11,7 @@ setClass("RLPVariable", slots = c(
 #' @rdname variables
 setMethod(
   "format",
-  "RLPVariable",
+  "RMPKVariable",
   function(x, ...) {
     format(paste0("Variable (internal solver ref = ", x@variable_index, ")"))
   }
@@ -21,7 +21,7 @@ setMethod(
 #' @rdname variables
 setMethod(
   "print",
-  "RLPVariable",
+  "RMPKVariable",
   function(x, ...) {
     cat(format(x))
     invisible(x)
@@ -32,7 +32,7 @@ setMethod(
 #' @rdname variables
 setMethod(
   "show",
-  "RLPVariable",
+  "RMPKVariable",
   function(object) {
     print(object)
   }
@@ -42,7 +42,7 @@ setMethod(
 # This might be faster, as we know the dimensions
 #' @rdname variables
 #' @export
-setClass("RLPVariableList", slots = c(
+setClass("RMPKVariableList", slots = c(
   variables_map = "ANY",
   arity = "integer",
   index_types = "character"
@@ -52,7 +52,7 @@ setClass("RLPVariableList", slots = c(
 #' @rdname variables
 setMethod(
   "format",
-  "RLPVariableList",
+  "RMPKVariableList",
   function(x, ...) {
     format(paste0("Variable container: size = ", x@variables_map$size()))
   }
@@ -62,7 +62,7 @@ setMethod(
 #' @rdname variables
 setMethod(
   "print",
-  "RLPVariableList",
+  "RMPKVariableList",
   function(x, ...) {
     cat(format(x))
     invisible(x)
@@ -73,15 +73,15 @@ setMethod(
 #' @rdname variables
 setMethod(
   "show",
-  "RLPVariableList",
+  "RMPKVariableList",
   function(object) {
     print(object)
   }
 )
 
 is_variable <- function(x) {
-  inherits(x, "RLPVariable")
+  inherits(x, "RMPKVariable")
 }
 is_variable_container <- function(x) {
-  inherits(x, "RLPVariableList")
+  inherits(x, "RMPKVariableList")
 }
