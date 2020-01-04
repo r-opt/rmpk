@@ -57,3 +57,18 @@ test_that("it handles constant in objective function", {
   model$optimize()
   expect_equal(model$objective_value(), 2)
 })
+
+test_that("ROI returns OTHER_ERROR on time limit", {
+  solver <- ROI_solver("glpk", control = list(tm_limit = 1, verbose = FALSE))
+
+  v <- rnorm(100)
+  w <- runif(100)
+
+  model <- MIPModel(solver)
+  x <- model$add_variable(i = 1:100, type = "binary")
+  model$set_objective(sum_expr(v[i] * x[i], i = 1:100), sense = "max")
+  model$add_constraint(sum_expr(w[i] * x[i], i = 1:100) <= 10)
+  model$optimize()
+  expect_equal(model$termination_status(), TERMINATION_STATUS$OTHER_ERROR)
+  expect_true(is.list(model$termination_solver_message()))
+})
