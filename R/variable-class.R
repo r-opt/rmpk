@@ -16,4 +16,3 @@ is_variable <- function(x) {
 is_variable_container <- function(x) {
   inherits(x, "RLPVariableList")
 }
-setClass("RLPVariableListBuilder", slots = c(tmp = "logical"), prototype = list(tmp = FALSE))
