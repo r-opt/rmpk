@@ -9,12 +9,13 @@ MIPModel <- function(solver) {
 
 #' @include mip-model-methods.R
 #' @noRd
-RMPKMipModel <- R6::R6Class("RlpMipModel",
+RMPKMipModel <- R6::R6Class("RMPKMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver
       private$row_indexes <- integer(0L)
     },
+
     # build it
     add_variable = mip_model_impl_add_variable,
     set_objective = mip_model_impl_set_objective,
@@ -24,6 +25,7 @@ RMPKMipModel <- R6::R6Class("RlpMipModel",
     # optimize
     optimize = mip_model_impl_optimize,
     termination_status = mip_model_impl_termination_status,
+    termination_solver_message = mip_model_impl_termination_message,
     get_variable_value = mip_model_impl_get_value,
     get_variable_dual = mip_model_impl_get_variable_dual,
     get_row_duals = mip_model_impl_get_row_duals,

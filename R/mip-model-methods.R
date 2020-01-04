@@ -97,6 +97,10 @@ mip_model_impl_termination_status <- function() {
   private$solver$get_termination_status()
 }
 
+mip_model_impl_termination_message <- function() {
+  private$solver$get_termination_message()
+}
+
 mip_model_impl_get_value <- function(variable_selector) {
   extract_solver_variable_value(
     private,
