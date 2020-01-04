@@ -1,7 +1,7 @@
 #' @include variable-class.R
 #' @include linear-expression-class.R
 #' @include helper.R
-setMethod("+", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "numeric"), function(e1, e2) {
   val <- new("RMPKLinearExpression")
   slot(val, "variables", check = FALSE) <- var_to_map(e1)
   if (e2 != 0) {
@@ -10,37 +10,37 @@ setMethod("+", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
   val
 })
 
-setMethod("+", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("+", signature(e1 = "numeric", e2 = "RMPKVariable"), function(e1, e2) {
   e2 + e1
 })
 
-setMethod("+", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "missing"), function(e1, e2) {
   e1
 })
 
-setMethod("+", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("+", signature(e1 = "RMPKVariable", e2 = "RMPKVariable"), function(e1, e2) {
   val <- new("RMPKLinearExpression")
   slot(val, "variables", check = FALSE) <- merge_with_single_variable(var_to_map(e1), e2)
   val
 })
 
-setMethod("-", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "numeric"), function(e1, e2) {
   e1 + -1 * e2
 })
 
-setMethod("-", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("-", signature(e1 = "numeric", e2 = "RMPKVariable"), function(e1, e2) {
   (-1 * e2) - (-1 * e1)
 })
 
-setMethod("-", signature(e1 = "RLPVariable", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "RMPKVariable"), function(e1, e2) {
   e1 + -1 * e2
 })
 
-setMethod("-", signature(e1 = "RLPVariable", e2 = "missing"), function(e1, e2) {
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "missing"), function(e1, e2) {
   (-1) * e1
 })
 
-setMethod("*", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
+setMethod("*", signature(e1 = "RMPKVariable", e2 = "numeric"), function(e1, e2) {
   if (e2 == 0) {
     return(e2)
   }
@@ -48,12 +48,12 @@ setMethod("*", signature(e1 = "RLPVariable", e2 = "numeric"), function(e1, e2) {
   e1
 })
 
-setMethod("*", signature(e1 = "numeric", e2 = "RLPVariable"), function(e1, e2) {
+setMethod("*", signature(e1 = "numeric", e2 = "RMPKVariable"), function(e1, e2) {
   e2 * e1
 })
 
-# --- RLPVariableList
-setMethod("[", signature("RLPVariableList", i = "ANY", j = "ANY", drop = "missing"), function(x, i, j, ..., drop) {
+# --- RMPKVariableList
+setMethod("[", signature("RMPKVariableList", i = "ANY", j = "ANY", drop = "missing"), function(x, i, j, ..., drop) {
   indexes <- list()
   if (!missing(i)) {
     indexes[[length(indexes) + 1L]] <- i

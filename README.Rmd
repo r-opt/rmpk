@@ -33,7 +33,7 @@ _Still under development. Anything can change_
 
 ## Installation
 
-You can install the released version of rlp from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of RMPK from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
 remotes::install_github("dirkschumacher/rmpk")

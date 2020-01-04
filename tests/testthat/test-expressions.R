@@ -1,6 +1,6 @@
 test_that("multiplication works", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- (-x + y * 2 - 2) * 18
   vars <- result@variables$as_list()
   expect_equal(result@constant, -2 * 18)
@@ -9,9 +9,9 @@ test_that("multiplication works", {
 })
 
 test_that("complex test case #1", {
-  u1 <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  u2 <- new("RLPVariable", coefficient = 1, variable_index = 2L)
-  x <- new("RLPVariable", coefficient = 1, variable_index = 3L)
+  u1 <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  u2 <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 3L)
   n <- 10
   expect_silent(
     result <- u1 - u2 + 1 - ((n - 1) * (1 - x))
@@ -42,8 +42,8 @@ test_that("equations can be splitted", {
 })
 
 test_that("linear expressions hold only variables once", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   expr <- x + x + y
   vars <- expr@variables$as_list()
   expect_equal(length(vars), 2)
@@ -52,8 +52,8 @@ test_that("linear expressions hold only variables once", {
 })
 
 test_that("quadratic expressions are supported", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- (-x + y * 2 * y - 2) * 18
   expect_equal(result@linear_part@constant, -2 * 18)
   expect_equal(result@linear_part@variables$get("1")@coefficient, -18)
@@ -64,8 +64,8 @@ test_that("quadratic expressions are supported", {
 })
 
 test_that("pow 2", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- (x^2 + y^2) * 18
   quad_vars <- result@quadratic_variables$as_list()
   expect_equal(quad_vars[[1L]]@coefficient, 18)
@@ -77,9 +77,9 @@ test_that("pow 2", {
 })
 
 test_that("quadprog complex", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
-  z <- new("RLPVariable", coefficient = 1, variable_index = 3L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
+  z <- new("RMPKVariable", coefficient = 1, variable_index = 3L)
   result <- -5 * y + x^2 + y^2 + z^2
   quad_vars <- result@quadratic_variables$as_list()
   expect_equal(quad_vars[[1L]]@coefficient, 1)
@@ -89,29 +89,29 @@ test_that("quadprog complex", {
 })
 
 test_that("adding the same quad tuples increaes coef", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- x * y + x * y
   expect_equal(result@coefficient, 2)
 })
 
 test_that("more examples work", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
   result <- 1 - (5 + (x + (2 - x)))
   expect_equal(result@constant, -6)
   expect_equal(result@variables$as_list()[[1L]]@coefficient, 0)
 })
 
 test_that("even more examples work", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
   result <- 2 * (x * x + 2 + (1 + x * x) + (x^2 - 2) + (5 - x^2))
   expect_equal(result@linear_part@constant, 12)
   expect_equal(result@quadratic_variables$as_list()[[1]]@coefficient, 4)
 })
 
 test_that("quadratic expression merge", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- (x^2 + 1) + x + x^2 + (y^2 + 1)
   expect_equal(result@linear_part@constant, 2)
   quad_vars <- result@quadratic_variables$as_list()
@@ -120,8 +120,8 @@ test_that("quadratic expression merge", {
 })
 
 test_that("quadratic expression and linear expression", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- (x + 1) + (4 * y * x)
   expect_equal(result@linear_part@constant, 1)
   quad_vars <- result@quadratic_variables$as_list()
@@ -129,15 +129,15 @@ test_that("quadratic expression and linear expression", {
 })
 
 test_that("multiplication by 0 yields numeric", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   expect_equal(((x + 1) + (4 * y * x)) * 0, 0)
   expect_equal((x + 1) * 0, 0)
 })
 
 test_that("subtracting variables work", {
-  x <- new("RLPVariable", coefficient = 1, variable_index = 1L)
-  y <- new("RLPVariable", coefficient = 1, variable_index = 2L)
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
   result <- x + x - y
   vars <- result@variables$as_list()
   expect_equal(vars[["1"]]@coefficient, 2)
