@@ -102,10 +102,10 @@ library(ROI.plugin.glpk)
 model <- MIPModel(ROI_solver("glpk"))
 
 # 1 iff i gets assigned to warehouse j
-x <- model$add_variable(x[i, j], i = 1:n, j = 1:m, type = "binary")
+x <- model$add_variable(i = 1:n, j = 1:m, type = "binary")
   
 # 1 iff warehouse j is built
-y <- model$add_variable(y[j], j = 1:m, type = "binary")
+y <- model$add_variable(j = 1:m, type = "binary")
   
 # maximize the preferences
 model$set_objective(sum_expr(transportcost(i, j) * x[i, j], i = 1:n, j = 1:m) + 

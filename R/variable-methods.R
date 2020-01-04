@@ -66,28 +66,6 @@ setMethod("[", signature("RLPVariableList", i = "ANY", j = "ANY", drop = "missin
   }
   # stopifnot(all(vapply(indexes, length, integer(1L)) == 1L))
   # TODO: implement this without the linear overhead
-  var_name <- paste0(x@base_name, "/", paste0(indexes, collapse = "/"), collapse = "/")
+  var_name <- paste0(indexes, collapse = "/")
   x@variables_map$get(var_name)
-})
-
-# --- RLPVariableListBuilder
-setMethod("[", signature("RLPVariableListBuilder", i = "ANY", j = "ANY", drop = "missing"), function(x, i, j, ..., drop) {
-  indexes <- list()
-  if (!missing(i)) {
-    indexes[[length(indexes) + 1L]] <- i
-  }
-  if (!missing(j)) {
-    indexes[[length(indexes) + 1L]] <- j
-  }
-  for (arg in list(...)) {
-    indexes[[length(indexes) + 1L]] <- arg
-  }
-  # TODO: document or warn about it?
-  lapply(indexes, function(x) {
-    if (is.numeric(x) && !is.integer(x)) {
-      as.integer(x)
-    } else {
-      x
-    }
-  })
 })

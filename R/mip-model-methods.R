@@ -1,8 +1,7 @@
-mip_model_impl_add_variable <- function(expr, ..., type = "continuous", lb = -Inf, ub = Inf) {
+mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub = Inf) {
   stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L)
   type <- match.arg(type, c("continuous", "integer", "binary"))
-  expr <- rlang::enquo(expr)
-  var_names <- generate_variable_names(rlang::get_expr(expr), ...)
+  var_names <- generate_variable_names(...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     var_idx <- private$solver$add_variable(type, lb, ub)
     new("RLPVariable",
@@ -11,11 +10,10 @@ mip_model_impl_add_variable <- function(expr, ..., type = "continuous", lb = -In
     )
   })
   names(rlp_vars) <- var_names$var_names
-  variable_map <- fastmap::fastmap()
-  variable_map$mset(.list = rlp_vars)
   variable <- if (var_names$is_indexed_var) {
+    variable_map <- fastmap::fastmap()
+    variable_map$mset(.list = rlp_vars)
     new("RLPVariableList",
-      base_name = var_names$base_name,
       variables_map = variable_map,
       arity = var_names$arity,
       index_types = var_names$index_types
@@ -139,7 +137,9 @@ extract_solver_variable_value <- function(private, variable_expr,
     return_val <- as.data.frame(return_val, stringsAsFactors = FALSE)
     rownames(return_val) <- NULL
     return_val[["value"]] <- values
-    colnames(return_val) <- c("name", indexes, "value")
+    return_val[["name"]] <- var_name
+    colnames(return_val) <- c(indexes, "value", "name")
+    return_val <- return_val[, c("name", indexes, "value"), drop = FALSE]
     # set the right types for the index columns
     for (i in seq_along(indexes)) {
       type <- variable_container@index_types[[i]]
@@ -173,52 +173,41 @@ mip_model_impl_objective_value <- function() {
   private$solver$get_objective_value()
 }
 
-generate_variable_names <- function(expr, ...) {
-  if (is.name(expr)) {
-    expr_chr <- as.character(expr)
+generate_variable_names <- function(...) {
+  quantifiers <- construct_quantifiers(...)
+  if (ncol(quantifiers) == 0) {
     return(list(
-      base_name = expr_chr,
-      var_names = expr_chr,
+      var_names = "x",
       arity = 0L,
       is_indexed_var = FALSE
     ))
   }
-  is_bracket_call <- is.call(expr) && expr[[1L]] == "["
-  if (is_bracket_call) {
-    stopifnot(is.name(expr[[2L]]))
-    var_name <- as.character(expr[[2L]])
-    var_builder <- new("RLPVariableListBuilder")
-    envir <- new.env(parent = globalenv())
-    envir[[var_name]] <- var_builder
-    mod_envir <- build_modifier_envir(envir, ...)
-    index_list <- eval(expr, mod_envir)
-    index_list_data_type <- vapply(index_list, function(x) {
-      if (is.character(x)) {
-        "character"
-      } else if (is.integer(x)) {
-        "integer"
-      } else {
-        stop("Only integer and character quantifiers are supported. ",
-          "One of your quantifiers has the classes: ",
-          paste0(class(x), collapse = ","),
-          call. = FALSE
-        )
-      }
-    }, character(1L))
-    index_combinations <- as.data.frame(index_list)
-    names <- as.character(apply(index_combinations, 1L, function(row) {
-      # TODO: check if any value in row has "/"
-      paste0(var_name, "/", paste0(row, collapse = "/"), collapse = "/")
-    }))
-    return(list(
-      base_name = var_name,
-      var_names = names,
-      arity = ncol(index_combinations),
-      index_types = index_list_data_type,
-      is_indexed_var = TRUE
-    ))
-  }
-  stop("Expression is not supported", .call = FALSE)
+  index_list_data_type <- vapply(quantifiers, function(x) {
+    if (is.character(x)) {
+      "character"
+    } else if (is.integer(x)) {
+      "integer"
+    } else {
+      stop("Only integer and character quantifiers are supported. ",
+           "One of your quantifiers has the classes: ",
+           paste0(class(x), collapse = ","),
+           call. = FALSE
+      )
+    }
+  }, character(1L))
+  names(index_list_data_type) <- NULL
+
+  names <- as.character(apply(quantifiers, 1L, function(row) {
+    # TODO: check if any value in row has "/"
+    paste0(row, collapse = "/")
+  }))
+
+  list(
+    var_names = names,
+    arity = ncol(quantifiers),
+    index_types = index_list_data_type,
+    is_indexed_var = TRUE
+  )
 }
 
 split_equation <- function(expr) {
@@ -230,14 +219,4 @@ split_equation <- function(expr) {
     lhs = expr[[2L]],
     rhs = expr[[3L]]
   )
-}
-
-build_modifier_envir <- function(parent_envir, ...) {
-  envir <- new.env(parent = parent_envir)
-  quantifiers <- construct_quantifiers(...)
-  quantifier_names <- names(quantifiers)
-  for (mod_name in quantifier_names) {
-    envir[[mod_name]] <- quantifiers[[mod_name]]
-  }
-  envir
 }
