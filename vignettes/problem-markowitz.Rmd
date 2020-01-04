@@ -61,7 +61,7 @@ library(ROI.plugin.quadprog)
 ```{r}
 solver <- ROI_solver("quadprog")
 model <- MIPModel(solver)
-x <- model$add_variable(x[i], i = 1:n, lb = 0, ub = 1)
+x <- model$add_variable(i = 1:n, lb = 0, ub = 1)
 model$set_objective(sum_expr(2 * C[i, j] * x[i] * x[j], i = 1:n, j = 1:n))
 model$add_constraint(sum_expr(e[i] * x[i], i = 1:n) >= min_mu)
 model$add_constraint(sum_expr(x[i], i = 1:n) == 1)

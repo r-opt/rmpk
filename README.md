@@ -91,22 +91,22 @@ solver <- ROI_solver("glpk")
 v <- rnorm(10)
 w <- rnorm(10)
 model <- MIPModel(solver)
-x <- model$add_variable(x[i], type = "binary", i = 1:10)
+x <- model$add_variable(type = "binary", i = 1:10)
 model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
 model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
 model$optimize()
 model$get_variable_value(x[i])
 #>    name  i value
-#> 1     x  9     1
-#> 2     x  3     1
-#> 3     x  2     0
+#> 1     x  1     1
+#> 2     x  7     1
+#> 3     x  5     1
 #> 4     x  8     0
-#> 5     x 10     0
-#> 6     x  6     0
-#> 7     x  5     1
-#> 8     x  1     1
-#> 9     x  4     1
-#> 10    x  7     1
+#> 5     x  2     0
+#> 6     x 10     0
+#> 7     x  9     1
+#> 8     x  3     1
+#> 9     x  6     0
+#> 10    x  4     1
 ```
 
 ## There might be an API that supports pipes

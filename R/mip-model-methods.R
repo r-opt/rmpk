@@ -1,7 +1,6 @@
-mip_model_impl_add_variable <- function(expr, ..., type = "continuous", lb = -Inf, ub = Inf) {
+mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub = Inf) {
   stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L)
   type <- match.arg(type, c("continuous", "integer", "binary"))
-  expr <- rlang::enquo(expr)
   var_names <- generate_variable_names(...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     var_idx <- private$solver$add_variable(type, lb, ub)

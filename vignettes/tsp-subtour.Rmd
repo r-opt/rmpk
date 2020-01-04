@@ -89,7 +89,7 @@ model <- MIPModel(solver)
 # we create a variable that is 1 iff we travel from city i to j
 # filter guards are not yet supported so we generate all possible combinations
 # although the graph is undirected
-x <- model$add_variable(x[i, j], i = 1:n, j = 1:n,
+x <- model$add_variable(i = 1:n, j = 1:n,
                    type = "binary", lb = 0, ub = 1)
 
 # minimize travel distance
