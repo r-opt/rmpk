@@ -55,7 +55,7 @@ remotes::install_github("dirkschumacher/rmpk")
   - Mixed Integer Quadratic Programming (MIQP)
   - Mixed Integer Quadratically Constrained Programming (MIQCP)
 
-## (Planned) Features
+## Features
 
   - ✅ Algebraic modelling of mixed integer programming problems
 
@@ -109,20 +109,7 @@ model$get_variable_value(x[i])
 #> 10    x  4     1
 ```
 
-## There might be an API that supports pipes
-
-``` r
-library(magrittr)
-library(rmpk)
-library(ROI.plugin.glpk)
-solver <- ROI_solver("glpk", control = list(verbose = TRUE))
-model <- MIPModel(solver) %>% 
-  add_variable(x[i, j], i = 1:10, j = 1:10) %>% 
-  set_objective(sum_expr(x[i, j], i = 1:10, j = 1:10)) %>%
-  add_constraint(sum_expr(x[i, j], j = 1:i) <= 10, i = 1:10)
-```
-
-## Contribute
+## Thetribute
 
 The best way at the moment to contribute is to test the package, write
 documentation, propose features. Soon, code contributions are welcome as
