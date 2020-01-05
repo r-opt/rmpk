@@ -198,9 +198,9 @@ generate_variable_names <- function(...) {
       "integer"
     } else {
       stop("Only integer and character quantifiers are supported. ",
-           "One of your quantifiers has the classes: ",
-           paste0(class(x), collapse = ","),
-           call. = FALSE
+        "One of your quantifiers has the classes: ",
+        paste0(class(x), collapse = ","),
+        call. = FALSE
       )
     }
   }, character(1L))
