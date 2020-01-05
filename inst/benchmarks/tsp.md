@@ -27,28 +27,28 @@ rmpk <- function(solver = ROI_solver("glpk")) {
   model <- MIPModel(solver)
   
   # we create a variable that is 1 iff we travel from city i to j
-  model$add_variable(x[i, j], i = 1:n, j = 1:n, 
-               type = "integer", lb = 0, ub = 1)
+  x <- model$add_variable(i = 1:n, j = 1:n, 
+               type = "integer", lb = 0, ub = 1, i < j)
   
   # a helper variable for the MTZ formulation of the tsp
-  model$add_variable(u[i], i = 1:n, lb = 1, ub = n)
+  u <- model$add_variable(i = 1:n, lb = 1, ub = n)
   
   # minimize travel distance
-  model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min")
+  model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n, i < j), "min")
   
   # you cannot go to the same city
   # bounds not yet supported
-  # set_bounds(x[i, i], ub = 0, i = 1:n) %>%
-  model$add_constraint(x[i, i] == 0, i = 1:n)
+  model$set_bounds(x[i, i] == 0, i = 1:n)
+  
   # leave each city
-  model$add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n)
+  model$add_constraint(sum_expr(x[i, j], j = 1:n, i < j) == 1, i = 1:n)
   
   # visit each city
-  model$add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 1:n)
+  model$add_constraint(sum_expr(x[i, j], i = 1:n, i < j) == 1, j = 2:n)
   
   # ensure no subtours (arc constraints)
   model$add_constraint(u[i] >= 2, i = 2:n)
-  model$add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
+  model$add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n, i < j)
   
 }
 
@@ -57,11 +57,14 @@ microbenchmark::microbenchmark(rmpk(), times = 5)
 
     ## Unit: seconds
     ##    expr      min       lq     mean   median       uq      max neval
-    ##  rmpk() 6.946105 7.383062 8.764974 7.406077 9.461817 12.62781     5
+    ##  rmpk() 1.826265 1.907749 1.980437 2.031809 2.045543 2.090819     5
 
 ``` r
-#system.time(rmpk(solver = rmpk.glpk::GLPK()))
+system.time(rmpk(solver = rmpk.glpk::GLPK()))
 ```
+
+    ##    user  system elapsed 
+    ##   1.167   0.020   1.221
 
 ``` r
 # the fastest solver
@@ -113,11 +116,11 @@ NoOPSolver <- R6::R6Class(
 microbenchmark::microbenchmark(rmpk(solver = NoOPSolver$new()), times = 5)
 ```
 
-    ## Unit: seconds
-    ##                             expr      min       lq     mean   median
-    ##  rmpk(solver = NoOPSolver$new()) 2.035732 2.182463 2.324922 2.380111
+    ## Unit: milliseconds
+    ##                             expr      min       lq    mean   median
+    ##  rmpk(solver = NoOPSolver$new()) 872.3594 875.1495 938.629 884.7939
     ##        uq      max neval
-    ##  2.466109 2.560195     5
+    ##  1017.196 1043.646     5
 
 ``` r
 profvis::profvis(rmpk(solver = NoOPSolver$new()))

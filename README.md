@@ -109,7 +109,7 @@ model$get_variable_value(x[i])
 #> 10    x  4     1
 ```
 
-## Thetribute
+## Contribute
 
 The best way at the moment to contribute is to test the package, write
 documentation, propose features. Soon, code contributions are welcome as

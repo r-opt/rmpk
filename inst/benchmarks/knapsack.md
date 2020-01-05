@@ -32,7 +32,7 @@ roi <- function() {
 rmpk <- function() {
   solver <- ROI_solver("glpk")
   model <- MIPModel(solver)
-  model$add_variable(x[i], type = "binary", i = 1:10)
+  x <- model$add_variable(type = "binary", i = 1:10)
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10))
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
   model$optimize()
@@ -45,6 +45,6 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: milliseconds
-    ##    expr      min       lq     mean   median       uq       max neval
-    ##   roi() 10.65872 20.34249 29.73607 26.86282 33.96264  81.85952   100
-    ##  rmpk() 20.83997 38.80773 56.65038 48.70410 62.20311 309.85208   100
+    ##    expr       min        lq      mean    median        uq      max neval
+    ##   roi()  6.390367  6.577635  8.554846  6.952926  9.625678 30.57380   100
+    ##  rmpk() 11.964894 12.426721 15.787545 13.744604 17.035401 61.05705   100

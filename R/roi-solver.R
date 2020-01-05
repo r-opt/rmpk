@@ -8,6 +8,9 @@ ROI_solver <- function(solver, control = list()) {
   if (!requireNamespace("ROI", quietly = TRUE)) {
     stop("You need the package ROI to use this solver", call. = FALSE)
   }
+  if (!requireNamespace("slam", quietly = TRUE)) {
+    stop("You need the package slam to use this solver", call. = FALSE)
+  }
   ROIMipSolver$new(solver, control)
 }
 
@@ -35,7 +38,6 @@ ROIMipSolver <- R6::R6Class(
       new_idx <- ncol(private$A_mat) + 1L
       private$col_type[[length(private$col_type) + 1L]] <- type
       private$linear_obj_vec[[length(private$linear_obj_vec) + 1L]] <- 0
-      # TODO: why not require adding variables first?
       private$A_mat <- slam::simple_triplet_matrix(
         i = private$A_mat$i,
         j = private$A_mat$j,
