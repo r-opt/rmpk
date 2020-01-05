@@ -3,7 +3,6 @@ TSP
 
 ``` r
 # Model reference https://www.unc.edu/~pataki/papers/teachtsp.pdf
-library(rmpk)
 library(ROI)
 ```
 
@@ -15,6 +14,7 @@ library(ROI)
 
 ``` r
 library(ROI.plugin.glpk)
+library(magrittr)
 set.seed(42)
 
 n <- 50
@@ -23,48 +23,68 @@ max_y <- 500
 cities <- data.frame(id = 1:n, x = runif(n, max = max_x), y = runif(n, max = max_y))
 distance <- as.matrix(dist(dplyr::select(cities, x, y), diag = TRUE, upper = TRUE))
 
-rmpk <- function(solver = ROI_solver("glpk")) {
-  model <- MIPModel(solver)
+rmpk <- function(solver = rmpk::ROI_solver("glpk")) {
+  withr::with_package("rmpk", {
+  model <- rmpk::MIPModel(solver)
   
   # we create a variable that is 1 iff we travel from city i to j
   x <- model$add_variable(i = 1:n, j = 1:n, 
-               type = "integer", lb = 0, ub = 1, i < j)
+               type = "integer", lb = 0, ub = 1)
   
   # a helper variable for the MTZ formulation of the tsp
   u <- model$add_variable(i = 1:n, lb = 1, ub = n)
   
   # minimize travel distance
-  model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n, i < j), "min")
+  model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min")
   
   # you cannot go to the same city
   # bounds not yet supported
-  model$set_bounds(x[i, i] == 0, i = 1:n)
+  model$set_bounds(x[i, i], ub = 0, i = 1:n)
   
   # leave each city
-  model$add_constraint(sum_expr(x[i, j], j = 1:n, i < j) == 1, i = 1:n)
+  model$add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n)
   
   # visit each city
-  model$add_constraint(sum_expr(x[i, j], i = 1:n, i < j) == 1, j = 2:n)
+  model$add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 2:n)
   
   # ensure no subtours (arc constraints)
   model$add_constraint(u[i] >= 2, i = 2:n)
-  model$add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n, i < j)
-  
+  model$add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
+  })
 }
 
-microbenchmark::microbenchmark(rmpk(), times = 5)
+ompr_model <- function() {
+  withr::with_package("ompr", {
+    MIPModel() %>% 
+    add_variable(x[i,j], i = 1:n, j = 1:n, 
+               type = "integer", lb = 0, ub = 1) %>% 
+    add_variable(u[i], i = 1:n, lb = 1, ub = n) %>% 
+    set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min") %>% 
+    set_bounds(x[i, i], ub = 0, i = 1:n) %>% 
+    add_constraint(sum_expr(x[i, j], j = 1:n) == 1, i = 1:n) %>% 
+    add_constraint(sum_expr(x[i, j], i = 1:n) == 1, j = 2:n) %>% 
+    add_constraint(u[i] >= 2, i = 2:n) %>% 
+    add_constraint(u[i] - u[j] + 1 <= (n - 1) * (1 - x[i, j]), i = 2:n, j = 2:n)
+  })
+}
+
+microbenchmark::microbenchmark(rmpk(), ompr_model(), times = 5)
 ```
 
     ## Unit: seconds
-    ##    expr      min       lq     mean   median       uq      max neval
-    ##  rmpk() 1.826265 1.907749 1.980437 2.031809 2.045543 2.090819     5
+    ##          expr       min        lq      mean    median        uq       max
+    ##        rmpk()  5.689904  5.915012  6.224658  6.133286  6.190224  7.194861
+    ##  ompr_model() 12.136823 12.768666 15.263420 14.313765 16.463583 20.634265
+    ##  neval
+    ##      5
+    ##      5
 
 ``` r
 system.time(rmpk(solver = rmpk.glpk::GLPK()))
 ```
 
     ##    user  system elapsed 
-    ##   1.167   0.020   1.221
+    ##   2.449   0.041   2.858
 
 ``` r
 # the fastest solver
@@ -116,11 +136,11 @@ NoOPSolver <- R6::R6Class(
 microbenchmark::microbenchmark(rmpk(solver = NoOPSolver$new()), times = 5)
 ```
 
-    ## Unit: milliseconds
-    ##                             expr      min       lq    mean   median
-    ##  rmpk(solver = NoOPSolver$new()) 872.3594 875.1495 938.629 884.7939
+    ## Unit: seconds
+    ##                             expr      min       lq     mean   median
+    ##  rmpk(solver = NoOPSolver$new()) 1.601221 1.675597 1.757414 1.714991
     ##        uq      max neval
-    ##  1017.196 1043.646     5
+    ##  1.770802 2.024459     5
 
 ``` r
 profvis::profvis(rmpk(solver = NoOPSolver$new()))
