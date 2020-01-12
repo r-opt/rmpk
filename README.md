@@ -29,13 +29,15 @@ solver could be an interface to
 specific solver. Thus giving the option to directly communicate with the
 solver while still using an algebraic modelling framework.
 
-This is currently work in progress and experimental. I might merge it
-with [ompr](https://github.com/dirkschumacher/ompr) but it could also
-become the successor of [ompr](https://github.com/dirkschumacher/ompr) …
-not sure yet.
+This is currently work in progress and experimental - but working. I
+might merge it with [ompr](https://github.com/dirkschumacher/ompr) but
+it could also become the successor of
+[ompr](https://github.com/dirkschumacher/ompr) … not sure yet.
 
-Happy to receive feedback\! Also your opinion on merging it with `ompr`
-and thus breaking old code or creating a new package.
+If you want to see the package in action take a look at the
+[articles](https://dirkschumacher.github.io/rmpk/) in the docs.
+
+Happy to receive feedback\!
 
 *Still under development. Anything can change*
 

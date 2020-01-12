@@ -25,7 +25,7 @@ rmpk <- function(solver = rmpk::ROI_solver("glpk")) {
   model <- rmpk::MIPModel(solver)
   
   # we create a variable that is 1 iff we travel from city i to j
-  x <- model$add_variable(i = 1:n, j = 1:n,
+  x <- model$add_variable(i =  1:n, j = 1:n,
                type = "integer", lb = 0, ub = 1)
   
   # a helper variable for the MTZ formulation of the tsp

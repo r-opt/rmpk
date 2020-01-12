@@ -25,9 +25,11 @@ knitr::opts_chunk$set(
 
 The goal is to provide a modelling package that can both be used in packages and also in interactive analyses. It also has a different architecture as the modelling layer modifies a central solver. That solver could be an interface to [ROI](https://CRAN.R-project.org/package=ROI) or a shared pointer to a specific solver. Thus giving the option to directly communicate with the solver while still using an algebraic modelling framework.
 
-This is currently work in progress and experimental. I might merge it with [ompr](https://github.com/dirkschumacher/ompr) but it could also become the successor of [ompr](https://github.com/dirkschumacher/ompr) ... not sure yet.
+This is currently work in progress and experimental - but working. I might merge it with [ompr](https://github.com/dirkschumacher/ompr) but it could also become the successor of [ompr](https://github.com/dirkschumacher/ompr) ... not sure yet.
 
-Happy to receive feedback! Also your opinion on merging it with `ompr` and thus breaking old code or creating a new package.
+If you want to see the package in action take a look at the [articles](https://dirkschumacher.github.io/rmpk/) in the docs.
+
+Happy to receive feedback!
 
 _Still under development. Anything can change_
 
