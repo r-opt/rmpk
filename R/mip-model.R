@@ -2,10 +2,22 @@
 #'
 #' @param solver a solver object
 #' @include roi-solver.R
+#' @include cache-solver.R
 #' @export
-MIPModel <- function(solver) {
+MIPModel <- function(solver = cache_solver()) {
   RMPKMipModel$new(solver)
 }
+
+#' A new mixed-integer programming Model
+#'
+#' @param solver a solver object
+#' @include roi-solver.R
+#' @include cache-solver.R
+#' @export
+Model <- function(solver = cache_solver()) {
+  RMPKMipModel$new(solver)
+}
+
 
 #' @include mip-model-methods.R
 #' @noRd
@@ -36,6 +48,7 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       cat("MIP Model: \n")
       cat("  Variables: ", private$solver$nvars(), "\n", sep = "")
       cat("  Constraints: ", private$solver$nconstraints(), "\n", sep = "")
+      cat("  Solver:", format(private$solver), "\n")
       invisible(self)
     }
   ),

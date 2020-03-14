@@ -34,6 +34,7 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
     obj_variables <- ensure_linear_expression(obj_variables)
     private$solver$set_linear_objective(obj_variables, sense)
   }
+
   invisible()
 }
 
@@ -109,7 +110,7 @@ mip_model_impl_get_value <- function(variable_selector) {
   )
 }
 
-mip_model_impl_get_variable_dual <- function(variable_selector) {
+mip_model_impl_get_variable_dual <- function() {
   extract_solver_variable_value(
     private,
     rlang::enquo(variable_selector),
