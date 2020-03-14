@@ -57,6 +57,9 @@ RMPSolverInterface <- R6::R6Class(
     },
     get_termination_message = function() {
       not_implemented()
+    },
+    format = function(...) {
+      "unknown solver"
     }
   )
 )

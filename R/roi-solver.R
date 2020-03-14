@@ -148,11 +148,18 @@ ROIMipSolver <- R6::R6Class(
         bounds = var_bounds,
         maximum = private$obj_sense == "max"
       )
-      private$roi_result <- ROI::ROI_solve(
-        op,
-        private$roi_solver_name,
-        control = private$roi_control_list
-      )
+      private$roi_result <- if (is.null(private$roi_solver_name)) {
+        private$roi_result <- ROI::ROI_solve(
+          op,
+          control = private$roi_control_list
+        )
+      } else {
+        private$roi_result <- ROI::ROI_solve(
+          op,
+          private$roi_solver_name,
+          control = private$roi_control_list
+        )
+      }
     },
     get_variable_value = function(var_index) {
       private$roi_result$solution[[var_index]]
@@ -197,6 +204,13 @@ ROIMipSolver <- R6::R6Class(
     },
     constraint_direction = function() {
       private$row_dir
+    },
+    format = function(...) {
+      if (!is.null(private$roi_solver_name)) {
+        paste0("ROI solver bound to ", private$roi_solver_name)
+      } else {
+        "ROI solver"
+      }
     }
   ),
   private = list(
