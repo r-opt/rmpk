@@ -143,3 +143,23 @@ test_that("subtracting variables work", {
   expect_equal(vars[["1"]]@coefficient, 2)
   expect_equal(vars[["2"]]@coefficient, -1)
 })
+
+test_that("linear expression times variable", {
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  expect_silent(result <- (-3 * x + 1) * x)
+  quad_vars <- result@quadratic_variables$as_list()
+  lin_expr <- result@linear_part
+  expect_equal(quad_vars$`1_1`@coefficient, -3)
+  expect_equal(quad_vars$`1_1`@variable1@variable_index, 1)
+  expect_equal(quad_vars$`1_1`@variable2@variable_index, 1)
+  expect_equal(lin_expr@constant, 0)
+  expect_equal(lin_expr@variables$as_list()[[1]], x)
+})
+
+test_that("pow of difference of two variables works", {
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 2L)
+  expect_silent(result <- (x - y)^2)
+  quad_part <- result@quadratic_variables$as_list()
+  expect_equal(length(quad_part), 3)
+})

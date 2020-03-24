@@ -60,6 +60,27 @@ setMethod("*", signature(e1 = "numeric", e2 = "RMPKLinearExpression"), function(
   e2 * e1
 })
 
+setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "RMPKVariable"), function(e1, e2) {
+  Reduce(function(acc, el) {
+    acc + e2 * el
+  }, e1@variables$as_list(), init = 0) + e2 * e1@constant
+})
+
+setMethod("*", signature(e1 = "RMPKVariable", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  e2 * e1
+})
+
+setMethod("*", signature(e1 = "RMPKLinearExpression", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  Reduce(function(acc, el) {
+    acc + e1 * el
+  }, e2@variables$as_list(), init = 0) + e1 * e2@constant
+})
+
+setMethod("^", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
+  stopifnot(e2 == 2)
+  e1 * e1
+})
+
 ensure_linear_expression <- function(expr) {
   if (is_linear_expression(expr)) {
     return(expr)
