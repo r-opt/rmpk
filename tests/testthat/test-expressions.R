@@ -144,6 +144,14 @@ test_that("subtracting variables work", {
   expect_equal(vars[["2"]]@coefficient, -1)
 })
 
+test_that("squared linear expression", {
+  x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  result <- (x - 10)^2
+  expect_equal(result@quadratic_variables$as_list()[[1]]@coefficient, 1)
+  expect_equal(result@linear_part@variables$as_list()[[1]]@coefficient, -20)
+  expect_equal(result@linear_part@constant, 100)
+})
+
 test_that("linear expression times variable", {
   x <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
   expect_silent(result <- (-3 * x + 1) * x)
