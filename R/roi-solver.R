@@ -106,7 +106,7 @@ ROIMipSolver <- R6::R6Class(
         ROI::L_objective(self$objective_coefficients())
       } else {
         ROI::Q_objective(
-          Q = private$obj_Q_mat,
+          Q = 2 * private$obj_Q_mat,
           L = self$objective_coefficients()
         )
       }
