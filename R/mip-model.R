@@ -7,6 +7,16 @@ MIPModel <- function(solver) {
   RMPKMipModel$new(solver)
 }
 
+#' A new Model
+#'
+#' @param solver a solver object
+#' @include roi-solver.R
+#' @export
+Model <- function(solver) {
+  RMPKMipModel$new(solver)
+}
+
+
 #' @include mip-model-methods.R
 #' @noRd
 RMPKMipModel <- R6::R6Class("RMPKMipModel",
