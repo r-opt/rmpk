@@ -4,7 +4,9 @@
 \name{TERMINATION_STATUS}
 \alias{TERMINATION_STATUS}
 \title{Solver termination status codes}
-\format{An object of class \code{environment} of length 7.}
+\format{
+An object of class \code{environment} of length 7.
+}
 \usage{
 TERMINATION_STATUS
 }
