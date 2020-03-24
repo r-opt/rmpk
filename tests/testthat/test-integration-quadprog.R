@@ -43,7 +43,8 @@ test_that("account for 1/2 in constraints", {
     sum_expr((y[i] - sum_expr(beta[j] * X[i, j], j = 1:2))^2, i = 1:10)
   )
   model$optimize()
-  res <- model$get_variable_value(beta[i])$value
+  res <- model$get_variable_value(beta[i])
+  res <- res[order(res$i), "value", drop = TRUE]
   expect_equivalent(
     as.numeric(res),
     as.numeric(expected),
