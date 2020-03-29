@@ -171,3 +171,8 @@ test_that("pow of difference of two variables works", {
   quad_part <- result@quadratic_variables$as_list()
   expect_equal(length(quad_part), 3)
 })
+
+test_that("difference on number and variable works", {
+  y <- new("RMPKVariable", coefficient = 1, variable_index = 1L)
+  expect_silent(result <- y - (1 - y))
+})

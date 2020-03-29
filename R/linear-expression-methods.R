@@ -35,6 +35,10 @@ setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "RMPKVariable"), func
   e1 + -1 * e2
 })
 
+setMethod("-", signature(e1 = "RMPKVariable", e2 = "RMPKLinearExpression"), function(e1, e2) {
+  e1 + -1 * e2
+})
+
 setMethod("-", signature(e1 = "RMPKLinearExpression", e2 = "numeric"), function(e1, e2) {
   slot(e1, "constant", check = FALSE) <- e1@constant - e2
   e1
