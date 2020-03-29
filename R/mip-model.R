@@ -24,6 +24,7 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
     initialize = function(solver) {
       private$solver <- solver
       private$row_indexes <- integer(0L)
+      private$variable_map <- fastmap::fastmap()
     },
 
     # build it
@@ -47,12 +48,31 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       cat("  Variables: ", private$solver$nvars(), "\n", sep = "")
       cat("  Constraints: ", private$solver$nconstraints(), "\n", sep = "")
       invisible(self)
+    },
+    get_variable_ref = function(name) {
+      stopifnot(is.character(name), length(name) == 1L)
+      if (private$variable_map$has(name)) {
+        return(private$variable_map$get(name))
+      }
+      stop("No variable is registered under the name ", name, call. = FALSE)
     }
   ),
   private = list(
     solver = NULL,
     row_indexes = NULL,
-
+    variable_map = NULL,
+    register_variable = function(name, value) {
+      stopifnot(is.character(name))
+      if (private$variable_map$has(name)) {
+        stop(
+          "A variable with the name '",
+          name,
+          "' has already been added to the model",
+          call. = FALSE
+        )
+      }
+      private$variable_map$set(name, value)
+    },
     add_row = function(local_envir, eq) {
       lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
       row_idx <- if (is_quadratic_expression(lhs)) {
