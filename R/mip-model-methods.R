@@ -1,5 +1,6 @@
-mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub = Inf) {
-  stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L)
+mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -Inf, ub = Inf) {
+  stopifnot(length(type) == 1L, length(lb) == 1L, length(ub) == 1L,
+            length(name) == 1L, is.character(name), !is.na(name))
   type <- match.arg(type, c("continuous", "integer", "binary"))
   var_names <- generate_variable_names(...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
@@ -21,6 +22,7 @@ mip_model_impl_add_variable <- function(..., type = "continuous", lb = -Inf, ub 
   } else {
     rlp_vars[[1L]]
   }
+  private$register_variable(name, variable)
   variable
 }
 

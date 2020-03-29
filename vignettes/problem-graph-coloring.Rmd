@@ -68,10 +68,10 @@ max_colors <- 4 # 4 should be enough. But you increase this number.
 model <- MIPModel(ROI_solver("glpk", control = list(presolve = TRUE, verbose = TRUE)))
   
 # 1 iff node i has color k
-x <- model$add_variable(type = "integer", i = 1:n, k = 1:max_colors, lb = 0, ub = 1)
+x <- model$add_variable("x", type = "integer", i = 1:n, k = 1:max_colors, lb = 0, ub = 1)
   
 # 1 iff color k is used
-y <- model$add_variable(type = "binary", k = 1:max_colors)
+y <- model$add_variable("y", type = "binary", k = 1:max_colors)
   
 # minimize colors
 # multiply by k for symmetrie breaking (signifcant diff. in solution time)
