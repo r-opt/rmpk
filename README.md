@@ -7,12 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Travis build
-status](https://travis-ci.org/dirkschumacher/rmpk.svg?branch=master)](https://travis-ci.org/dirkschumacher/rmpk)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/dirkschumacher/rmpk?branch=master&svg=true)](https://ci.appveyor.com/project/dirkschumacher/rmpk)
-[![Codecov test
-coverage](https://codecov.io/gh/dirkschumacher/rmpk/branch/master/graph/badge.svg)](https://codecov.io/gh/dirkschumacher/rmpk?branch=master)
+[![R build
+status](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs.
