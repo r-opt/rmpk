@@ -43,7 +43,7 @@ You can install the released version of RMPK from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-remotes::install_github("dirkschumacher/rmpk")
+remotes::install_github("r-opt/rmpk")
 ```
 
 ## Supported types
