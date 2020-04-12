@@ -19,7 +19,7 @@ Suggests:
     ROI.plugin.glpk,
     ROI.plugin.quadprog,
     ROI.plugin.alabama,
-    ROIsolver,
+    ROIoptimzer,
     testthat (>= 2.1.0),
 Imports: 
     fastmap,
@@ -29,7 +29,7 @@ Imports:
     MOI
 Remotes:
     r-opt/MOI
-    r-opt/ROIsolver
+    r-opt/ROIoptimzer
 Collate: 
     'helper.R'
     'variable-class.R'

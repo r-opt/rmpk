@@ -5,8 +5,8 @@
 #'
 #' @export
 ROI_optimizer <- function(solver, control = list()) {
-  if (!requireNamespace("ROIsolver", quietly = TRUE)) {
-    stop("You need the package ROIsolver to use this optimizer", call. = FALSE)
+  if (!requireNamespace("ROIoptimzer", quietly = TRUE)) {
+    stop("You need the package ROIoptimzer to use this optimizer", call. = FALSE)
   }
-  ROIsolver::ROI_optimizer(solver, control)
+  ROIoptimzer::ROI_optimizer(solver, control)
 }
