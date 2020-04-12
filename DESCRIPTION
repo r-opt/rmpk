@@ -29,7 +29,7 @@ Imports:
     MOI
 Remotes:
     r-opt/MOI,
-    r-opt/ROIoptimzer
+    r-opt/ROIoptimizer
 Collate: 
     'helper.R'
     'variable-class.R'
