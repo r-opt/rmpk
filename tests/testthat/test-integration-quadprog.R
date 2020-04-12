@@ -2,7 +2,7 @@ library(ROI.plugin.quadprog)
 library(ROI.plugin.alabama)
 
 test_that("solve quad problem wit quadratic obj", {
-  solver <- ROI_solver("quadprog")
+  solver <- ROI_optimizer("quadprog")
   model <- MIPModel(solver)
   # a simple quadratic program from the ROI docs
   x <- model$add_variable("x", i = 1:3)
@@ -17,7 +17,7 @@ test_that("solve quad problem wit quadratic obj", {
 })
 
 test_that("solve quad problem wit quadratic obj and constraint", {
-  solver <- ROI_solver("alabama", control = list(start = c(0, 0, 0)))
+  solver <- ROI_optimizer("alabama", control = list(start = c(0, 0, 0)))
   model <- MIPModel(solver)
   # a simple quadratic program from the ROI docs
   x <- model$add_variable("x", i = 1:3, lb = 0, ub = 10)
@@ -37,7 +37,7 @@ test_that("account for 1/2 in constraints", {
   y <- 2.3 + b * 5 + rnorm(10)
   expected <- coef(lm(y ~ b))
   X <- matrix(c(rep.int(1, 10), b), ncol = 2)
-  model <- Model(solver = ROI_solver("quadprog"))
+  model <- optimization_model(solver = ROI_optimizer("quadprog"))
   beta <- model$add_variable("x", i = 1:2)
   model$set_objective(
     sum_expr((y[i] - sum_expr(beta[j] * X[i, j], j = 1:2))^2, i = 1:10)

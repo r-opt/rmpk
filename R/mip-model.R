@@ -12,7 +12,7 @@ MIPModel <- function(solver) {
 #' @param solver a solver object
 #' @include roi-solver.R
 #' @export
-Model <- function(solver) {
+optimization_model <- function(solver) {
   RMPKMipModel$new(solver)
 }
 
@@ -45,8 +45,8 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
     # other stuff
     print = function(...) {
       cat("MIP Model: \n")
-      cat("  Variables: ", private$solver$nvars(), "\n", sep = "")
-      cat("  Constraints: ", private$solver$nconstraints(), "\n", sep = "")
+      cat("  Variables: ", moi_get(private$solver, MOI::number_of_variables), "\n", sep = "")
+      cat("  Constraints: ", moi_get(private$solver, MOI::number_of_constraints), "\n", sep = "")
       invisible(self)
     },
     get_variable_ref = function(name) {
@@ -54,7 +54,7 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       if (private$variable_map$has(name)) {
         return(private$variable_map$get(name))
       }
-      stop("No variable is registered under the name ", name, call. = FALSE)
+      stop("No variable is registered u\nder the name ", name, call. = FALSE)
     }
   ),
   private = list(
@@ -74,25 +74,24 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       private$variable_map$set(name, value)
     },
     add_row = function(local_envir, eq) {
-      lhs <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
-      row_idx <- if (is_quadratic_expression(lhs)) {
-        lhs <- ensure_quadratic_expression(lhs)
-        rhs <- lhs@linear_part@constant * -1
-        private$solver$add_quadratic_constraint(
-          lhs,
-          type = eq$operator,
-          rhs = rhs
-        )
+      func <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
+      rhs <- func@constant * -1
+      func@constant <- 0
+      set <- if (eq$operator == "<=") {
+        less_than_set(rhs)
+      } else if (eq$operator == "==") {
+        equal_to_set(rhs)
+      } else if (eq$operator == ">=") {
+        greater_than_set(rhs)
       } else {
-        lhs <- ensure_linear_expression(lhs)
-        rhs <- lhs@constant * -1
-        private$solver$add_linear_constraint(
-          lhs,
-          type = eq$operator,
-          rhs = rhs
-        )
+        stop("unsupported operator", call. = FALSE)
       }
-      private$row_indexes[[length(private$row_indexes) + 1L]] <- row_idx
+      row_idx <- moi_add_constraint(
+        private$solver,
+        func,
+        set
+      )
+      private$row_indexes[[length(private$row_indexes) + 1L]] <- row_idx@value
       invisible()
     }
   )

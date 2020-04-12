@@ -1,7 +1,7 @@
 library(ROI.plugin.glpk)
 
 test_that("solve a knapsack problem", {
-  solver <- ROI_solver("glpk")
+  solver <- ROI_optimizer("glpk")
 
   v <- rnorm(10)
   w <- rnorm(10)
@@ -11,11 +11,11 @@ test_that("solve a knapsack problem", {
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
   model$optimize()
-  expect_equal(model$termination_status(), TERMINATION_STATUS$SUCCESS)
+  expect_equal(model$termination_status(), SUCCESS)
 })
 
 test_that("solve a bounded knapsack problem", {
-  solver <- ROI_solver("glpk")
+  solver <- ROI_optimizer("glpk")
   model <- MIPModel(solver)
   x <- model$add_variable("x", type = "integer", lb = 0, ub = 1, i = 1:10) # ROI has problems with binary and bounds
   model$set_objective(sum_expr(x[i], i = 1:10), sense = "max")
@@ -33,7 +33,7 @@ test_that("solve a bounded knapsack problem", {
 })
 
 test_that("it supports column/row duals", {
-  model <- MIPModel(ROI_solver("glpk"))
+  model <- MIPModel(ROI_optimizer("glpk"))
   x <- model$add_variable("x", i = 1:10)
   model$set_objective(sum_expr(x[i], i = 1:10), sense = "min")
   model$add_constraint(x[i] >= i, i = 1:10)
@@ -50,7 +50,7 @@ test_that("it supports column/row duals", {
 })
 
 test_that("it handles constant in objective function", {
-  solver <- ROI_solver("glpk")
+  solver <- ROI_optimizer("glpk")
   model <- MIPModel(solver)
   x <- model$add_variable("x", type = "binary")
   model$set_objective(x + 1, sense = "max")
@@ -59,7 +59,10 @@ test_that("it handles constant in objective function", {
 })
 
 test_that("ROI returns OTHER_ERROR on time limit", {
-  solver <- ROI_solver("glpk", control = list(tm_limit = 1, verbose = FALSE))
+  solver <- ROI_optimizer(
+    "glpk",
+    control = list(tm_limit = 1, verbose = FALSE)
+  )
 
   v <- rnorm(100)
   w <- runif(100)
@@ -69,6 +72,6 @@ test_that("ROI returns OTHER_ERROR on time limit", {
   model$set_objective(sum_expr(v[i] * x[i], i = 1:100), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:100) <= 10)
   model$optimize()
-  expect_equal(model$termination_status(), TERMINATION_STATUS$OTHER_ERROR)
+  expect_equal(model$termination_status(), OTHER_ERROR)
   expect_true(is.list(model$termination_solver_message()))
 })

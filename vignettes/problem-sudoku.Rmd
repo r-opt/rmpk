@@ -25,7 +25,7 @@ library(rmpk)
 library(dplyr)
 library(ROI.plugin.glpk)
 n <- 9
-model <- MIPModel(ROI_solver("glpk"))
+model <- optimization_model(ROI_optimizer("glpk"))
   
   # The number k stored in position i,j
 x <- model$add_variable("x", i = 1:n, j = 1:n, k = 1:9, type = "binary")

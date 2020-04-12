@@ -2,37 +2,54 @@
 #'
 #' @export
 #' @rdname variables
-setClass("RMPKVariable", slots = c(
-  coefficient = "numeric",
-  variable_index = "integer"
-))
+setClass("RMPK_variable",
+  slots = c(
+    model_ref = "ANY"
+  ), contains = "MOI_variable_index"
+)
 
+RMPK_variable <- function(index, model_ref = NULL) {
+  stopifnot(is.numeric(index), length(index) == 1)
+  stopifnot(is.null(model_ref) || inherits(model_ref, "RMPKMipModel"))
+  new("RMPK_variable", value = index, model_ref = model_ref)
+}
+
+#' A variable reference
+#'
 #' @export
 #' @rdname variables
+setClass("RMPK_constraint",
+  slots = c(
+    model_ref = "ANY"
+  ), contains = "MOI_constraint_index"
+)
+
+RMPK_constraint <- function(index, model_ref = NULL) {
+  stopifnot(is.numeric(index), length(index) == 1)
+  stopifnot(is.null(model_ref) || inherits(model_ref, "RMPKMipModel"))
+  new("RMPK_constraint", value = index, model_ref = model_ref)
+}
+
 setMethod(
   "format",
-  "RMPKVariable",
+  "RMPK_variable",
   function(x, ...) {
-    format(paste0("Variable (internal solver ref = ", x@variable_index, ")"))
+    format(paste0("Variable (internal solver ref = ", x@value, ")"))
   }
 )
 
-#' @export
-#' @rdname variables
 setMethod(
   "print",
-  "RMPKVariable",
+  "RMPK_variable",
   function(x, ...) {
     cat(format(x))
     invisible(x)
   }
 )
 
-#' @export
-#' @rdname variables
 setMethod(
   "show",
-  "RMPKVariable",
+  "RMPK_variable",
   function(object) {
     print(object)
   }
@@ -42,46 +59,33 @@ setMethod(
 # This might be faster, as we know the dimensions
 #' @rdname variables
 #' @export
-setClass("RMPKVariableList", slots = c(
+setClass("RMPK_variable_list", slots = c(
   variables_map = "ANY",
   arity = "integer",
   index_types = "character"
 ))
 
-#' @export
-#' @rdname variables
 setMethod(
   "format",
-  "RMPKVariableList",
+  "RMPK_variable_list",
   function(x, ...) {
     format(paste0("Variable container: size = ", x@variables_map$size()))
   }
 )
 
-#' @export
-#' @rdname variables
 setMethod(
   "print",
-  "RMPKVariableList",
+  "RMPK_variable_list",
   function(x, ...) {
     cat(format(x))
     invisible(x)
   }
 )
 
-#' @export
-#' @rdname variables
 setMethod(
   "show",
-  "RMPKVariableList",
+  "RMPK_variable_list",
   function(object) {
     print(object)
   }
 )
-
-is_variable <- function(x) {
-  inherits(x, "RMPKVariable")
-}
-is_variable_container <- function(x) {
-  inherits(x, "RMPKVariableList")
-}

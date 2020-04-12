@@ -77,7 +77,7 @@ library(ROI.plugin.glpk)
 ```
 
 ```{r}
-model <- MIPModel(ROI_solver("glpk"))
+model <- optimization_model(ROI_optimizer("glpk"))
 
 # we create a variable that is 1 iff we travel from city i to j
 x <- model$add_variable("x", i = 1:n, j = 1:n,

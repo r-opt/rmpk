@@ -30,7 +30,7 @@ roi <- function() {
 }
 
 rmpk <- function() {
-  solver <- ROI_solver("glpk")
+  solver <- ROI_optimizer("glpk")
   model <- MIPModel(solver)
   x <- model$add_variable(type = "binary", i = 1:10)
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10))

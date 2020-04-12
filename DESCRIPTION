@@ -19,26 +19,26 @@ Suggests:
     ROI.plugin.glpk,
     ROI.plugin.quadprog,
     ROI.plugin.alabama,
-    slam,
-    testthat (>= 2.1.0)
+    ROIsolver,
+    testthat (>= 2.1.0),
 Imports: 
     fastmap,
     R6,
     methods,
-    rlang
+    rlang,
+    MOI
+Remotes:
+    r-opt/MOI
+    r-opt/ROIsolver
 Collate: 
     'helper.R'
-    'linear-expression-class.R'
     'variable-class.R'
     'variable-methods.R'
     'linear-expression-methods.R'
     'mip-model-methods.R'
-    'solver-interface.R'
     'roi-solver.R'
     'mip-model.R'
-    'quadratic-expression-class.R'
     'quadratic-expression-methods.R'
     'rmpk-package.R'
     'sum-expr.R'
-    'termination-status.R'
 VignetteBuilder: knitr
