@@ -28,7 +28,7 @@ Imports:
     rlang,
     MOI
 Remotes:
-    r-opt/MOI
+    r-opt/MOI,
     r-opt/ROIoptimzer
 Collate: 
     'helper.R'
