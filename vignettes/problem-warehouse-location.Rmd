@@ -99,7 +99,7 @@ The model with `rmpk` then looks like this:
 library(rmpk)
 library(magrittr)
 library(ROI.plugin.glpk)
-model <- MIPModel(ROI_solver("glpk"))
+model <- optimization_model(ROI_optimizer("glpk"))
 
 # 1 iff i gets assigned to warehouse j
 x <- model$add_variable("x", i = 1:n, j = 1:m, type = "binary")

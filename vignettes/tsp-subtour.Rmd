@@ -84,7 +84,7 @@ library(rmpk.glpk)
 
 ```{r}
 solver <- GLPK()
-model <- MIPModel(solver)
+model <- optimization_model(solver)
 
 # we create a variable that is 1 iff we travel from city i to j
 # filter guards are not yet supported so we generate all possible combinations
