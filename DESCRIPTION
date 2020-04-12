@@ -20,7 +20,7 @@ Suggests:
     ROI.plugin.quadprog,
     ROI.plugin.alabama,
     ROIoptimzer,
-    testthat (>= 2.1.0),
+    testthat (>= 2.1.0)
 Imports: 
     fastmap,
     R6,
