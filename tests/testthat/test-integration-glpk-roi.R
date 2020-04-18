@@ -14,6 +14,25 @@ test_that("solve a knapsack problem", {
   expect_equal(model$termination_status(), SUCCESS)
 })
 
+test_that("solve a knapsack problem #", {
+  solver <- ROI_optimizer("glpk")
+
+  v <- rnorm(10)
+  w <- rnorm(10, mean = 4)
+
+  model <- MIPModel(solver)
+  x <- model$add_variable("x", i = 1:10, type = "binary")
+  model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
+  model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) + 6, in_set = MOI::less_than_set(10))
+  model$optimize()
+  expect_equal(model$termination_status(), SUCCESS)
+  res <- model$get_variable_value(x[i])
+  res <- res[order(res$i), ]
+  expect_true(
+    crossprod(res$value, w) + 6 <= 10
+  )
+})
+
 test_that("solve a bounded knapsack problem", {
   solver <- ROI_optimizer("glpk")
   model <- MIPModel(solver)
