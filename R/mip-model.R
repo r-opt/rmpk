@@ -86,13 +86,16 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       } else {
         stop("unsupported operator", call. = FALSE)
       }
+      private$add_set_constraint(func, set)
+      invisible()
+    },
+    add_set_constraint = function(func, set) {
       row_idx <- moi_add_constraint(
         private$solver,
         func,
         set
       )
       private$row_indexes[[length(private$row_indexes) + 1L]] <- row_idx@value
-      invisible()
     }
   )
 )

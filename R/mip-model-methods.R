@@ -63,13 +63,23 @@ mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
   invisible()
 }
 
-mip_model_impl_add_constraint <- function(expr, ...) {
+mip_model_impl_add_constraint <- function(expr, ..., in_set = NULL) {
+  # either we have an equation in expr or in_set != NULL
   expr <- rlang::enquo(expr)
-  eq <- split_equation(rlang::get_expr(expr))
-
-  eval_per_quantifier(function(local_envir) {
-    private$add_row(local_envir, eq)
-  }, base_envir = rlang::get_env(expr), ...)
+  eval_fun <- if (!is.null(in_set)) {
+    function(local_envir) {
+      private$add_set_constraint(
+        func = rlang::eval_tidy(expr, env = local_envir),
+        set = in_set
+      )
+    }
+  } else {
+    eq <- split_equation(rlang::get_expr(expr))
+    function(local_envir) {
+      private$add_row(local_envir, eq)
+    }
+  }
+  eval_per_quantifier(eval_fun, base_envir = rlang::get_env(expr), ...)
 
   invisible()
 }
