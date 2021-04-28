@@ -122,3 +122,11 @@ test_that("you can retrieve variables from the model", {
   )
   expect_error(model$get_variable_ref("test"))
 })
+
+test_that("you can use e as an index name", {
+  model <- optimization_model(ROI_optimizer("glpk"))
+  x <- model$add_variable("x", e = 1:3)
+  expect_silent(
+    model$add_constraint(x[e] == 1, e = 1:3)
+  )
+})
