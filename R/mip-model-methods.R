@@ -58,19 +58,19 @@ mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
     if (!is.null(ub)) {
       moi_add_constraint(private$solver, single_variable(var), less_than_set(ub))
     }
-  }, base_envir = rlang::get_env(expr), ...)
+  }, .base_envir = rlang::get_env(expr), ...)
 
   invisible()
 }
 
-mip_model_impl_add_constraint <- function(expr, ..., in_set = NULL) {
+mip_model_impl_add_constraint <- function(.expr, ..., .in_set = NULL) {
   # either we have an equation in expr or in_set != NULL
-  expr <- rlang::enquo(expr)
-  eval_fun <- if (!is.null(in_set)) {
+  expr <- rlang::enquo(.expr)
+  eval_fun <- if (!is.null(.in_set)) {
     function(local_envir) {
       private$add_set_constraint(
         func = rlang::eval_tidy(expr, env = local_envir),
-        set = in_set
+        set = .in_set
       )
     }
   } else {
@@ -79,12 +79,12 @@ mip_model_impl_add_constraint <- function(expr, ..., in_set = NULL) {
       private$add_row(local_envir, eq)
     }
   }
-  eval_per_quantifier(eval_fun, base_envir = rlang::get_env(expr), ...)
+  eval_per_quantifier(eval_fun, .base_envir = rlang::get_env(expr), ...)
 
   invisible()
 }
 
-eval_per_quantifier <- function(eval_fun, base_envir, ...) {
+eval_per_quantifier <- function(.eval_fun, .base_envir, ...) {
   quantifiers <- construct_quantifiers(...)
   quantifier_var_names <- names(quantifiers)
   no_quantifiers <- nrow(quantifiers) == 0L || ncol(quantifiers) == 0L
@@ -94,16 +94,16 @@ eval_per_quantifier <- function(eval_fun, base_envir, ...) {
     return()
   }
   if (no_quantifiers) {
-    local_envir <- new.env(parent = base_envir)
-    eval_fun(local_envir)
+    local_envir <- new.env(parent = .base_envir)
+    .eval_fun(local_envir)
   } else {
     for (i in seq_len(nrow(quantifiers))) {
-      local_envir <- new.env(parent = base_envir)
+      local_envir <- new.env(parent = .base_envir)
       vars <- quantifiers[i, , drop = TRUE]
       for (j in seq_len(ncol(quantifiers))) {
         local_envir[[quantifier_var_names[j]]] <- vars[[j]]
       }
-      eval_fun(local_envir)
+      .eval_fun(local_envir)
     }
   }
 }
