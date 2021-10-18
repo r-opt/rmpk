@@ -19,7 +19,7 @@ Suggests:
     ROI.plugin.glpk,
     ROI.plugin.quadprog,
     ROI.plugin.alabama,
-    ROIoptimzer,
+    ROIoptimizer,
     testthat (>= 2.1.0)
 Imports: 
     fastmap,
