@@ -1,6 +1,6 @@
 test_that("multiplication works", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- (-x + y * 2 - 2) * 18
   vars <- result@terms
   expect_equal(result@constant, -2 * 18)
@@ -9,9 +9,9 @@ test_that("multiplication works", {
 })
 
 test_that("complex test case #1", {
-  u1 <- scalar_affine_term(1, MOI::variable_index(1L))
-  u2 <- scalar_affine_term(1, MOI::variable_index(2L))
-  x <- scalar_affine_term(1, MOI::variable_index(3L))
+  u1 <- moi_scalar_affine_term(1, moi_variable_index(1L))
+  u2 <- moi_scalar_affine_term(1, moi_variable_index(2L))
+  x <- moi_scalar_affine_term(1, moi_variable_index(3L))
   n <- 10
   expect_silent(
     result <- u1 - u2 + 1 - ((n - 1) * (1 - x))
@@ -42,8 +42,8 @@ test_that("equations can be splitted", {
 })
 
 test_that("linear expressions hold only variables once", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   expr <- x + x + y
   vars <- canonicalize(expr)@terms
   expect_equal(length(vars), 2)
@@ -52,8 +52,8 @@ test_that("linear expressions hold only variables once", {
 })
 
 test_that("quadratic expressions are supported", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- (-x + y * 2 * y - 2) * 18
   expect_equal(result@constant, -2 * 18)
 
@@ -66,8 +66,8 @@ test_that("quadratic expressions are supported", {
 })
 
 test_that("pow 2", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- (x^2 + y^2) * 18
   quad_vars <- result@quadratic_terms
   q1 <- quad_vars[[1L]]
@@ -87,9 +87,9 @@ test_that("pow 2", {
 })
 
 test_that("quadprog complex", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
-  z <- scalar_affine_term(1, RMPK_variable(index = 3L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
+  z <- moi_scalar_affine_term(1, RMPK_variable(index = 3L))
   result <- -5 * y + x^2 + y^2 + z^2
   quad_vars <- result@quadratic_terms
   expect_equal(quad_vars[[1L]]@coefficient, 1)
@@ -99,8 +99,8 @@ test_that("quadprog complex", {
 })
 
 test_that("adding the same quad tuples increaes coef", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- x * y + x * y
   expect_equal(result@quadratic_terms[[1L]]@coefficient, 1)
   expect_equal(result@quadratic_terms[[2L]]@coefficient, 1)
@@ -108,22 +108,22 @@ test_that("adding the same quad tuples increaes coef", {
 })
 
 test_that("more examples work", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   result <- 1 - (5 + (x + (2 - x)))
   expect_equal(result@constant, -6)
   expect_equal(canonicalize(result)@terms[[1L]]@coefficient, 0)
 })
 
 test_that("even more examples work", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   result <- 2 * (x * x + 2 + (1 + x * x) + (x^2 - 2) + (5 - x^2))
   expect_equal(result@constant, 12)
   expect_equal(canonicalize(result)@quadratic_terms[[1]]@coefficient, 4)
 })
 
 test_that("quadratic expression merge", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- (x^2 + 1) + x + x^2 + (y^2 + 1)
   expect_equal(result@constant, 2)
   quad_vars <- canonicalize(result)@quadratic_terms
@@ -140,8 +140,8 @@ test_that("quadratic expression merge", {
 })
 
 test_that("quadratic expression and linear expression", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- (x + 1) + (4 * y * x)
   expect_equal(result@constant, 1)
   quad_vars <- canonicalize(result)@quadratic_terms
@@ -149,15 +149,15 @@ test_that("quadratic expression and linear expression", {
 })
 
 test_that("multiplication by 0 yields numeric", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   expect_equal(((x + 1) + (4 * y * x)) * 0, 0)
   expect_equal((x + 1) * 0, 0)
 })
 
 test_that("subtracting variables work", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   result <- x + x - y
   vars <- canonicalize(result)@terms
   coefs <- vapply(vars, function(x) x@coefficient, numeric(1))
@@ -165,7 +165,7 @@ test_that("subtracting variables work", {
 })
 
 test_that("squared linear expression", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   result <- canonicalize((x - 10)^2)
   expect_equal(result@quadratic_terms[[1]]@coefficient, 1)
   expect_equal(result@affine_terms[[1]]@coefficient, -20)
@@ -173,7 +173,7 @@ test_that("squared linear expression", {
 })
 
 test_that("linear expression times variable", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   expect_silent(result <- canonicalize((-3 * x + 1) * x))
   quad_vars <- result@quadratic_terms
   lin_vars <- result@affine_terms
@@ -185,14 +185,14 @@ test_that("linear expression times variable", {
 })
 
 test_that("pow of difference of two variables works", {
-  x <- scalar_affine_term(1, RMPK_variable(index = 1L))
-  y <- scalar_affine_term(1, RMPK_variable(index = 2L))
+  x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))
   expect_silent(result <- canonicalize((x - y)^2))
   quad_part <- result@quadratic_terms
   expect_equal(length(quad_part), 3)
 })
 
 test_that("difference on number and variable works", {
-  y <- scalar_affine_term(1, RMPK_variable(index = 1L))
+  y <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   expect_silent(result <- y - (1 - y))
 })

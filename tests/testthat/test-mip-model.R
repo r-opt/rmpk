@@ -102,7 +102,7 @@ test_that("add_constraint supports guards", {
   limit <- 5
   x <- model$add_variable("x", i = 1:10)
   model$add_constraint(x[i] <= 1, i = 1:10, even(i), i < !!limit)
-  expect_equal(moi_get(solver, MOI::number_of_constraints), 2)
+  expect_equal(moi_get(solver, moi_number_of_constraints), 2)
 })
 
 test_that("errors if two variables have the same name", {
