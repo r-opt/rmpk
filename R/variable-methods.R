@@ -1,9 +1,6 @@
 #' @include variable-class.R
 #' @include helper.R
 setMethod("+", signature(e1 = "MOI_scalar_affine_term", e2 = "numeric"), function(e1, e2) {
-  if (e2 == 0) {
-    return(e1)
-  }
   moi_scalar_affine_function(list(e1), e2)
 })
 
@@ -36,9 +33,6 @@ setMethod("-", signature(e1 = "MOI_scalar_affine_term", e2 = "missing"), functio
 })
 
 setMethod("*", signature(e1 = "MOI_scalar_affine_term", e2 = "numeric"), function(e1, e2) {
-  if (e2 == 0) {
-    return(0)
-  }
   e1@coefficient <- e1@coefficient * e2
   e1
 })

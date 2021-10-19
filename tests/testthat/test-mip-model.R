@@ -90,8 +90,8 @@ test_that("sum_expr supports guards", {
   limit <- 3
   res <- sum_expr(x[i], i = 1:10, even(i), i < !!limit)
   var <- res
-  expect_equal(var@coefficient, 1)
-  expect_equal(var@variable@value, 2)
+  expect_equal(var@terms[[1]]@coefficient, 1)
+  expect_equal(var@terms[[1]]@variable@value, 2)
 })
 
 test_that("add_constraint supports guards", {
@@ -128,5 +128,13 @@ test_that("you can use e as an index name", {
   x <- model$add_variable("x", e = 1:3)
   expect_silent(
     model$add_constraint(x[e] == 1, e = 1:3)
+  )
+})
+
+test_that("Adding an affine term as constraints work", {
+  model <- optimization_model(ROI_optimizer("glpk"))
+  x <- model$add_variable("x", e = 1:3)
+  expect_silent(
+    model$add_constraint(x[e] <= 0, e = 1:3)
   )
 })
