@@ -11,7 +11,7 @@ test_that("solve a knapsack problem", {
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
   model$optimize()
-  expect_equal(model$termination_status(), SUCCESS)
+  expect_equal(model$termination_status(), MOI_SUCCESS)
 })
 
 test_that("solve a knapsack problem #", {
@@ -23,9 +23,9 @@ test_that("solve a knapsack problem #", {
   model <- MIPModel(solver)
   x <- model$add_variable("x", i = 1:10, type = "binary")
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
-  model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) + 6, .in_set = MOI::less_than_set(10))
+  model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) + 6, .in_set = moi_less_than_set(10))
   model$optimize()
-  expect_equal(model$termination_status(), SUCCESS)
+  expect_equal(model$termination_status(), MOI_SUCCESS)
   res <- model$get_variable_value(x[i])
   res <- res[order(res$i), ]
   expect_true(
@@ -91,6 +91,6 @@ test_that("ROI returns OTHER_ERROR on time limit", {
   model$set_objective(sum_expr(v[i] * x[i], i = 1:100), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:100) <= 10)
   model$optimize()
-  expect_equal(model$termination_status(), OTHER_ERROR)
+  expect_equal(model$termination_status(), MOI_OTHER_ERROR)
   expect_true(is.list(model$termination_solver_message()))
 })

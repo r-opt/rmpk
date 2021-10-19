@@ -45,8 +45,8 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
     # other stuff
     print = function(...) {
       cat("MIP Model: \n")
-      cat("  Variables: ", moi_get(private$solver, MOI::number_of_variables), "\n", sep = "")
-      cat("  Constraints: ", moi_get(private$solver, MOI::number_of_constraints), "\n", sep = "")
+      cat("  Variables: ", moi_get(private$solver, moi_number_of_variables), "\n", sep = "")
+      cat("  Constraints: ", moi_get(private$solver, moi_number_of_constraints), "\n", sep = "")
       invisible(self)
     },
     get_variable_ref = function(name) {
@@ -78,11 +78,11 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
       rhs <- func@constant * -1
       func@constant <- 0
       set <- if (eq$operator == "<=") {
-        less_than_set(rhs)
+        moi_less_than_set(rhs)
       } else if (eq$operator == "==") {
-        equal_to_set(rhs)
+        moi_equal_to_set(rhs)
       } else if (eq$operator == ">=") {
-        greater_than_set(rhs)
+        moi_greater_than_set(rhs)
       } else {
         stop("unsupported operator", call. = FALSE)
       }

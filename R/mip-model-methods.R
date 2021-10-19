@@ -9,18 +9,18 @@ mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -In
     var_idx <- if (type == "continuous") {
       moi_add_variable(private$solver)
     } else {
-      set <- if (type == "integer") integer_set else zero_one_set
+      set <- if (type == "integer") moi_integer_set else moi_zero_one_set
       moi_add_constrained_variable(private$solver, set)[[1]]
     }
     var_ref <- RMPK_variable(var_idx@value, self)
     if (is.finite(lb) && !is.finite(ub)) {
-      moi_add_constraint(private$solver, single_variable(var_ref), greater_than_set(lb))
+      moi_add_constraint(private$solver, moi_single_variable(var_ref), moi_greater_than_set(lb))
     } else if (!is.finite(lb) && is.finite(ub)) {
-      moi_add_constraint(private$solver, single_variable(var_ref), less_than_set(ub))
+      moi_add_constraint(private$solver, moi_single_variable(var_ref), moi_less_than_set(ub))
     } else if (is.finite(lb) && is.finite(ub)) {
-      moi_add_constraint(private$solver, single_variable(var_ref), interval_set(lb, ub))
+      moi_add_constraint(private$solver, moi_single_variable(var_ref), moi_interval_set(lb, ub))
     }
-    MOI::scalar_affine_term(coefficient = 1, var_ref)
+    moi_scalar_affine_term(coefficient = 1, var_ref)
   })
   names(rlp_vars) <- var_names$var_names
   variable <- if (var_names$is_indexed_var) {
@@ -40,9 +40,9 @@ mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -In
 
 mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
   sense <- match.arg(sense, c("max", "min"))
-  moi_set(private$solver, MOI::objective_function, obj_variables)
-  moi_sense <- if (sense == "max") MOI::MAX_SENSE else MOI::MIN_SENSE
-  moi_set(private$solver, MOI::objective_sense, moi_sense)
+  moi_set(private$solver, moi_objective_function, obj_variables)
+  moi_sense <- if (sense == "max") MOI_MAX_SENSE else MOI_MIN_SENSE
+  moi_set(private$solver, moi_objective_sense, moi_sense)
   invisible()
 }
 
@@ -53,10 +53,10 @@ mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
     var <- rlang::eval_bare(rlang::get_expr(expr), env = local_envir)
     var <- if (inherits(var, "MOI_scalar_affine_term")) var@variable else var
     if (!is.null(lb)) {
-      moi_add_constraint(private$solver, single_variable(var), greater_than_set(lb))
+      moi_add_constraint(private$solver, moi_single_variable(var), moi_greater_than_set(lb))
     }
     if (!is.null(ub)) {
-      moi_add_constraint(private$solver, single_variable(var), less_than_set(ub))
+      moi_add_constraint(private$solver, moi_single_variable(var), moi_less_than_set(ub))
     }
   }, .base_envir = rlang::get_env(expr), ...)
 
@@ -114,11 +114,11 @@ mip_model_impl_optimize <- function() {
 }
 
 mip_model_impl_termination_status <- function() {
-  moi_get(private$solver, MOI::termination_status)
+  moi_get(private$solver, moi_termination_status)
 }
 
 mip_model_impl_termination_message <- function() {
-  moi_get(private$solver, MOI::termination_solver_message)
+  moi_get(private$solver, moi_termination_solver_message)
 }
 
 get_var_value <- function(type, solver) {
@@ -141,7 +141,7 @@ mip_model_impl_get_value <- function(variable_selector) {
   extract_solver_variable_value(
     private,
     rlang::enquo(variable_selector),
-    get_var_value(MOI::variable_primal, private$solver)
+    get_var_value(moi_variable_primal, private$solver)
   )
 }
 
@@ -149,7 +149,7 @@ mip_model_impl_get_variable_dual <- function(variable_selector) {
   extract_solver_variable_value(
     private,
     rlang::enquo(variable_selector),
-    get_var_value(MOI::variable_dual, private$solver)
+    get_var_value(moi_variable_dual, private$solver)
   )
 }
 
@@ -205,7 +205,7 @@ extract_solver_variable_value <- function(private, variable_expr,
 mip_model_impl_get_row_duals <- function() {
   rows <- private$row_indexes
   values <- vapply(rows, function(i) {
-    moi_get(private$solver, MOI::constraint_dual(), RMPK_constraint(i, self))
+    moi_get(private$solver, moi_constraint_dual(), RMPK_constraint(i, self))
   }, numeric(1L))
   data.frame(
     row_index = rows,
@@ -214,7 +214,7 @@ mip_model_impl_get_row_duals <- function() {
 }
 
 mip_model_impl_objective_value <- function() {
-  moi_get(private$solver, objective_value())
+  moi_get(private$solver, moi_objective_value())
 }
 
 generate_variable_names <- function(...) {

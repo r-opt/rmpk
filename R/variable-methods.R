@@ -4,7 +4,7 @@ setMethod("+", signature(e1 = "MOI_scalar_affine_term", e2 = "numeric"), functio
   if (e2 == 0) {
     return(e1)
   }
-  MOI::scalar_affine_function(list(e1), e2)
+  moi_scalar_affine_function(list(e1), e2)
 })
 
 setMethod("+", signature(e1 = "numeric", e2 = "MOI_scalar_affine_term"), function(e1, e2) {
@@ -16,7 +16,7 @@ setMethod("+", signature(e1 = "MOI_scalar_affine_term", e2 = "missing"), functio
 })
 
 setMethod("+", signature(e1 = "MOI_scalar_affine_term", e2 = "MOI_scalar_affine_term"), function(e1, e2) {
-  MOI::scalar_affine_function(list(e1, e2), 0)
+  moi_scalar_affine_function(list(e1, e2), 0)
 })
 
 setMethod("-", signature(e1 = "MOI_scalar_affine_term", e2 = "numeric"), function(e1, e2) {
