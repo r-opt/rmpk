@@ -3,7 +3,7 @@
 \docType{class}
 \name{RMPK_variable-class}
 \alias{RMPK_variable-class}
-\alias{RMPK_constraint-class}
+\alias{RMPK_constraint_ref-class}
 \alias{RMPK_variable_list-class}
 \title{A variable reference}
 \description{

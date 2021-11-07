@@ -51,11 +51,11 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
 #' @importFrom rlang eval_bare
 #' @importFrom rlang get_expr
 #' @importFrom rlang get_env
-mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
-  expr <- enquo(expr)
+mip_model_impl_set_bounds <- function(.expr, ..., lb = NULL, ub = NULL) {
+  expr <- enquo(.expr)
 
   eval_per_quantifier(function(local_envir) {
-    var <- eval_bare(get_expr(expr), env = local_envir)
+    var <- eval_tidy(expr, data = local_envir)
     var <- if (inherits(var, "MOI_scalar_affine_term")) var@variable else var
     if (!is.null(lb)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_greater_than_set(lb))
@@ -63,33 +63,42 @@ mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
     if (!is.null(ub)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_less_than_set(ub))
     }
-  }, .base_envir = get_env(expr), ...)
+  }, ...)
 
   invisible()
 }
 
+#' @importFrom rlang eval_tidy
+#' @importFrom rlang enquo
 mip_model_impl_add_constraint <- function(.expr, ..., .in_set = NULL) {
-  # either we have an equation in expr or in_set != NULL
-  expr <- rlang::enquo(.expr)
+  # either we have an equation in .expr or in_set != NULL
+  expr <- enquo(.expr)
   eval_fun <- if (!is.null(.in_set)) {
-    function(local_envir) {
+    function(local_data) {
       private$add_set_constraint(
-        func = rlang::eval_tidy(expr, env = local_envir),
+        func = eval_tidy(expr, data = local_data),
         set = .in_set
       )
     }
   } else {
-    eq <- split_equation(rlang::get_expr(expr))
-    function(local_envir) {
-      private$add_row(local_envir, eq)
+    function(local_data) {
+      evaled_expr <- eval_tidy(expr, data = local_data)
+      stopifnot(inherits(evaled_expr, "RMPK_abstract_constraint"))
+      fun <- evaled_expr@fun
+      set <- evaled_expr@set
+      private$add_set_constraint(
+        func = fun,
+        set = set
+      )
     }
   }
-  eval_per_quantifier(eval_fun, .base_envir = rlang::get_env(expr), ...)
+  eval_per_quantifier(eval_fun, ...)
 
   invisible()
 }
 
-eval_per_quantifier <- function(.eval_fun, .base_envir, ...) {
+#' @importFrom rlang as_data_mask
+eval_per_quantifier <- function(.eval_fun, ...) {
   quantifiers <- construct_quantifiers(...)
   quantifier_var_names <- names(quantifiers)
   no_quantifiers <- nrow(quantifiers) == 0L || ncol(quantifiers) == 0L
@@ -99,16 +108,15 @@ eval_per_quantifier <- function(.eval_fun, .base_envir, ...) {
     return()
   }
   if (no_quantifiers) {
-    local_envir <- new.env(parent = .base_envir)
-    .eval_fun(local_envir)
+    .eval_fun(as_data_mask(list()))
   } else {
     for (i in seq_len(nrow(quantifiers))) {
-      local_envir <- new.env(parent = .base_envir)
+      data_envir <- list()
       vars <- quantifiers[i, , drop = TRUE]
       for (j in seq_len(ncol(quantifiers))) {
-        local_envir[[quantifier_var_names[j]]] <- vars[[j]]
+        data_envir[[quantifier_var_names[j]]] <- vars[[j]]
       }
-      .eval_fun(local_envir)
+      .eval_fun(as_data_mask(data_envir))
     }
   }
 }

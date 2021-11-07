@@ -286,3 +286,37 @@ setMethod("-", signature(e1 = "MOI_scalar_affine_function", e2 = "MOI_scalar_qua
 setMethod("-", signature(e1 = "MOI_scalar_quadratic_term", e2 = "MOI_scalar_affine_function"), function(e1, e2) {
   (-1 * e2) - (-1 * e1)
 })
+
+#' Substract a scalar quadratic term and a scalar quadratic term
+#' @param e1 A scalar quadratic term
+#' @param e2 A scalar quadratic term
+setMethod("-", signature(e1 = "MOI_scalar_quadratic_term", e2 = "MOI_scalar_quadratic_term"), function(e1, e2) {
+  moi_scalar_quadratic_function(
+    quadratic_terms = list(
+      e1,
+      -1 * e2
+    ),
+    affine_terms = list(),
+    constant = 0
+  )
+})
+
+negate <- function(x) -1 * x
+
+#' Substract a scalar quadratic function and a scalar quadratic function
+#' @param e1 A scalar quadratic function
+#' @param e2 A scalar quadratic function
+setMethod("-", signature(e1 = "MOI_scalar_quadratic_function", e2 = "MOI_scalar_quadratic_function"), function(e1, e2) {
+  moi_scalar_quadratic_function(
+    quadratic_terms = c(
+      e1@quadratic_terms,
+      lapply(e2@quadratic_terms, negate)
+    ),
+    affine_terms = c(
+      e1@affine_terms,
+      lapply(e2@affine_terms, negate)
+    ),
+    constant = e1@constant - e2@constant
+  )
+})
+

@@ -31,6 +31,7 @@ Remotes:
     r-opt/MOI,
     r-opt/ROIoptimizer
 Collate: 
+    'constraints.R'
     'helper.R'
     'variable-class.R'
     'variable-methods.R'
