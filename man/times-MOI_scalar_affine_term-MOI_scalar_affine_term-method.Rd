@@ -2,10 +2,15 @@
 % Please edit documentation in R/quadratic-expression-methods.R
 \name{*,MOI_scalar_affine_term,MOI_scalar_affine_term-method}
 \alias{*,MOI_scalar_affine_term,MOI_scalar_affine_term-method}
-\title{include variable-class.R}
+\title{Multiply two scalar affine terms}
 \usage{
 \S4method{*}{MOI_scalar_affine_term,MOI_scalar_affine_term}(e1, e2)
 }
+\arguments{
+\item{e1}{A scalar affine term}
+
+\item{e2}{A scalar affine term}
+}
 \description{
-include variable-class.R
+Multiply two scalar affine terms
 }

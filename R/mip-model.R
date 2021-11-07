@@ -18,13 +18,14 @@ optimization_model <- function(solver) {
 
 
 #' @include mip-model-methods.R
+#' @importFrom fastmap fastmap
 #' @noRd
 RMPKMipModel <- R6::R6Class("RMPKMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver
       private$row_indexes <- integer(0L)
-      private$variable_map <- fastmap::fastmap()
+      private$variable_map <- fastmap()
     },
 
     # build it
@@ -72,22 +73,6 @@ RMPKMipModel <- R6::R6Class("RMPKMipModel",
         )
       }
       private$variable_map$set(name, value)
-    },
-    add_row = function(local_envir, eq) {
-      func <- eval(eq$lhs, envir = local_envir) - eval(eq$rhs, envir = local_envir)
-      rhs <- func@constant * -1
-      func@constant <- 0
-      set <- if (eq$operator == "<=") {
-        moi_less_than_set(rhs)
-      } else if (eq$operator == "==") {
-        moi_equal_to_set(rhs)
-      } else if (eq$operator == ">=") {
-        moi_greater_than_set(rhs)
-      } else {
-        stop("unsupported operator", call. = FALSE)
-      }
-      private$add_set_constraint(func, set)
-      invisible()
     },
     add_set_constraint = function(func, set) {
       row_idx <- moi_add_constraint(

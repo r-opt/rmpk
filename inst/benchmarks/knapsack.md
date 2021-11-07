@@ -11,7 +11,7 @@ library(ROI)
 
     ## ROI: R Optimization Infrastructure
 
-    ## Registered solver plugins: nlminb, alabama, cbc, glpk, quadprog.
+    ## Registered solver plugins: nlminb, alabama, glpk, quadprog.
 
     ## Default solver: auto.
 
@@ -32,19 +32,21 @@ roi <- function() {
 rmpk <- function() {
   solver <- ROI_optimizer("glpk")
   model <- MIPModel(solver)
-  x <- model$add_variable(type = "binary", i = 1:10)
+  x <- model$add_variable("x", type = "binary", i = 1:10)
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10))
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
   model$optimize()
 }
 
-microbenchmark::microbenchmark(
+bench::mark(
   roi(),
-  rmpk()
+  rmpk(),
+  check = FALSE
 )
 ```
 
-    ## Unit: milliseconds
-    ##    expr       min        lq      mean    median        uq      max neval
-    ##   roi()  6.390367  6.577635  8.554846  6.952926  9.625678 30.57380   100
-    ##  rmpk() 11.964894 12.426721 15.787545 13.744604 17.035401 61.05705   100
+    ## # A tibble: 2 × 6
+    ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
+    ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+    ## 1 roi()         1.7ms   1.81ms      527.  760.35KB     45.1
+    ## 2 rmpk()        7.1ms   7.53ms      130.    7.91MB     60.4

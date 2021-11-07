@@ -18,7 +18,7 @@ RMPK_variable <- function(index, model_ref = NULL) {
 #'
 #' @export
 #' @rdname variables
-setClass("RMPK_constraint",
+setClass("RMPK_constraint_ref",
   slots = c(
     model_ref = "ANY"
   ), contains = "MOI_constraint_index"
@@ -27,7 +27,7 @@ setClass("RMPK_constraint",
 RMPK_constraint <- function(index, model_ref = NULL) {
   stopifnot(is.numeric(index), length(index) == 1)
   stopifnot(is.null(model_ref) || inherits(model_ref, "RMPKMipModel"))
-  new("RMPK_constraint", value = index, model_ref = model_ref)
+  new("RMPK_constraint_ref", value = index, model_ref = model_ref)
 }
 
 setMethod(
