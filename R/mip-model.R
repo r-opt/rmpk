@@ -18,13 +18,14 @@ optimization_model <- function(solver) {
 
 
 #' @include mip-model-methods.R
+#' @importFrom fastmap fastmap
 #' @noRd
 RMPKMipModel <- R6::R6Class("RMPKMipModel",
   public = list(
     initialize = function(solver) {
       private$solver <- solver
       private$row_indexes <- integer(0L)
-      private$variable_map <- fastmap::fastmap()
+      private$variable_map <- fastmap()
     },
 
     # build it

@@ -1,14 +1,17 @@
+#' @importFrom rlang enquos
+#' @importFrom rlang eval_tidy
+#' @importFrom rlang quo
 construct_quantifiers <- function(...) {
-  quosures <- rlang::enquos(...)
+  quosures <- enquos(...)
   is_index <- names(quosures) != ""
-  quantifiers <- rlang::eval_tidy(
-    rlang::quo(expand.grid(!!!quosures[is_index], stringsAsFactors = FALSE))
+  quantifiers <- eval_tidy(
+    quo(expand.grid(!!!quosures[is_index], stringsAsFactors = FALSE))
   )
   filter_guard <- Reduce(function(acc, el) {
-    rlang::quo(!!acc & !!el)
+    quo(!!acc & !!el)
   }, quosures[!is_index], init = TRUE)
-  rlang::eval_tidy(
-    rlang::quo(
+  eval_tidy(
+    quo(
       quantifiers[!!filter_guard, , drop = FALSE]
     ),
     data = quantifiers

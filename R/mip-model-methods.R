@@ -1,3 +1,4 @@
+#' @importFrom fastmap fastmap
 mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -Inf, ub = Inf) {
   stopifnot(
     length(type) == 1L, length(lb) == 1L, length(ub) == 1L,
@@ -24,7 +25,7 @@ mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -In
   })
   names(rlp_vars) <- var_names$var_names
   variable <- if (var_names$is_indexed_var) {
-    variable_map <- fastmap::fastmap()
+    variable_map <- fastmap()
     variable_map$mset(.list = rlp_vars)
     new("RMPK_variable_list",
       variables_map = variable_map,
@@ -46,11 +47,15 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
   invisible()
 }
 
+#' @importFrom rlang enquo
+#' @importFrom rlang eval_bare
+#' @importFrom rlang get_expr
+#' @importFrom rlang get_env
 mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
-  expr <- rlang::enquo(expr)
+  expr <- enquo(expr)
 
   eval_per_quantifier(function(local_envir) {
-    var <- rlang::eval_bare(rlang::get_expr(expr), env = local_envir)
+    var <- eval_bare(get_expr(expr), env = local_envir)
     var <- if (inherits(var, "MOI_scalar_affine_term")) var@variable else var
     if (!is.null(lb)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_greater_than_set(lb))
@@ -58,7 +63,7 @@ mip_model_impl_set_bounds <- function(expr, ..., lb = NULL, ub = NULL) {
     if (!is.null(ub)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_less_than_set(ub))
     }
-  }, .base_envir = rlang::get_env(expr), ...)
+  }, .base_envir = get_env(expr), ...)
 
   invisible()
 }

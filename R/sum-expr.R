@@ -2,10 +2,12 @@
 #'
 #' @param expr A numeric, linear or quadratic expression
 #' @param ... a number named indexes
-#'
+#' @importFrom rlang enquo
+#' @importFrom rlang get_env
+#' @importFrom rlang get_expr
 #' @export
 sum_expr <- function(expr, ...) {
-  expr <- rlang::enquo(expr)
+  expr <- enquo(expr)
   quantifiers <- construct_quantifiers(...)
 
   quantifier_names <- names(quantifiers)
@@ -20,8 +22,8 @@ sum_expr <- function(expr, ...) {
 
   # we usually have very few quantifiers, so there is probably too much overhead
   # when using a hashtable (according to some benchmarks)
-  envir <- new.env(parent = rlang::get_env(expr), hash = FALSE)
-  bare_expr <- rlang::get_expr(expr)
+  envir <- new.env(parent = get_env(expr), hash = FALSE)
+  bare_expr <- get_expr(expr)
 
   result <- 0
   for (i in row_indexes) {
