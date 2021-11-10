@@ -7,8 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![R build
-status](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
+[![R-CMD-check](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs.
@@ -33,7 +32,7 @@ it could also become the successor of
 If you want to see the package in action take a look at the
 [articles](https://dirkschumacher.github.io/rmpk/) in the docs.
 
-Happy to receive feedback\!
+Happy to receive feedback!
 
 *Still under development. Anything can change*
 
@@ -48,36 +47,36 @@ remotes::install_github("r-opt/rmpk")
 
 ## Supported types
 
-  - Linear Programming (LP)
-  - Mixed Integer Linear Programming (MILP)
-  - Mixed Integer Quadratic Programming (MIQP)
-  - Mixed Integer Quadratically Constrained Programming (MIQCP)
+-   Linear Programming (LP)
+-   Mixed Integer Linear Programming (MILP)
+-   Mixed Integer Quadratic Programming (MIQP)
+-   Mixed Integer Quadratically Constrained Programming (MIQCP)
 
 ## Features
 
-  - ✅ Algebraic modelling of mixed integer programming problems
+-   ✅ Algebraic modelling of mixed integer programming problems
 
-  - ✅ Integer, binary and continious variables
+-   ✅ Integer, binary and continious variables
 
-  - ✅ Linear and quadratic constraints/objective
+-   ✅ Linear and quadratic constraints/objective
 
-  - ✅ Bindings to most popular solvers through
+-   ✅ Bindings to most popular solvers through
     [ROI](https://CRAN.R-project.org/package=ROI)
 
-  - ✅ Support for character variable indexes
+-   ✅ Support for character variable indexes
 
-  - ✅ Access row/column duals of Linear Programs
+-   ✅ Access row/column duals of Linear Programs
 
-  - ✅ Row generation through solver callbacks (e.g. for models with
+-   ✅ Row generation through solver callbacks (e.g. for models with
     exponential many constraints)
 
-  - 🚧 Variable and constraint names
+-   🚧 Variable and constraint names
 
-  - 🚧 Initial feasible solutions
+-   🚧 Initial feasible solutions
 
-  - 🚧 Almost as fast as matrix code
+-   🚧 Almost as fast as matrix code
 
-  - …
+-   …
 
 ## Low Level ROI Example
 
@@ -123,8 +122,8 @@ MIT
 
 ## References and Inspiration
 
-  - Dunning, Iain, Joey Huchette, and Miles Lubin. “JuMP: A modeling
+-   Dunning, Iain, Joey Huchette, and Miles Lubin. “JuMP: A modeling
     language for mathematical optimization.” SIAM Review 59.2 (2017):
     295-320.
-  - [ompr](https://github.com/dirkschumacher/ompr)
-  - [pulp](https://github.com/coin-or/pulp)
+-   [ompr](https://github.com/dirkschumacher/ompr)
+-   [pulp](https://github.com/coin-or/pulp)

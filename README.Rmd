@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![R build status](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
+[![R-CMD-check](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs. It is based on the API of the [ompr](https://github.com/dirkschumacher/ompr) package and is also inspired by the architecture of [Julia JuMP](https://github.com/JuliaOpt/JuMP.jl).
