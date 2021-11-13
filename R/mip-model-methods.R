@@ -210,7 +210,7 @@ extract_solver_variable_value <- function(private, variable_expr,
     return(return_val)
   } else if (is.symbol(variable_expr)) {
     variable <- rlang::eval_tidy(variable_expr_rl)
-    return(get_value_fun(variable@variable_index))
+    return(get_value_fun(variable))
   }
   stop("Wrong expression", call. = FALSE)
 }

@@ -138,3 +138,29 @@ test_that("Adding an affine term as constraints work", {
     model$add_constraint(x[e] <= 0, e = 1:3)
   )
 })
+
+test_that("Accessing all variable types work", {
+  model <- optimization_model(ROI_optimizer("glpk"))
+  x1 <- model$add_variable("x1", i = 1:3, ub = 10)
+  x2 <- model$add_variable("x2", type = "binary", i = 1:3, ub = 10)
+  x3 <- model$add_variable("x3", type = "integer", i = 1:3, ub = 10)
+  y1 <- model$add_variable("y1", ub = 10)
+  y2 <- model$add_variable("y2", ub = 10)
+  y3 <- model$add_variable("y3", ub = 10)
+  model$set_objective(sum_expr(x1[i], i = 1:3) +
+                        sum_expr(x2[i], i = 1:3) +
+                        sum_expr(x3[i], i = 1:3) +
+                        y1 + y2 + y3, sense = "ma")
+  model$optimize()
+  check_index <- function(res, name) {
+    expect_equal(res$name, rep.int(name, 3))
+    expect_setequal(res$i, 1:3)
+    expect_equal(res$value, rep.int(10, 3))
+  }
+  check_index(model$get_variable_value(x1[i]), "x1")
+  check_index(model$get_variable_value(x2[i]), "x2")
+  check_index(model$get_variable_value(x3[i]), "x3")
+  expect_equal(model$get_variable_value(y1), 10)
+  expect_equal(model$get_variable_value(y2), 10)
+  expect_equal(model$get_variable_value(y3), 10)
+})
