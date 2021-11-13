@@ -30,7 +30,7 @@ it could also become the successor of
 [ompr](https://github.com/dirkschumacher/ompr) … not sure yet.
 
 If you want to see the package in action take a look at the
-[articles](https://dirkschumacher.github.io/rmpk/) in the docs.
+[articles](https://r-opt.github.io/rmpk/) in the docs.
 
 Happy to receive feedback!
 
