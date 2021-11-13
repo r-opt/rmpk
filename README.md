@@ -8,6 +8,8 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![R-CMD-check](https://github.com/r-opt/rmpk/workflows/R-CMD-check/badge.svg)](https://github.com/r-opt/rmpk/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/r-opt/rmpk/branch/master/graph/badge.svg)](https://app.codecov.io/gh/r-opt/rmpk?branch=master)
 <!-- badges: end -->
 
 `rmpk` is a lightweight package to model mixed integer linear programs.
