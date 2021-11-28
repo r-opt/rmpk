@@ -26,10 +26,12 @@ Imports:
     R6,
     methods,
     rlang,
-    MOI (>= 0.0.0.9001)
+    MOI (>= 0.0.0.9001),
+    listcomp (>= 0.3.0.9000)
 Remotes:
     r-opt/MOI,
     r-opt/ROIoptimizer
+    dirkschumacher/listcomp
 Collate: 
     'constraints.R'
     'helper.R'
