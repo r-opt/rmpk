@@ -236,14 +236,3 @@ generate_variable_names <- function(...) {
     is_indexed_var = TRUE
   )
 }
-
-split_equation <- function(expr) {
-  stopifnot(is.call(expr))
-  operator <- as.character(expr[[1L]])
-  stopifnot(operator %in% c("<=", ">=", "=="))
-  list(
-    operator = operator,
-    lhs = expr[[2L]],
-    rhs = expr[[3L]]
-  )
-}
