@@ -79,6 +79,31 @@ model$optimize()
 model$get_variable_value(x[i])
 ```
 
+## List of solvers
+
+`rmpk` supports all solvers that implement the [`MOI` interface](https://github.com/r-opt/MOI). It also comes
+with a `ROI_optimzer` that internally uses [`ROI`](https://roi.r-forge.r-project.org/index.html) and thus gives [access to most
+popular solvers](https://roi.r-forge.r-project.org) out of the box.
+Note that `ROI` has its own plugin system and you need to install these solvers
+separately in addition to [`ROIoptimizer`](https://github.com/r-opt/ROIoptimizer).
+
+```{r, echo = FALSE}
+roi_solvers <- ROI::ROI_available_solvers()$Package
+roi_solvers <- unique(substr(roi_solvers, 12, nchar(roi_solvers)))
+df <- data.frame(
+  solver_name = c(roi_solvers, "glpk"),
+  r_package = c(rep.int("ROIoptimizer", length(roi_solvers)), "GLPKoptimizer"),
+  url = c(rep.int("https://github.com/r-opt/ROIoptimizer", length(roi_solvers)), "https://github.com/r-opt/GLPKoptimizer"),
+  stringsAsFactors = FALSE
+)
+
+knitr::kable(df[order(df$solver_name), ],
+  col.names = c("Solver Name", "R Package", "Github URL"),
+  row.names = FALSE
+)
+```
+
+
 ## Contribute
 
 The best way at the moment to contribute is to test the package, write documentation, propose features. Soon, code contributions are welcome as well.

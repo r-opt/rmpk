@@ -108,6 +108,41 @@ model$get_variable_value(x[i])
 #> 10    x  4     1
 ```
 
+## List of solvers
+
+`rmpk` supports all solvers that implement the [`MOI`
+interface](https://github.com/r-opt/MOI). It also comes with a
+`ROI_optimzer` that internally uses
+[`ROI`](https://roi.r-forge.r-project.org/index.html) and thus gives
+[access to most popular solvers](https://roi.r-forge.r-project.org) out
+of the box. Note that `ROI` has its own plugin system and you need to
+install these solvers separately in addition to
+[`ROIoptimizer`](https://github.com/r-opt/ROIoptimizer).
+
+| Solver Name | R Package     | Github URL                               |
+|:------------|:--------------|:-----------------------------------------|
+| alabama     | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| cbc         | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| cccp        | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| clp         | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| cplex       | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| deoptim     | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| ecos        | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| glpk        | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| glpk        | GLPKoptimizer | <https://github.com/r-opt/GLPKoptimizer> |
+| gurobi      | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| ipop        | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| lpsolve     | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| mosek       | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| msbinlp     | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| neos        | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| nloptr      | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| optimx      | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| qpoases     | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| quadprog    | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| scs         | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+| symphony    | ROIoptimizer  | <https://github.com/r-opt/ROIoptimizer>  |
+
 ## Contribute
 
 The best way at the moment to contribute is to test the package, write
