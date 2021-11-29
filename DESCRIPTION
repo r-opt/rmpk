@@ -30,7 +30,7 @@ Imports:
     listcomp (>= 0.3.0.9000)
 Remotes:
     r-opt/MOI,
-    r-opt/ROIoptimizer
+    r-opt/ROIoptimizer,
     dirkschumacher/listcomp
 Collate: 
     'constraints.R'
