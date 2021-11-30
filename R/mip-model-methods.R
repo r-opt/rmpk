@@ -5,7 +5,7 @@ mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -In
     length(name) == 1L, is.character(name), !is.na(name)
   )
   type <- match.arg(type, c("continuous", "integer", "binary"))
-  var_names <- generate_variable_names(...)
+  var_names <- generate_variable_names(.env = parent.frame(), ...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     var_idx <- if (type == "continuous") {
       moi_add_variable(private$solver)
@@ -202,8 +202,8 @@ mip_model_impl_objective_value <- function() {
   moi_get(private$solver, moi_objective_value())
 }
 
-generate_variable_names <- function(...) {
-  quantifiers <- construct_quantifiers(...)
+generate_variable_names <- function(.env = parent.frame(), ...) {
+  quantifiers <- construct_quantifiers(.env = .env, ...)
   if (ncol(quantifiers) == 0) {
     return(list(
       var_names = "x",

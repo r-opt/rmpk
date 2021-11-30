@@ -1,7 +1,7 @@
 #' Helper function to sum over a set of indexes
 #'
 #' @param expr A numeric, linear or quadratic expression
-#' @param ... a number named indexes
+#' @param ... a number of named indexes or filter expression
 #' @importFrom rlang enquo
 #' @importFrom rlang enquos
 #' @importFrom listcomp gen_list
