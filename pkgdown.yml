@@ -1,0 +1,11 @@
+pandoc: 2.14.0.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  problem-course-assignment: problem-course-assignment.html
+  problem-markowitz: problem-markowitz.html
+  problem-tsp: problem-tsp.html
+  problem-warehouse-location: problem-warehouse-location.html
+  tsp-subtour: tsp-subtour.html
+last_built: 2021-11-30T19:54Z
+
