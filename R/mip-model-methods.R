@@ -5,7 +5,7 @@ mip_model_impl_add_variable <- function(name, ..., type = "continuous", lb = -In
     length(name) == 1L, is.character(name), !is.na(name)
   )
   type <- match.arg(type, c("continuous", "integer", "binary"))
-  var_names <- generate_variable_names(...)
+  var_names <- generate_variable_names(.env = parent.frame(), ...)
   rlp_vars <- lapply(var_names$var_names, function(var_name) {
     var_idx <- if (type == "continuous") {
       moi_add_variable(private$solver)
@@ -48,14 +48,14 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
 }
 
 #' @importFrom rlang enquo
-#' @importFrom rlang eval_bare
-#' @importFrom rlang get_expr
-#' @importFrom rlang get_env
+#' @importFrom rlang enquos
 mip_model_impl_set_bounds <- function(.expr, ..., lb = NULL, ub = NULL) {
+  stopifnot(is.null(lb) || (length(lb) == 1 && is.numeric(lb) && !is.na(lb)))
+  stopifnot(is.null(ub) || (length(ub) == 1 && is.numeric(ub) && !is.na(ub)))
   expr <- enquo(.expr)
-
-  eval_per_quantifier(function(local_envir) {
-    var <- eval_tidy(expr, data = local_envir)
+  dots <- enquos(...)
+  vars <- gen_list(!!expr, !!!dots, .env = parent.frame())
+  for (var in vars) {
     var <- if (inherits(var, "MOI_scalar_affine_term")) var@variable else var
     if (!is.null(lb)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_greater_than_set(lb))
@@ -63,8 +63,7 @@ mip_model_impl_set_bounds <- function(.expr, ..., lb = NULL, ub = NULL) {
     if (!is.null(ub)) {
       moi_add_constraint(private$solver, moi_single_variable(var), moi_less_than_set(ub))
     }
-  }, ...)
-
+  }
   invisible()
 }
 
@@ -73,52 +72,25 @@ mip_model_impl_set_bounds <- function(.expr, ..., lb = NULL, ub = NULL) {
 mip_model_impl_add_constraint <- function(.expr, ..., .in_set = NULL) {
   # either we have an equation in .expr or in_set != NULL
   expr <- enquo(.expr)
-  eval_fun <- if (!is.null(.in_set)) {
-    function(local_data) {
+  dots <- enquos(...)
+  constraints <- gen_list(!!expr, !!!dots, .env = parent.frame())
+  for (constraint in constraints) {
+    if (!is.null(.in_set)) {
       private$add_set_constraint(
-        func = eval_tidy(expr, data = local_data),
+        func = constraint,
         set = .in_set
       )
-    }
-  } else {
-    function(local_data) {
-      evaled_expr <- eval_tidy(expr, data = local_data)
-      stopifnot(inherits(evaled_expr, "RMPK_abstract_constraint"))
-      fun <- evaled_expr@fun
-      set <- evaled_expr@set
+    } else {
+      stopifnot(inherits(constraint, "RMPK_abstract_constraint"))
+      fun <- constraint@fun
+      set <- constraint@set
       private$add_set_constraint(
         func = fun,
         set = set
       )
     }
   }
-  eval_per_quantifier(eval_fun, ...)
-
   invisible()
-}
-
-#' @importFrom rlang as_data_mask
-eval_per_quantifier <- function(.eval_fun, ...) {
-  quantifiers <- construct_quantifiers(...)
-  quantifier_var_names <- names(quantifiers)
-  no_quantifiers <- nrow(quantifiers) == 0L || ncol(quantifiers) == 0L
-  all_quantifiers_filtered_out <- ncol(quantifiers) > 0L &&
-    nrow(quantifiers) == 0L
-  if (all_quantifiers_filtered_out) {
-    return()
-  }
-  if (no_quantifiers) {
-    .eval_fun(as_data_mask(list()))
-  } else {
-    for (i in seq_len(nrow(quantifiers))) {
-      data_envir <- list()
-      vars <- quantifiers[i, , drop = TRUE]
-      for (j in seq_len(ncol(quantifiers))) {
-        data_envir[[quantifier_var_names[j]]] <- vars[[j]]
-      }
-      .eval_fun(as_data_mask(data_envir))
-    }
-  }
 }
 
 mip_model_impl_optimize <- function() {
@@ -230,8 +202,8 @@ mip_model_impl_objective_value <- function() {
   moi_get(private$solver, moi_objective_value())
 }
 
-generate_variable_names <- function(...) {
-  quantifiers <- construct_quantifiers(...)
+generate_variable_names <- function(.env = parent.frame(), ...) {
+  quantifiers <- construct_quantifiers(.env = .env, ...)
   if (ncol(quantifiers) == 0) {
     return(list(
       var_names = "x",
@@ -264,16 +236,5 @@ generate_variable_names <- function(...) {
     arity = ncol(quantifiers),
     index_types = index_list_data_type,
     is_indexed_var = TRUE
-  )
-}
-
-split_equation <- function(expr) {
-  stopifnot(is.call(expr))
-  operator <- as.character(expr[[1L]])
-  stopifnot(operator %in% c("<=", ">=", "=="))
-  list(
-    operator = operator,
-    lhs = expr[[2L]],
-    rhs = expr[[3L]]
   )
 }

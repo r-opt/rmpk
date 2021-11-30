@@ -23,24 +23,6 @@ test_that("complex test case #1", {
   expect_equal(var_by_index(vars, 3L)@coefficient, n - 1)
 })
 
-test_that("equations can be splitted", {
-  expr <- quote(a + b <= 10)
-  res <- split_equation(expr)
-  expect_equal(res$operator, "<=")
-  expect_equal(res$lhs, quote(a + b))
-  expect_equal(res$rhs, quote(10))
-
-  res <- split_equation(quote(a + b >= 10))
-  expect_equal(res$operator, ">=")
-
-  res <- split_equation(quote(a + b == 10))
-  expect_equal(res$operator, "==")
-
-  expect_error(split_equation(quote(a + b)))
-  expect_error(split_equation(quote(a + b < 10)))
-  expect_error(split_equation(quote(a + b > 10)))
-})
-
 test_that("linear expressions hold only variables once", {
   x <- moi_scalar_affine_term(1, RMPK_variable(index = 1L))
   y <- moi_scalar_affine_term(1, RMPK_variable(index = 2L))

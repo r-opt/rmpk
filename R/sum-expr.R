@@ -1,36 +1,14 @@
 #' Helper function to sum over a set of indexes
 #'
 #' @param expr A numeric, linear or quadratic expression
-#' @param ... a number named indexes
+#' @param ... a number of named indexes or filter expression
 #' @importFrom rlang enquo
-#' @importFrom rlang get_env
-#' @importFrom rlang get_expr
+#' @importFrom rlang enquos
+#' @importFrom listcomp gen_list
 #' @export
 sum_expr <- function(expr, ...) {
+  dots <- enquos(...)
   expr <- enquo(expr)
-  quantifiers <- construct_quantifiers(...)
-
-  quantifier_names <- names(quantifiers)
-  row_indexes <- seq_len(nrow(quantifiers))
-
-  # we put all column vectors of quantifiers into a faster random access
-  # data structure for fast acccess
-  quantifiers_container <- new.env(hash = FALSE, parent = emptyenv())
-  for (name in quantifier_names) {
-    quantifiers_container[[name]] <- quantifiers[[name]]
-  }
-
-  # we usually have very few quantifiers, so there is probably too much overhead
-  # when using a hashtable (according to some benchmarks)
-  envir <- new.env(parent = get_env(expr), hash = FALSE)
-  bare_expr <- get_expr(expr)
-
-  result <- 0
-  for (i in row_indexes) {
-    for (name in quantifier_names) {
-      envir[[name]] <- quantifiers_container[[name]][i]
-    }
-    result <- result + eval(bare_expr, envir = envir, baseenv())
-  }
-  result
+  summands <- gen_list(!!expr, !!!dots, .env = parent.frame())
+  Reduce(`+`, summands, init = 0)
 }

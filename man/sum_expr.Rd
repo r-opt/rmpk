@@ -9,7 +9,7 @@ sum_expr(expr, ...)
 \arguments{
 \item{expr}{A numeric, linear or quadratic expression}
 
-\item{...}{a number named indexes}
+\item{...}{a number of named indexes or filter expression}
 }
 \description{
 Helper function to sum over a set of indexes
