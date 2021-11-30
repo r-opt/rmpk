@@ -50,6 +50,8 @@ mip_model_impl_set_objective <- function(obj_variables, sense = "min") {
 #' @importFrom rlang enquo
 #' @importFrom rlang enquos
 mip_model_impl_set_bounds <- function(.expr, ..., lb = NULL, ub = NULL) {
+  stopifnot(is.null(lb) || (length(lb) == 1 && is.numeric(lb) && !is.na(lb)))
+  stopifnot(is.null(ub) || (length(ub) == 1 && is.numeric(ub) && !is.na(ub)))
   expr <- enquo(.expr)
   dots <- enquos(...)
   vars <- gen_list(!!expr, !!!dots, .env = parent.frame())
