@@ -9,7 +9,7 @@ construct_quantifiers <- function(...) {
   if (length(quosures) == 0) {
     return(data.frame())
   }
-  # TODO: assuming all quoasures point to the same env
+  # TODO: assuming all quosures point to the same env
   env <- get_env(quosures[[1]])
   is_index <- names(quosures) != ""
   index_symbols <- syms(names(quosures[is_index]))
