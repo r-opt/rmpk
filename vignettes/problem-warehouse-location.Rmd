@@ -164,4 +164,4 @@ sum(fixedcost[unique(matching$j)])
 
 ## Feedback
 
-Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/r-opt/rmpk/discussions).

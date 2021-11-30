@@ -14,3 +14,4 @@
 \description{
 Substract a scalar quadratic function and a scalar quadratic function
 }
+\keyword{internal}

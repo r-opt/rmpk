@@ -14,3 +14,4 @@
 \description{
 Unary plus of a scalar affine term
 }
+\keyword{internal}

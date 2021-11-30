@@ -14,3 +14,4 @@
 \description{
 Add a scalar quadratic term and a scalar quadratic function
 }
+\keyword{internal}

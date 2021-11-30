@@ -54,7 +54,6 @@ min_mu <- 0.02
 
 ```{r setup}
 library(rmpk)
-library(magrittr)
 library(ROI.plugin.quadprog)
 ```
 
@@ -92,4 +91,4 @@ Bars are stock allocation and dots are the expected returns. It is a bit strange
 
 ## Feedback
 
-Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/r-opt/rmpk/discussions).

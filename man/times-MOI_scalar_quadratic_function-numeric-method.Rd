@@ -14,3 +14,4 @@
 \description{
 Multiply a scalar quadratic function and a numeric
 }
+\keyword{internal}

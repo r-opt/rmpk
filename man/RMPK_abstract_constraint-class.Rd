@@ -7,3 +7,4 @@
 \description{
 An abstract index
 }
+\keyword{internal}
