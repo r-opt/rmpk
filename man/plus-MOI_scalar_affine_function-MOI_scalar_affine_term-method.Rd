@@ -14,3 +14,4 @@
 \description{
 Add a scalar affine function and a scalar affine term
 }
+\keyword{internal}

@@ -2,7 +2,7 @@
 title: "Traveling Salesperson Problem using Subtour Elimination Constraints"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{tsp-subtour}
+  %\VignetteIndexEntry{Traveling Salesperson Problem using Subtour Elimination Constraints}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-This vignette decribes how to solve a TSP using `rmpk` and subtour elimination constraints using solver callbacks.
+This vignette describes how to solve a TSP using `rmpk` and subtour elimination constraints using solver callbacks.
 
 [Wikipedia](https://en.wikipedia.org/wiki/Travelling_salesman_problem) gives the following definition:
 
@@ -40,7 +40,7 @@ library(ggplot2)
 
 The number of cities:
 ```{r}
-n <- 26
+n <- 20
 ```
 
 Boundary of our Euclidean space:
@@ -79,18 +79,18 @@ In this article we implement the model shown in the TSP [Gurobi Example](http://
 
 ```{r}
 library(rmpk)
-library(rmpk.glpk)
+library(GLPKoptimizer)
 ```
 
 ```{r}
-solver <- GLPK()
+solver <- GLPK_optimizer(presolve = FALSE)
 model <- optimization_model(solver)
 
 # we create a variable that is 1 iff we travel from city i to j
 # filter guards are not yet supported so we generate all possible combinations
 # although the graph is undirected
 x <- model$add_variable("x", i = 1:n, j = 1:n,
-                   type = "binary", lb = 0, ub = 1)
+                   type = "integer", lb = 0, ub = 1)
 
 # minimize travel distance
 model$set_objective(sum_expr(distance[i, j] * x[i, j], i = 1:n, j = 1:n), "min")
@@ -115,26 +115,18 @@ If that is also true we add the sub-tour elimination constraint.
 
 ```{r}
 row_count <- 0L #let's count the number of rows we add
-solver$set_irowgen_callback(function() {
+set_irowgen_callback(solver, function() {
   # first we construct an adjacency matrix
   # we also stop if we find fractional values
   adjacency_matrix <- matrix(0L, nrow = n, ncol = n)
-  all_integral <- TRUE
   for (i in 1:n) {
     for (j in 1:n) {
-      adjacency_matrix[i, j] <- solver$glpk_get_col_prim(x[i, j])
-      if (adjacency_matrix[i, j] %% 1 != 0) {
-        all_integral <- FALSE
-        break
+      val <- glpk_get_col_prim(solver, x[i, j])
+      adjacency_matrix[i, j] <- as.integer(val == 1)
+      if (adjacency_matrix[i, j] %% 1 != 0) { # not all integral
+        return()
       }
     }
-    if (!all_integral) {
-      break
-    }
-  }
-  
-  if (!all_integral) {
-    return()
   }
   
   # find the shortest circle and check if that tour does not contain all the nodes
@@ -199,4 +191,4 @@ ggplot(cities, aes(x, y)) +
 
 ## Feedback
 
-Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/r-opt/rmpk/discussions).

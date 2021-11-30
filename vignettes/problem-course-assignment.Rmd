@@ -4,7 +4,7 @@ author: "Dirk Schumacher"
 date: "September 2019"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Assign students to courses}
+  %\VignetteIndexEntry{Assigning students to courses}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -174,4 +174,4 @@ ggplot(plot_data, aes(x = course, y = count, fill = weight)) +
 
 ## Feedback
 
-Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/dirkschumacher/rmpk/issues).
+Do you have any questions, ideas, comments? Or did you find a mistake? Let's discuss on [Github](https://github.com/r-opt/rmpk/discussions).

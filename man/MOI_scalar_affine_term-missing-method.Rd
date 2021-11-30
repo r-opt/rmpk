@@ -14,3 +14,4 @@
 \description{
 Unary substraction of a scalar affine term
 }
+\keyword{internal}

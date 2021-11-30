@@ -2,6 +2,7 @@
 #'
 #' @export
 #' @rdname variables
+#' @keywords internal
 setClass("RMPK_variable",
   slots = c(
     model_ref = "ANY"
@@ -18,6 +19,7 @@ RMPK_variable <- function(index, model_ref = NULL) {
 #'
 #' @export
 #' @rdname variables
+#' @keywords internal
 setClass("RMPK_constraint_ref",
   slots = c(
     model_ref = "ANY"
@@ -58,6 +60,7 @@ setMethod(
 # TODO: turn the map into a fixed length list
 # This might be faster, as we know the dimensions
 #' @rdname variables
+#' @keywords internal
 #' @export
 setClass("RMPK_variable_list", slots = c(
   variables_map = "ANY",

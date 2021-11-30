@@ -15,3 +15,4 @@ A constraint
 \item{\code{set}}{a MOI_abstract set}
 }}
 
+\keyword{internal}

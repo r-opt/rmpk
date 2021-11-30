@@ -14,3 +14,4 @@
 \description{
 Exponentiate a scalar affine function by a numeric
 }
+\keyword{internal}

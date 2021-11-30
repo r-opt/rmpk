@@ -14,3 +14,4 @@
 \description{
 Multiply two scalar affine functions
 }
+\keyword{internal}

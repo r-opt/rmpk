@@ -14,3 +14,4 @@
 \description{
 Exponentiate a scalar affine term by 2
 }
+\keyword{internal}

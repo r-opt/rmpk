@@ -14,3 +14,4 @@
 \description{
 Multiply a scalar affine term and a numeric
 }
+\keyword{internal}

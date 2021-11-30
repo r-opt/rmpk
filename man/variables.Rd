@@ -11,3 +11,4 @@ A variable reference
 
 A variable reference
 }
+\keyword{internal}

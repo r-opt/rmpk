@@ -14,3 +14,4 @@
 \description{
 Substract a scalar quadratic term and a numeric
 }
+\keyword{internal}

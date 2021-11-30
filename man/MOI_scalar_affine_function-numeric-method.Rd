@@ -14,3 +14,4 @@
 \description{
 Substract a scalar affine function and a numeric
 }
+\keyword{internal}
