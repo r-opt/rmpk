@@ -1,19 +1,20 @@
 #' @importFrom rlang enquos
-#' @importFrom rlang eval_tidy
-#' @importFrom rlang quo
+#' @importFrom rlang syms
+#' @importFrom rlang get_env
+#' @importFrom listcomp gen_list
+#' @noRd
 construct_quantifiers <- function(...) {
+  # TODO: At the moment, it will silently convert factors to characters
   quosures <- enquos(...)
+  if (length(quosures) == 0) {
+    return(data.frame())
+  }
+  # TODO: assuming all quoasures point to the same env
+  env <- get_env(quosures[[1]])
   is_index <- names(quosures) != ""
-  quantifiers <- eval_tidy(
-    quo(expand.grid(!!!quosures[is_index], stringsAsFactors = FALSE))
-  )
-  filter_guard <- Reduce(function(acc, el) {
-    quo(!!acc & !!el)
-  }, quosures[!is_index], init = TRUE)
-  eval_tidy(
-    quo(
-      quantifiers[!!filter_guard, , drop = FALSE]
-    ),
-    data = quantifiers
+  index_symbols <- syms(names(quosures[is_index]))
+  do.call(
+    rbind,
+    gen_list(data.frame(!!!index_symbols), !!!quosures, .env = env)
   )
 }

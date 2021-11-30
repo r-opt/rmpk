@@ -22,15 +22,6 @@ test_that("correct index types are used in get_variable_value", {
   expect_true(is.integer(ret$i))
 })
 
-test_that("you can only use characters and integers as indexes", {
-  solver <- ROI_optimizer("glpk")
-  model <- optimization_model(solver)
-  expect_error(
-    model$add_variable("x", i = as.factor(1:10)),
-    regexp = "integer|character"
-  )
-})
-
 test_that("using not the right number of indeses errors in get_var_value", {
   solver <- ROI_optimizer("glpk")
   model <- optimization_model(solver)
