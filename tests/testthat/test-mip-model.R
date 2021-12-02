@@ -36,7 +36,7 @@ test_that("A constant objective function is possible", {
   expect_silent(model$set_objective(5))
 })
 
-test_that("MIPModel prints some information", {
+test_that("optimization_model prints some information", {
   solver <- ROI_optimizer("glpk")
   model <- optimization_model(solver)
   x <- model$add_variable("x")

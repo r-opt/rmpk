@@ -1,12 +1,3 @@
-#' A new mixed-integer programming Model
-#'
-#' @param solver a solver object
-#' @include roi-solver.R
-#' @export
-MIPModel <- function(solver) {
-  RMPKMipModel$new(solver)
-}
-
 #' A new Model
 #'
 #' @param solver a solver object

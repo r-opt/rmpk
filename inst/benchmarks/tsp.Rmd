@@ -22,7 +22,7 @@ distance <- as.matrix(dist(dplyr::select(cities, x, y), diag = TRUE, upper = TRU
 
 rmpk <- function(solver = rmpk::ROI_optimizer("glpk")) {
   withr::with_package("rmpk", {
-  model <- rmpk::MIPModel(solver)
+  model <- rmpk::optimization_model(solver)
   
   # we create a variable that is 1 iff we travel from city i to j
   x <- model$add_variable("x", i =  1:n, j = 1:n,
