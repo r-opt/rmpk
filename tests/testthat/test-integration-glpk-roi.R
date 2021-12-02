@@ -94,3 +94,13 @@ test_that("ROI returns OTHER_ERROR on time limit", {
   expect_equal(model$termination_status(), MOI_OTHER_ERROR)
   expect_true(is.list(model$termination_solver_message()))
 })
+
+test_that("lower bounds on variables work", {
+  solver <- ROI_optimizer("glpk")
+  model <- optimization_model(solver)
+  x <- model$add_variable("x", type = "integer", i = 1:10, lb = 5)
+  model$set_bounds(x[i], lb = 10, i = 5:10)
+  model$set_objective(sum_expr(x[i], i = 1:10), sense = "min")
+  model$optimize()
+  expect_equal(model$objective_value(), 5 * 4 + 10 * 6)
+})
