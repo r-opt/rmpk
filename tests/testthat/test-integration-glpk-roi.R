@@ -6,7 +6,7 @@ test_that("solve a knapsack problem", {
   v <- rnorm(10)
   w <- rnorm(10)
 
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   x <- model$add_variable("x", i = 1:10, type = "binary")
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) <= 10)
@@ -20,7 +20,7 @@ test_that("solve a knapsack problem #", {
   v <- rnorm(10)
   w <- rnorm(10, mean = 4)
 
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   x <- model$add_variable("x", i = 1:10, type = "binary")
   model$set_objective(sum_expr(v[i] * x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:10) + 6, .in_set = moi_less_than_set(10))
@@ -35,7 +35,7 @@ test_that("solve a knapsack problem #", {
 
 test_that("solve a bounded knapsack problem", {
   solver <- ROI_optimizer("glpk")
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   x <- model$add_variable("x", type = "integer", lb = 0, ub = 1, i = 1:10) # ROI has problems with binary and bounds
   model$set_objective(sum_expr(x[i], i = 1:10), sense = "max")
   model$add_constraint(sum_expr(x[i], i = 1:10) <= 10)
@@ -52,7 +52,7 @@ test_that("solve a bounded knapsack problem", {
 })
 
 test_that("it supports column/row duals", {
-  model <- MIPModel(ROI_optimizer("glpk"))
+  model <- optimization_model(ROI_optimizer("glpk"))
   x <- model$add_variable("x", i = 1:10)
   model$set_objective(sum_expr(x[i], i = 1:10), sense = "min")
   model$add_constraint(x[i] >= i, i = 1:10)
@@ -70,7 +70,7 @@ test_that("it supports column/row duals", {
 
 test_that("it handles constant in objective function", {
   solver <- ROI_optimizer("glpk")
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   x <- model$add_variable("x", type = "binary")
   model$set_objective(x + 1, sense = "max")
   model$optimize()
@@ -86,7 +86,7 @@ test_that("ROI returns OTHER_ERROR on time limit", {
   v <- rnorm(100)
   w <- runif(100)
 
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   x <- model$add_variable("x", i = 1:100, type = "binary")
   model$set_objective(sum_expr(v[i] * x[i], i = 1:100), sense = "max")
   model$add_constraint(sum_expr(w[i] * x[i], i = 1:100) <= 10)

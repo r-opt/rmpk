@@ -3,7 +3,7 @@ library(ROI.plugin.alabama)
 
 test_that("solve quad problem wit quadratic obj", {
   solver <- ROI_optimizer("quadprog")
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   # a simple quadratic program from the ROI docs
   x <- model$add_variable("x", i = 1:3)
   model$set_objective(-5 * x[2] + x[1]^2 + x[2]^2 + x[3] * x[3], sense = "min")
@@ -18,7 +18,7 @@ test_that("solve quad problem wit quadratic obj", {
 
 test_that("solve quad problem wit quadratic obj and constraint", {
   solver <- ROI_optimizer("alabama", control = list(start = c(0, 0, 0)))
-  model <- MIPModel(solver)
+  model <- optimization_model(solver)
   # a simple quadratic program from the ROI docs
   x <- model$add_variable("x", i = 1:3, lb = 0, ub = 10)
   model$set_objective(-5 * x[2] + x[1]^2 + x[2]^2 + x[3] * x[3], sense = "min")
